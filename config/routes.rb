@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :rounds
+
   resources :tables
 
   resources :table_configs

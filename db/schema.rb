@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140929191309) do
+ActiveRecord::Schema.define(version: 20141105075642) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
@@ -22,13 +22,18 @@ ActiveRecord::Schema.define(version: 20140929191309) do
 
   create_table "rooms", force: true do |t|
     t.string   "name"
-    t.decimal  "min_stake",   precision: 10, scale: 0
-    t.decimal  "max_stake",   precision: 10, scale: 0
-    t.decimal  "min_buy_in",  precision: 10, scale: 0
-    t.decimal  "max_buy_in",  precision: 10, scale: 0
-    t.integer  "max_players"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "rounds", force: true do |t|
+    t.integer  "room_id"
+    t.integer  "num_players"
+    t.string   "deck"
+    t.integer  "num_cards"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "active",      default: true
   end
 
   create_table "users", force: true do |t|

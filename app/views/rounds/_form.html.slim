@@ -1,0 +1,26 @@
+= form_for @round, html: { class: "form form-horizontal round" } do |f|
+  .form-group
+    = f.label :room_id, :class => 'control-label col-lg-2'
+    .col-lg-10
+      = f.text_field :room_id, :class => 'form-control'
+    = f.error_span(:room_id)
+  .form-group
+    = f.label :num_players, :class => 'control-label col-lg-2'
+    .col-lg-10
+      = f.text_field :num_players, :class => 'form-control'
+    = f.error_span(:num_players)
+  .form-group
+    = f.label :deck, :class => 'control-label col-lg-2'
+    .col-lg-10
+      = f.text_field :deck, :class => 'form-control'
+    = f.error_span(:deck)
+  .form-group
+    = f.label :num_cards, :class => 'control-label col-lg-2'
+    .col-lg-10
+      = f.text_field :num_cards, :class => 'form-control'
+    = f.error_span(:num_cards)
+  .form-group
+    .col-lg-offset-2.col-lg-10
+      = f.submit nil, :class => 'btn btn-primary'
+      '
+      = link_to t('.cancel', :default => t("helpers.links.cancel")), rounds_path, :class => 'btn'

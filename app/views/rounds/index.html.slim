@@ -1,0 +1,29 @@
+- model_class = Round
+div class="page-header"
+  h1=t '.title', :default => model_class.model_name.human.pluralize.titleize
+table class="table table-striped"
+  thead
+    tr
+      th= model_class.human_attribute_name(:id)
+      th= model_class.human_attribute_name(:room_id)
+      th= model_class.human_attribute_name(:num_players)
+      th= model_class.human_attribute_name(:deck)
+      th= model_class.human_attribute_name(:num_cards)
+      th= model_class.human_attribute_name(:created_at)
+      th=t '.actions', :default => t("helpers.actions")
+  tbody
+    - @rounds.each do |round|
+      tr
+        td= link_to round.id, round_path(round)
+        td= round.room_id
+        td= round.num_players
+        td= round.deck
+        td= round.num_cards
+        td=l round.created_at
+        td
+          = link_to t('.edit', :default => t("helpers.links.edit")), edit_round_path(round), :class => 'btn btn-default btn-xs'
+          '
+          = link_to t('.destroy', :default => t("helpers.links.destroy")), round_path(round), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+
+= link_to t('.new', :default => t("helpers.links.new")), new_round_path, :class => 'btn btn-primary'
+

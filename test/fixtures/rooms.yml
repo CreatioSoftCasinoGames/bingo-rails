@@ -2,16 +2,6 @@
 
 one:
   name: MyString
-  min_stake: 9.99
-  max_stake: 9.99
-  min_buy_in: 9.99
-  max_buy_in: 9.99
-  max_players: 1
 
 two:
   name: MyString
-  min_stake: 9.99
-  max_stake: 9.99
-  min_buy_in: 9.99
-  max_buy_in: 9.99
-  max_players: 1

@@ -1,0 +1,83 @@
+== README
+
+This README would normally document whatever steps are necessary to get the
+application up and running.
+
+Things you may want to cover:
+
+* Ruby version
+
+* System dependencies
+
+* Configuration
+
+* Database creation
+
+* Database initialization
+
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...
+
+
+Please feel free to use a different markup language if you do not plan to run
+<tt>rake doc:app</tt>.
+
+
+ 1  mkdir .ssh
+    2  cd ~?
+    3  cd ~/
+    4  mkdir .ssh
+    5  cd .ssh/
+    6  vi authorized_keys
+    7  ll
+    8  sudo apt-get update
+    9  sudo apt-get upgrade
+   10  ll
+   11  sudo apt-get install build-essential
+   12  sudo apt-get -y install libc6-dev libssl-dev libmysql++-dev libsqlite3-dev make build-essential libssl-dev libreadline-gplv2-dev zlib1g-dev
+   13  sudo apt-get install nginx
+   14  sudo apt-get install mysql-server-5.5
+   15  \curl -sSL https://get.rvm.io | bash
+   16  source /home/w3villa/.rvm/scripts/rvm
+   17  rvm install 2.1.0
+   18  sudo apt-get install git-core
+   19  sudo chown -R w3villa ~/.ssh
+   20  cd ~/.ssh
+   21  ssh-keygen -t rsa -C "ishank@w3villa.com"
+   22  cat id_rsa.pub
+   23  sudo apt-get install nginx
+   24  sudo service nginx start
+   25  cd ~.
+   26  cd ~/
+   27  ll
+   28  cd poker/
+   29  ll
+   30  cd shared/
+   31  mkdir assets/
+   32  mkdir bundle/
+   33  mkdir cached-copy/
+   34  mkdir config/
+   35  mkdir log/
+   36  mkdir pids/
+   37  vi config/database.yml
+   38  cd ..
+   39  mkdir releases
+   40  sudo su -
+   41  cd current
+   42  bundle exec rake db:create RAILS_ENV=production
+   43  bundle exec rake db:migrate RAILS_ENV=production
+   44  bundle exec rake assets:precompile RAILS_ENV=production
+   45  RAILS_ENV=production bundle exec puma -C ./config/puma.rb
+   46  ps -ef | grep um
+   47  ll /tmp/
+   48  sudo su -
+   49  ll
+   50  cd poker/current
+   51  ll
+   52  tail -f log/production.log 
+   53  history

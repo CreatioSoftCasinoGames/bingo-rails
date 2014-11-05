@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  small_blind: 9.99
+  big_blind: 9.99
+  min_player: 1
+  max_player: 1
+  min_buy_in: 9.99
+  max_buy_in: 9.99
+
+two:
+  name: MyString
+  small_blind: 9.99
+  big_blind: 9.99
+  min_player: 1
+  max_player: 1
+  min_buy_in: 9.99
+  max_buy_in: 9.99

@@ -6,7 +6,7 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 		else
 			if params[:email] && params[:password]
 				@user = User.where(email: params[:email]).first
-				(@user = nil) unless @user.valid_password?(params[:password])
+				(@user = nil) unless @user && @user.valid_password?(params[:password])
 			end
 		end
 		render json: @user

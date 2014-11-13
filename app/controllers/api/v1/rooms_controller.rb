@@ -1,6 +1,6 @@
 class Api::V1::RoomsController < Api::V1::ApplicationController
 
-	def rooms
+	def index
 		render json: Room.all
 	end
 

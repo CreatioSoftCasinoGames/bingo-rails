@@ -3,7 +3,16 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
 
   before_update :set_daubs, :set_coins_collected, :set_bingo_diagonal, :set_bingo_vertical, :set_bingo_horizontal, :set_keys_collected, :set_daubs_collected, :set_mystry_chests, :set_bonus, :set_ticket
+
+  before_validation  :set_fb_password, :set_login_details
+
   attr_accessor :daubs, :ticket, :bonus, :mystery_chests, :daubs_collected, :keys_collected, :bingo_vertical, :bingo_horizontal, :bingo_diagonal, :coins_collected
+
+  has_one :in_app_purchase, :dependent => :destroy
+  has_one :powerup, :dependent => :destroy
+
+  accepts_nested_attributes_for :in_app_purchase
+  accepts_nested_attributes_for :powerup
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
@@ -72,6 +81,23 @@ class User < ActiveRecord::Base
   	if coins_collected
   		self.coins_collected_in_game = coins_collected_in_game + coins_collected.to_f
   	end
+  end
+
+  def set_fb_password
+    if fb_id
+      generated_password = SecureRandom.hex(9)
+      self.password = generated_password
+      self.password_confirmation = generated_password    
+    end
+  end
+
+   def set_login_details
+    if is_guest
+      generated_password = SecureRandom.hex(9)
+      self.email = "guest_#{SecureRandom.hex(8)}@bingoapi.com"
+      self.password = generated_password
+      self.password_confirmation = generated_password
+    end
   end
 
 end

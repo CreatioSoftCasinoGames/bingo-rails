@@ -4,5 +4,5 @@ class UserSerializer < ActiveModel::Serializer
 			:bingo_by_diagonal_pattern, :coins_collected_in_game, :player_since
 
 			has_one :powerup
-			has_one :in_app_purchase
+			has_many :in_app_purchases
 end

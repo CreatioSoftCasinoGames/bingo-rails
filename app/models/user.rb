@@ -8,10 +8,10 @@ class User < ActiveRecord::Base
 
   attr_accessor :daubs, :ticket, :bonus, :mystery_chests, :daubs_collected, :keys_collected, :bingo_vertical, :bingo_horizontal, :bingo_diagonal, :coins_collected
 
-  has_one :in_app_purchase, :dependent => :destroy
+  has_many :in_app_purchases, :dependent => :destroy
   has_one :powerup, :dependent => :destroy
 
-  accepts_nested_attributes_for :in_app_purchase
+  accepts_nested_attributes_for :in_app_purchases
   accepts_nested_attributes_for :powerup
 
   devise :database_authenticatable, :registerable,

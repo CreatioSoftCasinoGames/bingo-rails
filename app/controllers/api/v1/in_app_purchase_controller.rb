@@ -8,10 +8,13 @@ class Api::V1::InAppPurchaseController < Api::v1::ApplicationController
 			render json: {
 				errors: @in_app_purchase.errors.full_messages.join(", ")
 			}
+		end
 	end
+
 	def show
 		render json: @in_app_purchase
 	end
+	
 	def update
 		if @in_app_purchase.update_attributes(in_app_purchase_params)
 			render json: @in_app_purchase
@@ -19,6 +22,7 @@ class Api::V1::InAppPurchaseController < Api::v1::ApplicationController
 			render json:{
 				errors: @in_app_purchase.errors.full_messages.join(", ")
 			}
+		end
 	end
 
 	private

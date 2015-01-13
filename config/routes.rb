@@ -22,8 +22,8 @@ Rails.application.routes.draw do
       resources :table_config_users, only: [:create]
       resources :users do
         member do
-          put :incr_total_daubs
-          put :incr_ticket_bought
+          put :incr_daubs
+          put :incr_ticket
           put :incr_bonus
           put :incr_mystery_chests
           put :incr_daubs_collected

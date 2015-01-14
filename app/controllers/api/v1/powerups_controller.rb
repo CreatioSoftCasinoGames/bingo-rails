@@ -9,6 +9,7 @@ class Api::V1::PowerupsController < Api::V1::ApplicationController
 				powerup: @powerup,
 				errors: @powerup.errors.full_messages.join(", ")
 			}
+		end
 	end
 
 	def show
@@ -22,6 +23,7 @@ class Api::V1::PowerupsController < Api::V1::ApplicationController
 			render json:{
 				errors: @powerup.errors.full_messages.join(", ")
 			}
+		end
 	end
 
 	private

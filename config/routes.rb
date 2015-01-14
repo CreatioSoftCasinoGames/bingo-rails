@@ -20,6 +20,20 @@ Rails.application.routes.draw do
       resources :rooms
       resources :sessions, only: [:create]
       resources :table_config_users, only: [:create]
+      resources :users do
+        member do
+          put :incr_daubs
+          put :incr_ticket
+          put :incr_bonus
+          put :incr_mystery_chests
+          put :incr_daubs_collected
+          put :incr_keys_collected
+          put :incr_bingo_vertical
+          put :incr_bingo_horizontal
+          put :incr_bingo_diagonal
+          put :incr_coins_collected
+        end
+      end
     end
   end
 

@@ -2,11 +2,11 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
 
-  before_update :set_daubs, :set_coins_collected, :set_bingo_diagonal, :set_bingo_vertical, :set_bingo_horizontal, :set_keys_collected, :set_daubs_collected, :set_mystry_chests, :set_bonus, :set_ticket
+  before_update :set_daubs, :set_coins_collected, :set_bingo_diagonal, :set_bingo_vertical, :set_bingo_horizontal, :set_bingo_corner, :set_keys_collected, :set_daubs_collected, :set_mystry_chests, :set_bonus, :set_ticket
 
   before_validation  :set_fb_password, :set_login_details
 
-  attr_accessor :daubs, :ticket, :bonus, :mystery_chests, :daubs_collected, :keys_collected, :bingo_vertical, :bingo_horizontal, :bingo_diagonal, :coins_collected
+  attr_accessor :daubs, :ticket, :bonus, :mystery_chests, :daubs_collected, :keys_collected, :bingo_vertical, :bingo_horizontal, :bingo_diagonal, :bingo_corner, :coins_collected
 
   has_many :in_app_purchases, :dependent => :destroy
   has_one :powerup, :dependent => :destroy
@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
   end
 
   def set_ticket
-  	if ticket_bought
+  	if ticket
   		self.ticket_bought = ticket_bought + ticket.to_f
   	end
   end
@@ -79,6 +79,12 @@ class User < ActiveRecord::Base
   	if bingo_diagonal
   		self.bingo_by_diagonal_pattern = bingo_by_diagonal_pattern + bingo_diagonal.to_f
   	end
+  end
+
+  def set_bingo_corner
+    if bingo_corner
+      self.bingo_by_corner_pattern = bingo_by_corner_pattern + bingo_corner.to_f
+    end
   end
 
   def set_coins_collected

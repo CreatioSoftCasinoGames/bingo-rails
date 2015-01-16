@@ -21,10 +21,6 @@ class User < ActiveRecord::Base
   	created_at.strftime("%B,%Y")
   end
 
-  def self.incremental_feilds
-    return [:daubs, :ticket, :bonus, :mystery_chests, :daubs_collected, :keys_collected, :bingo_vertical, :bingo_horizontal, :bingo_diagonal, :coins_collected]
-  end
-
   private
 
   def set_daubs

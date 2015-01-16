@@ -31,18 +31,6 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		end
 	end
 
-	#User.incremental_feilds.each do |method_name|
-	#	define_method "incr_#{method_name}" do
-	#		if @user.update_attributes({method_name => params[method_name]})
-	#			render json: @user
-	#		else
-	#			render json:{
-	#				errors: @user.errors.full_messages.join(", ")
-	#			}
-	#		end
-	#	end
-	#end
-	
 	def incr_daubs
 		if @user.update_attributes({daubs: params[:daubs]})
 			render json: {

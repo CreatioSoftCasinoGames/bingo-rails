@@ -23,7 +23,7 @@ Rails.application.routes.draw do
       resources :users do
         member do
           put :incr_daubs
-          put :incr_ticket
+          put :incr_ticket_bought
           put :incr_bonus
           put :incr_mystery_chests
           put :incr_daubs_collected
@@ -31,6 +31,7 @@ Rails.application.routes.draw do
           put :incr_bingo_vertical
           put :incr_bingo_horizontal
           put :incr_bingo_diagonal
+          put :incr_bingo_corner
           put :incr_coins_collected
         end
       end

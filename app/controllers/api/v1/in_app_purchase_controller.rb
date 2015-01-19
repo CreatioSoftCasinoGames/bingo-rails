@@ -1,4 +1,5 @@
-class Api::V1::InAppPurchaseController < Api::v1::ApplicationController
+class Api::V1::InAppPurchaseController < Api::V1::ApplicationController
+
 	before_action :find_in_app, only: [:update, :show]
 	def create
 		@in_app_purchase = InAppPurchase.new(in_app_purchase_params)

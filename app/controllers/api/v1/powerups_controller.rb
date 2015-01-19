@@ -2,7 +2,7 @@ class Api::V1::PowerupsController < Api::V1::ApplicationController
 	before_action :find_powerup, only: [:update, :show]
 	def create
 		@powerup = Powerup.new(powerup_params)
-		if@powerup.save
+		if @powerup.save
 			render json: @powerup
 		else
 			render json:{

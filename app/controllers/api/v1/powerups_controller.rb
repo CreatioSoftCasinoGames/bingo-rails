@@ -17,7 +17,7 @@ class Api::V1::PowerupsController < Api::V1::ApplicationController
 	end
 
 	def update
-		if @powerup.save(powerup_params)
+		if @powerup.update(powerup_params)
 			render json: @powerup
 		else
 			render json:{

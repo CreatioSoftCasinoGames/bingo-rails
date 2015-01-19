@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150114064316) do
+ActiveRecord::Schema.define(version: 20150116053514) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
@@ -106,6 +106,7 @@ ActiveRecord::Schema.define(version: 20150114064316) do
     t.boolean  "is_bingo_on_all_card",                                  default: false
     t.decimal  "fastest_bingo",                precision: 10, scale: 0, default: 0
     t.string   "device_id"
+    t.integer  "bingo_by_corner_pattern",                               default: 0
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

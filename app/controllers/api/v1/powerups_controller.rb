@@ -2,13 +2,14 @@ class Api::V1::PowerupsController < Api::V1::ApplicationController
 	before_action :find_powerup, only: [:update, :show]
 	def create
 		@powerup = Powerup.new(powerup_params)
-		if@powerup.save
+		if @powerup.save
 			render json: @powerup
 		else
 			render json:{
 				powerup: @powerup,
 				errors: @powerup.errors.full_messages.join(", ")
 			}
+		end
 	end
 
 	def show
@@ -16,12 +17,13 @@ class Api::V1::PowerupsController < Api::V1::ApplicationController
 	end
 
 	def update
-		if @powerup.save(powerup_params)
+		if @powerup.update(powerup_params)
 			render json: @powerup
 		else
 			render json:{
 				errors: @powerup.errors.full_messages.join(", ")
 			}
+		end
 	end
 
 	private

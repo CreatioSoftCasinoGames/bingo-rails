@@ -58,7 +58,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	def incr_bonus
 		if @user.update_attributes({bonus: params[:bonus]})
 			render json: {
-				bonus_coins_and_tickets: @user.bonus_coins_and_tickets
+				bonus_coins_and_tickets: @user.bounus_coins_and_tickets
 			}
 		else
 			render json: {
@@ -130,7 +130,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	def incr_bingo_diagonal
 		if @user.update_attributes({bingo_diagonal: params[:bingo_diagonal]})
 			render json: {
-				binogo_by_diagonal_pattern: @user.binogo_by_diagonal_pattern
+				binogo_by_diagonal_pattern: @user.bingo_by_diagonal_pattern
 			}
 		else
 			render json: {

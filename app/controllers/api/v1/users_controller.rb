@@ -9,11 +9,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				valid: true
 			}
 		else
-			render json: {
-				user: @user,
-				valid: false,
-				errors: @user.errors.full_messages.join(", ")
-			}
+			render json: @user.errors.full_messages.join(", ")
 		end
 	end
 
@@ -25,9 +21,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		if @user.update(user_params)
 			render json: @user
 		else
-			render json: {
-				errors: @user.errors.full_messages.join(", ")
-			}
+			render json: @user.errors.full_messages.join(", ")
 		end
 	end
 
@@ -37,9 +31,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				total_daubs: @user.total_daubs
 			}
 		else
-			render json: {
-				errors: @user.errors.full_messages.join(", ")
-			}
+			render json: @user.errors.full_messages.join(", ")
 		end
 	end
 
@@ -49,9 +41,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				ticket_bought: @user.ticket_bought
 			}
 		else
-			render json: {
-				errors: @user.errors.full_messages.join(", ")
-			}
+			render json: @user.errors.full_messages.join(", ")
 		end
 	end
 
@@ -61,9 +51,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				bonus_coins_and_tickets: @user.bounus_coins_and_tickets
 			}
 		else
-			render json: {
-				errors: @user.errors.full_messages.join(", ")
-			}
+			render json: @user.errors.full_messages.join(", ")
 		end
 	end
 
@@ -73,9 +61,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				mystery_chests_opened: @user.mystery_chests_opened
 			}
 		else
-			render json: {
-				errors: @user.errors.full_messages.join(", ")
-			}
+			render json: @user.errors.full_messages.join(", ")
 		end
 	end
 
@@ -85,9 +71,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				free_daubs_collected: @user.free_daubs_collected
 			}
 		else
-			render json: {
-				errors: @user.errors.full_messages.join(", ")
-			}
+			render json: @user.errors.full_messages.join(", ")
 		end
 	end
 
@@ -97,9 +81,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				keys_collected_in_game: @user.keys_collected_in_game
 			}
 		else
-			render json: {
-				errors: @user.errors.full_messages.join(", ")
-			}
+			render json: @user.errors.full_messages.join(", ")
 		end
 	end
 
@@ -109,9 +91,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				bingo_by_vertical_pattern: @user.bingo_by_vertical_pattern
 			}
 		else
-			render json: {
-				errors: @user.errors.full_messages.join(", ")
-			}
+			render json: @user.errors.full_messages.join(", ")
 		end
 	end
 
@@ -121,9 +101,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				bingo_by_horizontal_pattern: @user.bingo_by_horizontal_pattern
 			}
 		else
-			render json: {
-				errors: @user.errors.full_messages.join(", ")
-			}
+			render json: @user.errors.full_messages.join(", ")
 		end
 	end
 
@@ -133,9 +111,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				binogo_by_diagonal_pattern: @user.bingo_by_diagonal_pattern
 			}
 		else
-			render json: {
-				errors: @user.errors.full_messages.join(", ")
-			}
+			render json: @user.errors.full_messages.join(", ")
 		end
 	end
 
@@ -145,9 +121,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				bingo_by_corner_pattern: @user.bingo_by_corner_pattern
 			}
 		else
-			render json: {
-				errors: @user.errors.full_messages.join(", ")
-			}
+			render json: @user.errors.full_messages.join(", ")
 		end
 	end
 
@@ -157,9 +131,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				coins_collected_in_game: @user.coins_collected_in_game
 			}
 		else
-			render json: {
-				errors: @user.errors.full_messages.join(", ")
-			}
+			render json: @user.errors.full_messages.join(", ")
 		end
 	end
 

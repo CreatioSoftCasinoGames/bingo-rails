@@ -1,0 +1,35 @@
+- model_class = TournamentUser
+div class="page-header"
+  h1=t '.title', :default => model_class.model_name.human.pluralize.titleize
+table class="table table-striped"
+  thead
+    tr
+      th= model_class.human_attribute_name(:id)
+      th= model_class.human_attribute_name(:tournament_id)
+      th= model_class.human_attribute_name(:user_id)
+      th= model_class.human_attribute_name(:round)
+      th= model_class.human_attribute_name(:daubs)
+      th= model_class.human_attribute_name(:bingos)
+      th= model_class.human_attribute_name(:coins)
+      th= model_class.human_attribute_name(:attempt_number)
+      th= model_class.human_attribute_name(:created_at)
+      th=t '.actions', :default => t("helpers.actions")
+  tbody
+    - @tournament_users.each do |tournament_user|
+      tr
+        td= link_to tournament_user.id, tournament_user_path(tournament_user)
+        td= tournament_user.tournament_id
+        td= tournament_user.user_id
+        td= tournament_user.round
+        td= tournament_user.daubs
+        td= tournament_user.bingos
+        td= tournament_user.coins
+        td= tournament_user.attempt_number
+        td=l tournament_user.created_at
+        td
+          = link_to t('.edit', :default => t("helpers.links.edit")), edit_tournament_user_path(tournament_user), :class => 'btn btn-default btn-xs'
+          '
+          = link_to t('.destroy', :default => t("helpers.links.destroy")), tournament_user_path(tournament_user), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+
+= link_to t('.new', :default => t("helpers.links.new")), new_tournament_user_path, :class => 'btn btn-primary'
+

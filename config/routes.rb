@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  resources :tournament_users
+
+  resources :tournaments
+
   resources :rounds
 
   resources :tables
@@ -18,6 +22,7 @@ Rails.application.routes.draw do
       resources :table_configs
       resources :users
       resources :rooms
+      resources :tournaments
       resources :sessions, only: [:create]
       resources :table_config_users, only: [:create]
       resources :users do

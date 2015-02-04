@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150203074900) do
+ActiveRecord::Schema.define(version: 20150204092853) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
@@ -24,6 +24,14 @@ ActiveRecord::Schema.define(version: 20150203074900) do
     t.decimal  "amount",     precision: 10, scale: 0
     t.string   "title"
     t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "login_histories", force: true do |t|
+    t.boolean  "active"
+    t.integer  "user_id"
+    t.string   "login_token"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -126,6 +134,7 @@ ActiveRecord::Schema.define(version: 20150203074900) do
     t.decimal  "fastest_bingo",                precision: 10, scale: 0, default: 0
     t.string   "device_id"
     t.integer  "bingo_by_corner_pattern",                               default: 0
+    t.string   "login_token"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

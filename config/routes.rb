@@ -23,7 +23,7 @@ Rails.application.routes.draw do
       resources :users
       resources :rooms
       resources :tournaments
-      resources :sessions, only: [:create]
+      resources :sessions, only: [:create, :destroy]
       resources :table_config_users, only: [:create]
       resources :users do
         member do

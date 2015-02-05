@@ -23,7 +23,8 @@ class RoundsController < ApplicationController
 
   # GET /rounds/new
   def new
-    @round = Round.new
+    @round = Round.new(resource_id: params[:resource_id], resource_type: params[:resource_type], bundle_type: params[:bundle_type])
+    @resouce = @round.resouce
   end
 
   # GET /rounds/1/edit
@@ -74,10 +75,11 @@ class RoundsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_round
       @round = Round.find(params[:id])
+      @resouce = @round.resouce
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def round_params
-      params.require(:round).permit(:room_id, :num_players, :deck, :num_cards)
+      params.require(:round).permit(:resource_id, :resouce_type, :bundle_type, :num_players, :deck, :num_cards)
     end
 end

@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :in_game_gifts
+
   resources :tournament_users
 
   resources :tournaments

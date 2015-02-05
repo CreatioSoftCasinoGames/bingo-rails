@@ -4,7 +4,8 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	def create
 		@user = User.new(user_params)
 		if @user.save
-			render json: @user,
+			render json: {
+				user: @user,
 				valid: true
 			}
 		else
@@ -25,7 +26,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def incr_daubs
-		if @user.update_attributes({daubs: params[:daubs]})
+		if @user.update_attributes(daubs: params[:daubs])
 			render json: {
 				total_daubs: @user.total_daubs
 			}
@@ -35,7 +36,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def incr_ticket_bought
-		if @user.update_attributes({ticket: params[:ticket]})
+		if @user.update_attributes(ticket: params[:ticket])
 			render json: {
 				ticket_bought: @user.ticket_bought
 			}
@@ -45,7 +46,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def incr_bonus
-		if @user.update_attributes({bonus: params[:bonus]})
+		if @user.update_attributes(bonus: params[:bonus])
 			render json: {
 				bonus_coins_and_tickets: @user.bounus_coins_and_tickets
 			}
@@ -55,7 +56,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def incr_mystery_chests
-		if @user.update_attributes({mystery_chests: params[:mystery_chests]})
+		if @user.update_attributes(mystery_chests: params[:mystery_chests])
 			render json: {
 				mystery_chests_opened: @user.mystery_chests_opened
 			}
@@ -65,7 +66,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def incr_daubs_collected
-		if @user.update_attributes({daubs_collected: params[:daubs_collected]})
+		if @user.update_attributes(daubs_collected: params[:daubs_collected])
 			render json: {
 				free_daubs_collected: @user.free_daubs_collected
 			}
@@ -75,7 +76,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def incr_keys_collected
-		if @user.update_attributes({keys_collected: params[:keys_collected]})
+		if @user.update_attributes(keys_collected: params[:keys_collected])
 			render json: {
 				keys_collected_in_game: @user.keys_collected_in_game
 			}
@@ -85,7 +86,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def incr_bingo_vertical
-		if @user.update_attributes({bingo_vertical: params[:bingo_vertical]})
+		if @user.update_attributes(bingo_vertical: params[:bingo_vertical])
 			render json: {
 				bingo_by_vertical_pattern: @user.bingo_by_vertical_pattern
 			}
@@ -95,7 +96,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def incr_bingo_horizontal
-		if @user.update_attributes({bingo_horizontal: params[:bingo_horizontal]})
+		if @user.update_attributes(bingo_horizontal: params[:bingo_horizontal])
 			render json: {
 				bingo_by_horizontal_pattern: @user.bingo_by_horizontal_pattern
 			}
@@ -105,7 +106,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def incr_bingo_diagonal
-		if @user.update_attributes({bingo_diagonal: params[:bingo_diagonal]})
+		if @user.update_attributes(bingo_diagonal: params[:bingo_diagonal])
 			render json: {
 				binogo_by_diagonal_pattern: @user.bingo_by_diagonal_pattern
 			}
@@ -115,7 +116,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def incr_bingo_corner
-		if @user.update_attributes({bingo_corner: params[:bingo_corner]})
+		if @user.update_attributes(bingo_corner: params[:bingo_corner])
 			render json: {
 				bingo_by_corner_pattern: @user.bingo_by_corner_pattern
 			}
@@ -125,7 +126,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def incr_coins_collected
-		if @user.update_attributes({coins_collected: params[:coins_collected]})
+		if @user.update_attributes(coins_collected: params[:coins_collected])
 			render json: {
 				coins_collected_in_game: @user.coins_collected_in_game
 			}

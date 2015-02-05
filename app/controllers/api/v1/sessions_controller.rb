@@ -36,12 +36,7 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 			@user.update_attributes(login_token: SecureRandom.hex(5))
 			LoginHistory.create(active: 1, user_id: @user.id, login_token: @user.login_token)
 		end
-
-		render json: {
-			user: UserSerializer.new(@user).as_json["user"],
-			success: @success,
-			error: @message
-		}
+		render json: @user
 	end
 
 	def destroy

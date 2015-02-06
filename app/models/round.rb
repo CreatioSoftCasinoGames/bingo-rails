@@ -19,21 +19,13 @@ class Round < ActiveRecord::Base
   		user = round_user.user
   		round_users_attributes.push({
   			id: round_user.id,
-  			is_winner: node_obj['position'],
   			daubs: node_obj['daubs'],
   			bingo: node_obj['bingo']
   		})
   		bingo_played = user.bingo_played.to_f + 1
   		total_daubs = user.total_daubs.to_f + node_obj['daubs'].to_f
-  		best_bingo_position = (node_obj.['position'].to_f > user.best_bingo_position.to_f) ? node_obj['position'] : user.best_bingo_position
-  		if node_obj['position'].to_f == 1
-  			bingo_win = user.bingo_win + 1
-  		else
-  			bingo_win = user.bingo_win
-  		end
   		users_attributes.push({
   			id: user.id,
-  			bingo_win: bingo_win,
   			total_daubs: total_daubs,
   			bingo_played: bingo_played,
   			best_bingo_position: best_bingo_position

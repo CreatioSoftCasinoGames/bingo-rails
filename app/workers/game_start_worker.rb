@@ -1,4 +1,4 @@
-class GameWorker
+class GameStartWorker
 	include Sidekiq::Worker
 
 	sidekiq_options retry: false

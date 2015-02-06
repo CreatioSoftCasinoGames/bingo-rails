@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150206133138) do
+ActiveRecord::Schema.define(version: 20150206154334) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
@@ -90,6 +90,8 @@ ActiveRecord::Schema.define(version: 20150206133138) do
     t.integer  "attempt_number"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "room_id"
+    t.integer  "card_count"
   end
 
   create_table "tournaments", force: true do |t|
@@ -97,6 +99,12 @@ ActiveRecord::Schema.define(version: 20150206133138) do
     t.integer  "room_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "tournament_type"
+    t.integer  "num_player"
+    t.text     "deck"
+    t.integer  "num_cards"
+    t.boolean  "active",          default: true
+    t.string   "uuid"
   end
 
   create_table "users", force: true do |t|

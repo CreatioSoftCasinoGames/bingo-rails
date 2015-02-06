@@ -1,11 +1,11 @@
-class GameEndWorker
+class RoundEndWorker
 	include Sidekiq::Worker
 
 	sidekiq_options retry: false
 
-	def perfor(data)
-		data = Json.parse(data)
+	def perform(data)
+		data = JSON.parse(data)
 		round = Round.where(uuid: data['round_uuid']).first
-		round.analyze(data['players'])
+		round.analize(data['players'])
 	end
 end

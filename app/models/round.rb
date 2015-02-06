@@ -11,7 +11,8 @@ class Round < ActiveRecord::Base
 		YAML.load read_attribute(:deck)
 	end
 
-  def analyze(data)
+  def analize(data)
+    params = {active: false}  
   	round_users_attributes = []
   	users_attributes = []
   	data.each do |node_obj|
@@ -20,15 +21,15 @@ class Round < ActiveRecord::Base
   		round_users_attributes.push({
   			id: round_user.id,
   			daubs: node_obj['daubs'],
-  			bingo: node_obj['bingo']
+  			bingos: node_obj['bingo'],
+        room_id: node_obj['room_id']
   		})
   		bingo_played = user.bingo_played.to_f + 1
   		total_daubs = user.total_daubs.to_f + node_obj['daubs'].to_f
   		users_attributes.push({
   			id: user.id,
   			total_daubs: total_daubs,
-  			bingo_played: bingo_played,
-  			best_bingo_position: best_bingo_position
+  			bingo_played: bingo_played
   		})
   	end
   	params[:round_users_attributes] = round_users_attributes

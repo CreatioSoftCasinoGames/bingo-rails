@@ -43,6 +43,11 @@ Rails.application.routes.draw do
           get :get_round_and_attempt
         end
       end
+      resources :tournaments do
+        collection do
+          get :leader_board
+        end
+      end
     end
   end
 

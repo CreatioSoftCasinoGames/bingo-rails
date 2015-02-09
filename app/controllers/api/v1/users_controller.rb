@@ -137,11 +137,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def get_round_and_attempt
 		@tournament_user = @user.tournament_users.where(room_id: params[:room_id]).last
-		render json: {
-			info: @tournament_user.as_json({
-				only: [:round, :attempt_number]
-			})
-		}
+		render json: @tournament_user
 	end
 
 	private

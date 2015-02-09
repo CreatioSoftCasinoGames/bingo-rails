@@ -29,7 +29,8 @@ class Round < ActiveRecord::Base
   		users_attributes.push({
   			id: user.id,
   			total_daubs: total_daubs,
-  			bingo_played: bingo_played
+  			bingo_played: bingo_played,
+        tickets_purchased: node_obj['cards']
   		})
   	end
   	params[:round_users_attributes] = round_users_attributes

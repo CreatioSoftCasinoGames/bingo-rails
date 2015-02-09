@@ -1,7 +1,6 @@
 class Tournament < ActiveRecord::Base
 	has_many :tournament_users, :dependent => :destroy
 	has_many :users, through: :tournament_users
-	has_many :rounds
 	before_create :create_deck
 
 	accepts_nested_attributes_for :tournament_users
@@ -22,8 +21,8 @@ class Tournament < ActiveRecord::Base
   			id: round_user.id,
   			daubs: node_obj['daubs'],
   			bingos: node_obj['bingo'],
-        room_id: node_obj['room_id']
-        attempt_number: node_obj['attempt_number']
+        room_id: node_obj['room_id'],
+        attempt_number: node_obj['attempt_number'],
         round: node_obj['round']
   		})
   		bingo_played = user.bingo_played.to_f + 1

@@ -24,7 +24,7 @@ class RoundsController < ApplicationController
   # GET /rounds/new
   def new
     @round = Round.new
-
+  end
   # GET /rounds/1/edit
   def edit
   end

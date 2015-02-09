@@ -40,6 +40,7 @@ Rails.application.routes.draw do
           put :incr_bingo_diagonal
           put :incr_bingo_corner
           put :incr_coins_collected
+          get :get_round_and_attempt
         end
       end
     end

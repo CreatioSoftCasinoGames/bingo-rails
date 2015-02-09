@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
-	before_action :find_user, only: [:update, :show, :incr_bonus, :incr_daubs, :incr_ticket, :incr_mystery_chests, :incr_daubs_collected, :incr_keys_collected, :incr_bingo_vertical, :incr_bingo_horizontal, :incr_bingo_diagonal, :incr_bingo_corner, :incr_coins_collected]
+	before_action :find_user, only: [:update, :show, :incr_bonus, :incr_daubs, :incr_ticket, :incr_mystery_chests, :incr_daubs_collected, :incr_keys_collected, :incr_bingo_vertical, :incr_bingo_horizontal, :incr_bingo_diagonal, :incr_bingo_corner, :incr_coins_collected, :get_round_and_attempt]
 
 	def create
 		@user = User.new(user_params)
@@ -133,6 +133,15 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		else
 			render json: @user.errors.full_messages.join(", ")
 		end
+	end
+
+	def get_round_and_attempt
+		@tournament_user = @user.tournament_users.where(room_id: params[:room_id]).last
+		render json: {
+			info: @tournament_user.as_json({
+				only: [:round, :attempt_number]
+			})
+		}
 	end
 
 	private

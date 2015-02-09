@@ -1,3 +1,3 @@
 class TournamentUserSerializer < ActiveModel::Serializer
-  attributes :round, :attempt_number
+  attributes :id, :daubs, :bingos, :coins, :round, :attempt_number
 end

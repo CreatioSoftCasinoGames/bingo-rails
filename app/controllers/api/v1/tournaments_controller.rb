@@ -1,8 +1,12 @@
-class Api::V1::TournamentsController < Api::V1:ApplicationController
+class Api::V1::TournamentsController < Api::V1::ApplicationController
 
 	def leader_board
-		@tournament = Tournament.where(id: params[:id]).first
-		@leader_board = @tournament.users.all
+		@leader_board = TournamentUser.where(room_id: params[:room_id]).all
+		render json: @leader_board
+	end
+
+	def show
+		@leader_board = TournamentUser.where(room_id: params[:room_id]).all
 		render json: @leader_board
 	end
 

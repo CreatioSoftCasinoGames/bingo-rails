@@ -16,6 +16,7 @@ class Tournament < ActiveRecord::Base
 		params = {active: false}
 		tournament_users_attributes = []
 		users_attributes = []
+    leader_boards_attributes = []
 		data.each do |node_obj|
 			tournament_user = tournament_users.where(user_id: node_obj['playerId']).first
   		user = tournament_user.user
@@ -38,9 +39,9 @@ class Tournament < ActiveRecord::Base
   			coins: coins,
   			tickets_purchased: node_obj['cards']
   		})
-  		score = coins + user.score
+  		score = 2*node_obj['daubs'].to_f + node_obj['bingo'].to_f
   		leader_boards_attributes.push({
-  			id: tournament_user.id,
+        user_id: user.id,
   			room_id: node_obj['room_id'],
   			score: score
   		})

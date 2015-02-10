@@ -1,10 +1,12 @@
 class Tournament < ActiveRecord::Base
 	has_many :tournament_users, :dependent => :destroy
 	has_many :users, through: :tournament_users
+	has_many :leader_boards, :dependent => :destroy
 	before_create :create_deck
 
 	accepts_nested_attributes_for :tournament_users
 	accepts_nested_attributes_for :users
+	accepts_nested_attributes_for :leader_boards
 	
 	def deck
 		YAML.load read_attribute(:deck)
@@ -36,9 +38,16 @@ class Tournament < ActiveRecord::Base
   			coins: coins,
   			tickets_purchased: node_obj['cards']
   		})
+  		score = coins + user.score
+  		leader_boards_attributes.push({
+  			id: tournament_user.id,
+  			room_id: node_obj['room_id'],
+  			score: score
+  		})
 		end
 		params[:tournament_users_attributes] = tournament_users_attributes
   	params[:users_attributes] = users_attributes
+  	params[:leader_boards_attributes] = leader_boards_attributes
   	self.update_attributes(params)
 	end
 

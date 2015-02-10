@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150210091650) do
+ActiveRecord::Schema.define(version: 20150210123912) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
@@ -24,6 +24,15 @@ ActiveRecord::Schema.define(version: 20150210091650) do
     t.decimal  "amount",     precision: 10, scale: 0
     t.string   "title"
     t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "leader_boards", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "tournament_id"
+    t.integer  "room_id"
+    t.decimal  "score",         precision: 10, scale: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end

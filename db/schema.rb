@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150209125414) do
+ActiveRecord::Schema.define(version: 20150210091650) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
@@ -51,7 +51,9 @@ ActiveRecord::Schema.define(version: 20150209125414) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "room_type"
-    t.decimal  "timeout",    precision: 10, scale: 0, default: 1000000
+    t.decimal  "timeout",          precision: 10, scale: 0, default: 1000000
+    t.string   "num_bingo_factor"
+    t.integer  "divider"
   end
 
   create_table "round_users", force: true do |t|

@@ -48,6 +48,11 @@ Rails.application.routes.draw do
           get :leader_board
         end
       end
+      resources :rooms do
+        member do
+          get :get_bingo_factor
+        end
+      end
     end
   end
 

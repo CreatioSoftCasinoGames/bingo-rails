@@ -6,7 +6,7 @@ class Api::V1::TournamentsController < Api::V1::ApplicationController
 	end
 
 	def show
-		@leader_board = TournamentUser.where(room_id: params[:room_id]).all
+		@leader_board = LeaderBoard.where(room_id: params[:room_id]).all
 		render json: @leader_board
 	end
 

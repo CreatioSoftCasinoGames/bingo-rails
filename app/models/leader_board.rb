@@ -1,5 +1,5 @@
 class LeaderBoard < ActiveRecord::Base
 
-	belongs_to :tournament
+	belongs_to :rounds
 	
 end

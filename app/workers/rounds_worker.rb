@@ -4,7 +4,9 @@ class RoundsWorker
 	sidekiq_options retry: false
 
 	def perform(data)
-		Round.create(JSON.parse(data))
+		k = JSON.parse(data)
+		k["resource_id"] = Tournament.where(room_id: k["room_id"]).last.id
+		Round.create(k)
 	end
 
 end

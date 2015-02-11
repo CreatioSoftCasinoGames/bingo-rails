@@ -6,7 +6,6 @@ class Round < ActiveRecord::Base
 	before_create :create_deck
 	has_many :users, through: :round_users
 	has_many :round_users
-  # has_many :leader_boards
 
 	accepts_nested_attributes_for :users
 	accepts_nested_attributes_for :round_users
@@ -39,7 +38,7 @@ class Round < ActiveRecord::Base
   			bingo_played: bingo_played,
         tickets_purchased: node_obj['cards']
   		})
-      score = 2*node_obj['daubs'].to_f + 10*node_obj['bingo'].to_f
+      score = LeaderBoard.where(tournament_id: self.resource_id, user_id: user.id).first.score + 2*node_obj['daubs'].to_f + 10*node_obj['bingo'].to_f
       leader_boards_attributes.push({
         id: LeaderBoard.where(tournament_id: self.resource_id, user_id: user.id).first.id,
         user_id: user.id,

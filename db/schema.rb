@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150211125641) do
+ActiveRecord::Schema.define(version: 20150211140615) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(version: 20150211125641) do
     t.integer  "user_id"
     t.integer  "tournament_id"
     t.integer  "room_id"
-    t.decimal  "score",         precision: 10, scale: 0
+    t.decimal  "score",         precision: 10, scale: 0, default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "round_id"
@@ -76,6 +76,9 @@ ActiveRecord::Schema.define(version: 20150211125641) do
     t.datetime "updated_at"
     t.boolean  "is_waiting"
     t.integer  "card_count"
+    t.integer  "coins",          default: 0
+    t.integer  "attempt_number", default: 0
+    t.integer  "round",          default: 0
   end
 
   create_table "rounds", force: true do |t|
@@ -91,32 +94,13 @@ ActiveRecord::Schema.define(version: 20150211125641) do
     t.integer  "resource_id"
   end
 
-  create_table "tournament_users", force: true do |t|
-    t.integer  "tournament_id"
-    t.integer  "user_id"
-    t.integer  "round",                                   default: 1
-    t.integer  "daubs"
-    t.integer  "bingos"
-    t.decimal  "coins",          precision: 10, scale: 0
-    t.integer  "attempt_number",                          default: 1
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "room_id"
-    t.integer  "card_count"
-    t.boolean  "is_waiting",                              default: true
-  end
-
   create_table "tournaments", force: true do |t|
     t.string   "name"
     t.integer  "room_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "tournament_type"
-    t.integer  "num_players"
-    t.text     "deck"
-    t.integer  "num_cards"
     t.boolean  "active",          default: true
-    t.string   "uuid"
   end
 
   create_table "users", force: true do |t|

@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   has_many :in_app_purchases, :dependent => :destroy
   has_one :powerup, :dependent => :destroy
   has_many :tournaments
-  has_many :tournament_users
+  has_many :round_users
   has_many :login_histories, :dependent => :destroy
 
   accepts_nested_attributes_for :in_app_purchases

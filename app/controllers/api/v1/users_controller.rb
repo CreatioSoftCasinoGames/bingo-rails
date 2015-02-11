@@ -140,7 +140,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def get_round_and_attempt
-		@tournament_user = @user.tournament_users.where(room_id: params[:room_id]).last
+		@tournament_user = @user.round_users.where(room_id: params[:room_id]).last
 		render json: @tournament_user
 	end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150211140615) do
+ActiveRecord::Schema.define(version: 20150212110146) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
@@ -26,16 +26,6 @@ ActiveRecord::Schema.define(version: 20150211140615) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "leader_boards", force: true do |t|
-    t.integer  "user_id"
-    t.integer  "tournament_id"
-    t.integer  "room_id"
-    t.decimal  "score",         precision: 10, scale: 0, default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "round_id"
   end
 
   create_table "login_histories", force: true do |t|
@@ -77,8 +67,8 @@ ActiveRecord::Schema.define(version: 20150211140615) do
     t.boolean  "is_waiting"
     t.integer  "card_count"
     t.integer  "coins",          default: 0
-    t.integer  "attempt_number", default: 0
-    t.integer  "round",          default: 0
+    t.integer  "attempt_number", default: 1
+    t.integer  "round_number",   default: 0
   end
 
   create_table "rounds", force: true do |t|
@@ -92,6 +82,17 @@ ActiveRecord::Schema.define(version: 20150211140615) do
     t.string   "uuid"
     t.string   "resource_type"
     t.integer  "resource_id"
+  end
+
+  create_table "tournament_users", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "tournament_id"
+    t.integer  "room_id"
+    t.decimal  "score",         precision: 10, scale: 0, default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "over",                                   default: false
+    t.decimal  "rank",          precision: 10, scale: 0
   end
 
   create_table "tournaments", force: true do |t|

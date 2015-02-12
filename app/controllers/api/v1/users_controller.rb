@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
-	before_action :find_user, only: [:update, :show, :incr_bonus, :incr_daubs, :incr_ticket, :incr_mystery_chests, :incr_daubs_collected, :incr_keys_collected, :incr_bingo_vertical, :incr_bingo_horizontal, :incr_bingo_diagonal, :incr_bingo_corner, :incr_coins_collected, :get_round_and_attempt]
+	before_action :find_user, only: [:update, :show, :incr_bonus, :incr_daubs, :incr_ticket, :incr_mystery_chests, :incr_daubs_collected, :incr_keys_collected, :incr_bingo_vertical, :incr_bingo_horizontal, :incr_bingo_diagonal, :incr_bingo_corner, :incr_coins_collected, :get_round_and_attempt, :leader_board]
 
 	def create
 		@user = User.new(user_params)
@@ -142,6 +142,21 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	def get_round_and_attempt
 		@tournament_user = @user.round_users.where(room_id: params[:room_id]).last
 		render json: @tournament_user
+	end
+
+	def leader_board
+		round_one_score = @user.round_users.where(room_id: params[:room_id], round_number: 1).pluck(:coins).max()
+		round_two_score = @user.round_users.where(room_id: params[:room_id], round_number: 2).pluck(:coins).max()
+		round_three_score = @user.round_users.where(room_id: params[:room_id], round_number: 3).pluck(:coins).max()
+		remaining_time = Tournament.last.created_at - Time.now + 24.hours
+		# (Tournament.last.created_at - Time.now + 24.hours) / 3600
+
+		render json: {
+			round_one: round_one_score,
+			round_two: round_two_score,
+			round_three: round_three_score,
+			remaining_time: remaining_time
+		}
 	end
 
 	private

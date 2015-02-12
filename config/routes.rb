@@ -13,16 +13,16 @@ Rails.application.routes.draw do
   resources :table_configs
 
   resources :rooms
-  resources :utility do
-    collection do
-      get :sync_data
-    end
-  end
 
   devise_for :users
   get "utility/show_api_key", to: "utility#show_api_key", as: "show_api_key"
   post "utility/generate_api_key", to: "utility#generate_api_key", as: "generate_api_key"
 
+  resources :utility do
+    collection do
+      get :sync_data
+    end
+  end
 
   namespace :api do
     namespace :v1 do
@@ -46,18 +46,22 @@ Rails.application.routes.draw do
           put :incr_bingo_corner
           put :incr_coins_collected
           get :get_round_and_attempt
-        end
-      end
-      resources :tournaments do
-        collection do
           get :leader_board
         end
       end
+
       resources :rooms do
         member do
           get :get_bingo_factor
         end
       end
+
+      resources :tournaments do
+        collection do
+          
+        end
+      end
+
     end
   end
 

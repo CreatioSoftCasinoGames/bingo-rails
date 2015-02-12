@@ -149,13 +149,13 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		round_two_score = @user.round_users.where(room_id: params[:room_id], round_number: 2).pluck(:coins).max()
 		round_three_score = @user.round_users.where(room_id: params[:room_id], round_number: 3).pluck(:coins).max()
 		remaining_time = Tournament.last.created_at - Time.now + 24.hours
-		# (Tournament.last.created_at - Time.now + 24.hours) / 3600
-
+		rank = TournamentUser.order('score DESC').map(&:user_id).index(@user.id) + 1
 		render json: {
 			round_one: round_one_score,
 			round_two: round_two_score,
 			round_three: round_three_score,
-			remaining_time: remaining_time
+			remaining_time: remaining_time,
+			rank: rank
 		}
 	end
 

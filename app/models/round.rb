@@ -44,14 +44,10 @@ class Round < ActiveRecord::Base
         coins: coins
   		})
       tournament_user = TournamentUser.where(tournament_id: self.resource_id, user_id: user.id).first
-      if tournament_user.present?
-        score = tournament_user.score + 2*node_obj['daubs'].to_f + 10*node_obj['bingo'].to_f
-      else
-        score = 2*node_obj['daubs'].to_f + 10*node_obj['bingo'].to_f
-        tournament_user = TournamentUser.create(user_id: user.id, tournament_id: self.resource_id, score: score)
-      end
+      round_score = RoundUser.where(room_id: node_obj['room_id'], round_number: node_obj['round'], user_id: user.id).pluck(:coins).max()
+      score = tournament_user.try(:score).to_f + round_score.to_f
       tournament_users_attributes.push({
-        id: tournament_user.id,
+        id: tournament_user.try(:id),
         user_id: user.id,
         tournament_id: self.resource_id,
         score: score

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150212110146) do
+ActiveRecord::Schema.define(version: 20150213102118) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
@@ -66,7 +66,7 @@ ActiveRecord::Schema.define(version: 20150212110146) do
     t.datetime "updated_at"
     t.boolean  "is_waiting"
     t.integer  "card_count"
-    t.integer  "coins",          default: 0
+    t.integer  "score",          default: 0
     t.integer  "attempt_number", default: 1
     t.integer  "round_number",   default: 0
   end

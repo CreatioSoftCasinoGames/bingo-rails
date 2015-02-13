@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
-	before_action :find_user, only: [:update, :show, :incr_bonus, :incr_daubs, :incr_ticket, :incr_mystery_chests, :incr_daubs_collected, :incr_keys_collected, :incr_bingo_vertical, :incr_bingo_horizontal, :incr_bingo_diagonal, :incr_bingo_corner, :incr_coins_collected, :get_round_and_attempt, :leader_board]
+	before_action :find_user, only: [:update, :show, :incr_bonus, :incr_daubs, :incr_ticket, :incr_mystery_chests, :incr_daubs_collected, :incr_keys_collected, :incr_bingo_vertical, :incr_bingo_horizontal, :incr_bingo_diagonal, :incr_bingo_corner, :incr_coins_collected, :get_round_and_attempt, :leader_board, :in_game_inapp]
 
 	def create
 		@user = User.new(user_params)
@@ -140,16 +140,23 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def get_round_and_attempt
-		@tournament_user = @user.round_users.where(room_id: params[:room_id]).last
-		render json: @tournament_user
+		@round_user = @user.round_users.where(room_id: params[:room_id]).last
+		@round_user = @round_user
+		is_over = TournamentUser.where(tournament_id: 24, user_id: @user.id).pluck(:over).last
+		render json: {
+			round_info: @round_user.as_json({
+				only: [:round_number, :attempt_number]
+			}),
+			is_over: is_over
+		}
 	end
 
 	def leader_board
-		round_one_score = @user.round_users.where(room_id: params[:room_id], round_number: 1).pluck(:coins).max()
-		round_two_score = @user.round_users.where(room_id: params[:room_id], round_number: 2).pluck(:coins).max()
-		round_three_score = @user.round_users.where(room_id: params[:room_id], round_number: 3).pluck(:coins).max()
+		round_one_score = @user.round_users.where(room_id: params[:room_id], round_number: 1).pluck(:score).max()
+		round_two_score = @user.round_users.where(room_id: params[:room_id], round_number: 2).pluck(:score).max()
+		round_three_score = @user.round_users.where(room_id: params[:room_id], round_number: 3).pluck(:score).max()
 		remaining_time = Tournament.last.created_at - Time.now + 24.hours
-		rank = TournamentUser.order('score DESC').map(&:user_id).index(@user.id) + 1
+		rank = TournamentUser.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
 		render json: {
 			round_one: round_one_score,
 			round_two: round_two_score,
@@ -157,6 +164,18 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			remaining_time: remaining_time,
 			rank: rank
 		}
+	end
+
+	def in_game_inapp
+		if @user.tournaments.where(id: params[:tournament_id]).last.tournament_users.update_attributes(over: false)
+			render json: {
+				success: "Inapp Successfull!"
+			}
+		else
+			render json: {
+				errors: "Something wrong"
+			}
+		end
 	end
 
 	private

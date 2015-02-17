@@ -141,8 +141,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def get_round_and_attempt
 		@round_user = @user.round_users.where(room_id: params[:room_id]).last
-		@round_user = @round_user
-		is_over = TournamentUser.where(tournament_id: 24, user_id: @user.id).pluck(:over).last
+		is_over = Tournament.where(room_id: params[:room_id]).last.tournament_users.where(user_id: @user.id).pluck(:over).last
 		render json: {
 			round_info: @round_user.as_json({
 				only: [:round_number, :attempt_number]

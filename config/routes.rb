@@ -46,19 +46,13 @@ Rails.application.routes.draw do
           put :incr_bingo_corner
           put :incr_coins_collected
           get :get_round_and_attempt
-          get :leader_board
+          get :my_rank
         end
       end
 
       resources :rooms do
         member do
           get :get_bingo_factor
-        end
-      end
-
-      resources :tournaments do
-        collection do
-          
         end
       end
 

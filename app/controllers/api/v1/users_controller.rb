@@ -187,7 +187,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def find_user
 		@user = User.where(login_token: params[:id]).first
-		(render json: {message: "User not found", success: false}) if @user.blank?
+		(render json: {message: "User not found", success: false} and return) if @user.blank?
 	end
 
 end

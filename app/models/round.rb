@@ -1,7 +1,7 @@
 class Round < ActiveRecord::Base
 
   belongs_to :resource, polymorphic: true
-  belongs_to :tournament, class_name: Tournament, foreign_key: "resource_id"
+  belongs_to :tournament, class_name: "Tournament", foreign_key: "resource_id"
   has_many :tournament_users, through: :tournament
 	before_create :create_deck
 	has_many :users, through: :round_users
@@ -9,7 +9,7 @@ class Round < ActiveRecord::Base
 
 	accepts_nested_attributes_for :users
 	accepts_nested_attributes_for :round_users
-  accepts_nested_attributes_for :tournament_users
+  accepts_nested_attributes_for :tournament
 
 	def deck
 		YAML.load read_attribute(:deck)
@@ -44,25 +44,25 @@ class Round < ActiveRecord::Base
         coins: user.try(:coins).to_f + coins
   		})
       tournament_user = TournamentUser.where(tournament_id: self.resource_id, user_id: user.id).first
-      round_score = RoundUser.where(room_id: node_obj['room_id'], round_number: node_obj['round'], user_id: user.id).pluck(:coins).max()
-      score = tournament_user.try(:score).to_f + round_score.to_f
-      if node_obj['round'] == 3
-        over = true
-      else
-        over = false
-      end
+      p self.resource_id
+      round_score = 2*node_obj['daubs'].to_f + 10*node_obj['bingo'].to_f
+      total_score = RoundUser.where(room_id: node_obj['room_id'], round_number: node_obj['round'], user_id: user.id).pluck(:score).max().to_f
+      score_get = (round_score > total_score) ? round_score : total_score
+      p score_get
+      score = tournament_user.try(:score).to_f + score_get.to_f
+      over = (node_obj['round'] >= 3)
+      p over
       tournament_users_attributes.push({
         id: tournament_user.try(:id),
         user_id: user.id,
-        tournament_id: self.resource_id,
         score: score,
-        room_id: node_obj['room_id']
+        room_id: node_obj['room_id'],
         over: over
       })
   	end
   	params[:round_users_attributes] = round_users_attributes
   	params[:users_attributes] = users_attributes
-    params[:tournament_users_attributes] = tournament_users_attributes
+    params[:tournament_attributes] = {id: self.resource_id, tournament_users_attributes: tournament_users_attributes}
   	self.update_attributes(params)
   end
 

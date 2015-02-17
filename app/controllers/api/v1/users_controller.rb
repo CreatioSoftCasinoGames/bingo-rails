@@ -141,19 +141,15 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def get_round_and_attempt
 		@round_user = @user.round_users.where(room_id: params[:room_id]).last
-		is_over = Tournament.where(room_id: params[:room_id]).last.tournament_users.where(user_id: @user.id).pluck(:over).last
 		render json: {
 			round_info: @round_user.as_json({
-				only: [:round_number, :attempt_number]
-			}),
-			is_over: is_over
+				only: [:round_number, :attempt_number],
+				methods: [:is_over]
+			})
 		}
 	end
 
-	def leader_board
-		round_one_score = @user.round_users.where(room_id: params[:room_id], round_number: 1).pluck(:score).max()
-		round_two_score = @user.round_users.where(room_id: params[:room_id], round_number: 2).pluck(:score).max()
-		round_three_score = @user.round_users.where(room_id: params[:room_id], round_number: 3).pluck(:score).max()
+	def my_rank
 		remaining_time = Tournament.last.created_at - Time.now + 24.hours
 		rank = TournamentUser.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
 		render json: {

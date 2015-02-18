@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
-	before_action :find_user, only: [:update, :show, :incr_bonus, :incr_daubs, :incr_ticket, :incr_mystery_chests, :incr_daubs_collected, :incr_keys_collected, :incr_bingo_vertical, :incr_bingo_horizontal, :incr_bingo_diagonal, :incr_bingo_corner, :incr_coins_collected, :get_round_and_attempt, :leader_board, :in_game_inapp]
+	before_action :find_user, only: [:update, :show, :get_round_and_attempt, :my_rank, :in_game_inapp]
 
 	def create
 		@user = User.new(user_params)
@@ -29,150 +29,44 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		end
 	end
 
-	def incr_daubs
-		if @user.update_attributes(daubs: params[:daubs])
-			render json: {
-				total_daubs: @user.total_daubs
-			}
-		else
-			render json: @user.errors.full_messages.join(", ")
-		end
-	end
-
-	def incr_ticket_bought
-		if @user.update_attributes(ticket: params[:ticket])
-			render json: {
-				ticket_bought: @user.ticket_bought
-			}
-		else
-			render json: @user.errors.full_messages.join(", ")
-		end
-	end
-
-	def incr_bonus
-		if @user.update_attributes(bonus: params[:bonus])
-			render json: {
-				bonus_coins_and_tickets: @user.bounus_coins_and_tickets
-			}
-		else
-			render json: @user.errors.full_messages.join(", ")
-		end
-	end
-
-	def incr_mystery_chests
-		if @user.update_attributes(mystery_chests: params[:mystery_chests])
-			render json: {
-				mystery_chests_opened: @user.mystery_chests_opened
-			}
-		else
-			render json: @user.errors.full_messages.join(", ")
-		end
-	end
-
-	def incr_daubs_collected
-		if @user.update_attributes(daubs_collected: params[:daubs_collected])
-			render json: {
-				free_daubs_collected: @user.free_daubs_collected
-			}
-		else
-			render json: @user.errors.full_messages.join(", ")
-		end
-	end
-
-	def incr_keys_collected
-		if @user.update_attributes(keys_collected: params[:keys_collected])
-			render json: {
-				keys_collected_in_game: @user.keys_collected_in_game
-			}
-		else
-			render json: @user.errors.full_messages.join(", ")
-		end
-	end
-
-	def incr_bingo_vertical
-		if @user.update_attributes(bingo_vertical: params[:bingo_vertical])
-			render json: {
-				bingo_by_vertical_pattern: @user.bingo_by_vertical_pattern
-			}
-		else
-			render json: @user.errors.full_messages.join(", ")
-		end
-	end
-
-	def incr_bingo_horizontal
-		if @user.update_attributes(bingo_horizontal: params[:bingo_horizontal])
-			render json: {
-				bingo_by_horizontal_pattern: @user.bingo_by_horizontal_pattern
-			}
-		else
-			render json: @user.errors.full_messages.join(", ")
-		end
-	end
-
-	def incr_bingo_diagonal
-		if @user.update_attributes(bingo_diagonal: params[:bingo_diagonal])
-			render json: {
-				binogo_by_diagonal_pattern: @user.bingo_by_diagonal_pattern
-			}
-		else
-			render json: @user.errors.full_messages.join(", ")
-		end
-	end
-
-	def incr_bingo_corner
-		if @user.update_attributes(bingo_corner: params[:bingo_corner])
-			render json: {
-				bingo_by_corner_pattern: @user.bingo_by_corner_pattern
-			}
-		else
-			render json: @user.errors.full_messages.join(", ")
-		end
-	end
-
-	def incr_coins_collected
-		if @user.update_attributes(coins_collected: params[:coins_collected])
-			render json: {
-				coins_collected_in_game: @user.coins_collected_in_game
-			}
-		else
-			render json: @user.errors.full_messages.join(", ")
-		end
-	end
-
 	def get_round_and_attempt
 		@round_user = @user.round_users.where(room_id: params[:room_id]).last
-		is_over = Tournament.where(room_id: params[:room_id]).last.tournament_users.where(user_id: @user.id).pluck(:over).last
 		render json: {
 			round_info: @round_user.as_json({
 				only: [:round_number, :attempt_number]
-			}),
-			is_over: is_over
+			})
 		}
 	end
 
-	def leader_board
-		round_one_score = @user.round_users.where(room_id: params[:room_id], round_number: 1).pluck(:score).max()
-		round_two_score = @user.round_users.where(room_id: params[:room_id], round_number: 2).pluck(:score).max()
-		round_three_score = @user.round_users.where(room_id: params[:room_id], round_number: 3).pluck(:score).max()
-		remaining_time = Tournament.last.created_at - Time.now + 24.hours
-		rank = TournamentUser.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
-		render json: {
-			round_one: round_one_score,
-			round_two: round_two_score,
-			round_three: round_three_score,
-			remaining_time: remaining_time,
-			rank: rank
-		}
+	def my_rank
+		if params[:resource_type] == "tournament"
+			round_one_score = @user.round_users.where(room_id: params[:room_id], round_number: 1).pluck(:score).max().to_f
+			round_two_score = @user.round_users.where(room_id: params[:room_id], round_number: 2).pluck(:score).max().to_f
+			round_three_score = @user.round_users.where(room_id: params[:room_id], round_number: 3).pluck(:score).max().to_f
+			remaining_time = Tournament.last.created_at - Time.now + 24.hours
+			rank = TournamentUser.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
+			is_over = Tournament.where(room_id: params[:room_id]).last.tournament_users.where(user_id: @user.id).pluck(:over).last
+			render json: {
+				round_one: round_one_score,
+				round_two: round_two_score,
+				round_three: round_three_score,
+				remaining_time: remaining_time,
+				rank: rank,
+				is_over: is_over
+			}
+		else
+			render json: nil
+		end
 	end
 
 	def in_game_inapp
-		if @user.tournaments.where(id: params[:tournament_id]).last.tournament_users.update_attributes(over: false)
+		if Tournament.where(room_id: params[:room_id]).last.tournament_users.where(user_id: @user.id).last.update_attributes(over: false)
 			render json: {
-				success: "Inapp Successfull!"
+				success: true
 			}
 		else
 			render json: {
-				errors: "Something wrong"
+				success: false
 			}
 		end
 	end
@@ -187,7 +81,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def find_user
 		@user = User.where(login_token: params[:id]).first
-		(render json: {message: "User not found", success: false}) if @user.blank?
+		(render json: {message: "User not found", success: false} and return	) if @user.blank?
 	end
 
 end

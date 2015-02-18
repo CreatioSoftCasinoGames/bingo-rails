@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
 
   accepts_nested_attributes_for :in_app_purchases
   accepts_nested_attributes_for :powerup
+  accepts_nested_attributes_for :login_histories
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
@@ -22,6 +23,17 @@ class User < ActiveRecord::Base
 
   def full_name
     [first_name, last_name].join(" ")
+  end
+
+  def round_scores
+    round_users = self.round_users
+    round_one_score = round_users.select {|round_user| round_user.round_number == 1}.pluck(:score).max()
+    round_two_score = round_users.select {|round_user| round_user.round_number == 2}.pluck(:score).max()
+    round_three_score = round_users.select {|round_user| round_user.round_number == 3}.pluck(:score).max()
+  end
+
+  private
+
   end
 
   def image_url 
@@ -44,7 +56,7 @@ class User < ActiveRecord::Base
     end
   end
 
-   def set_login_details
+  def set_login_details
     if is_guest
       generated_password = SecureRandom.hex(9)
       self.email = "guest_#{SecureRandom.hex(8)}@bingoapi.com"

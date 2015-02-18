@@ -57,7 +57,6 @@ Rails.application.routes.draw do
           get :leader_board
         end
       end
-      
     end
   end
 

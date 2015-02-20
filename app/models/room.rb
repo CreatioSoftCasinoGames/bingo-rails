@@ -5,7 +5,7 @@ class Room < ActiveRecord::Base
 	has_many :tournaments
 
 	def active_tournament
-		tournaments.last
+		tournaments.where(active: true).last
 	end
 
 end

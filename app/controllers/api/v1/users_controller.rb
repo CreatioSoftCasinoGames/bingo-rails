@@ -31,10 +31,12 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def get_round_and_attempt
 		@round_user = @user.round_users.where(room_id: params[:room_id]).last
+		reward = @user.rewards.where(is_collected: true)
 		render json: {
 			round_info: @round_user.as_json({
 				only: [:round_number, :attempt_number]
-			})
+			}),
+			reward: reward
 		}
 	end
 

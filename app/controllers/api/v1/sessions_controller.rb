@@ -48,7 +48,7 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 		@user = User.where(login_token: params[:id]).first
 		if @user.present?
 			login_history_id = @user.login_histories.where(login_histories: {login_token: params[:id]}).first.id
-			if @user.update_attributes(login_token: "", login_histories_attributes: {id: login_history_id ,active: false})
+			if @user.update_attributes(login_histories_attributes: {id: login_history_id ,active: false})
 				REDIS_CLIENT.srem("game_players", "game_player:#{params[:id]}")
 				render json: {
 					success: true,

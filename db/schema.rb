@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150213102118) do
+ActiveRecord::Schema.define(version: 20150219102322) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
@@ -44,6 +44,13 @@ ActiveRecord::Schema.define(version: 20150213102118) do
     t.integer "double_payout"
     t.integer "free_coins"
     t.integer "user_id"
+  end
+
+  create_table "rewards", force: true do |t|
+    t.integer "tournament_id"
+    t.integer "user_id"
+    t.integer "rank"
+    t.boolean "is_collected",  default: false
   end
 
   create_table "rooms", force: true do |t|
@@ -82,6 +89,15 @@ ActiveRecord::Schema.define(version: 20150213102118) do
     t.string   "uuid"
     t.string   "resource_type"
     t.integer  "resource_id"
+  end
+
+  create_table "tournament_rewards", force: true do |t|
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tournament_users", force: true do |t|

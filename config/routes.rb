@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :tournament_rewards
+
   resources :in_game_gifts
 
   resources :tournament_users
@@ -55,6 +57,11 @@ Rails.application.routes.draw do
         member do
           get :get_bingo_factor
           get :leader_board
+        end
+      end
+      resources :rewards do
+        member do
+          put :mark_as_collected
         end
       end
     end

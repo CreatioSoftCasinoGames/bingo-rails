@@ -25,17 +25,6 @@ class User < ActiveRecord::Base
     [first_name, last_name].join(" ")
   end
 
-  def round_scores
-    round_users = self.round_users
-    round_one_score = round_users.select {|round_user| round_user.round_number == 1}.pluck(:score).max()
-    round_two_score = round_users.select {|round_user| round_user.round_number == 2}.pluck(:score).max()
-    round_three_score = round_users.select {|round_user| round_user.round_number == 3}.pluck(:score).max()
-  end
-
-  private
-
-  end
-
   def image_url 
     if fb_id
       "http://graph.facebook.com/#{fb_id}/picture"

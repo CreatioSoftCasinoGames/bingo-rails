@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
-	before_action :find_user, only: [:update, :show, :get_round_and_attempt, :my_rank, :in_game_inapp]
+	before_action :find_user, only: [:update, :show, :get_round_and_attempt, :my_rank, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends]
 
 	def create
 		@user = User.new(user_params)
@@ -29,14 +29,35 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		end
 	end
 
+	def friend_request_sent
+		@friend_requests = @user.friend_requests.where(confirmed: false)
+		render json: @friend_requests
+	end
+
+	def my_friend_requests
+		user_id = @user.id
+		@friend_requests = FriendRequest.where(requested_to_id: user_id, confirmed: false)
+		render json: @friend_requests
+	end
+
+	def send_in_game_gift
+		@in_game_gifts = InGameGift.all
+		render json: @in_game_gifts
+	end
+
+	def my_friends
+		render json: @user.friends.as_json({
+			only: [:login_token, :online],
+			methods: [:full_name, :image_url]
+		})
+	end
+
 	def get_round_and_attempt
 		@round_user = @user.round_users.where(room_id: params[:room_id]).last
-		reward = @user.rewards.where(is_collected: true)
 		render json: {
 			round_info: @round_user.as_json({
 				only: [:round_number, :attempt_number]
-			}),
-			reward: reward
+			})
 		}
 	end
 
@@ -45,16 +66,18 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			round_one_score = @user.round_users.where(room_id: params[:room_id], round_number: 1).pluck(:score).max().to_f
 			round_two_score = @user.round_users.where(room_id: params[:room_id], round_number: 2).pluck(:score).max().to_f
 			round_three_score = @user.round_users.where(room_id: params[:room_id], round_number: 3).pluck(:score).max().to_f
-			remaining_time = Tournament.last.created_at - Time.now + 24.hours
 			rank = TournamentUser.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
 			is_over = Tournament.where(room_id: params[:room_id]).last.tournament_users.where(user_id: @user.id).pluck(:over).last
+			@reward = @user.rewards.where(is_collected: false).first
 			render json: {
 				round_one: round_one_score,
 				round_two: round_two_score,
 				round_three: round_three_score,
-				remaining_time: remaining_time,
+				remaining_time: Tournament.last.created_at - Time.now + 24.hours,
 				rank: rank,
-				is_over: is_over
+				is_over: is_over,
+				reward_collected: @reward ? @reward.is_collected : nil,
+				reward_id: @reward ? @reward.id : nil
 			}
 		else
 			render json: nil

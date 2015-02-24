@@ -4,6 +4,10 @@ class User < ActiveRecord::Base
 
   before_validation  :set_fb_password, :set_login_details
 
+  has_many :friend_requests, :dependent => :destroy, foreign_key: "requested_to_id"
+  has_many :friend_requests_sent, :dependent => :destroy, foreign_key: "user_id", class_name: "FriendRequest"
+  has_many :friendships, :dependent => :destroy
+  has_many :friends, through: :friendships
   has_many :in_app_purchases, :dependent => :destroy
   has_one :powerup, :dependent => :destroy
   has_many :tournaments

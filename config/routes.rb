@@ -28,6 +28,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :friend_requests
       resources :table_configs
       resources :users
       resources :rooms
@@ -36,6 +37,9 @@ Rails.application.routes.draw do
       resources :table_config_users, only: [:create]
       resources :users do
         member do
+          get :friend_request_sent
+          get :my_friend_requests
+          get :my_friends
           put :incr_daubs
           put :incr_ticket_bought
           put :incr_bonus

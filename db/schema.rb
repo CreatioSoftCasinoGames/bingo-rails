@@ -11,11 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150219102322) do
+ActiveRecord::Schema.define(version: 20150224113330) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
     t.boolean  "active",     default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "friend_requests", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "requested_to_id"
+    t.boolean  "confirmed",       default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "friendships", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "friend_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

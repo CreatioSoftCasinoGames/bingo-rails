@@ -30,7 +30,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def friend_request_sent
-		@friend_requests = @user.friend_requests.where(confirmed: false)
+		@friend_requests = @user.friend_requests_sent.where(confirmed: false)
 		render json: @friend_requests
 	end
 

@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
-	before_action :find_user, only: [:update, :show, :get_round_and_attempt, :my_rank, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends]
+	before_action :find_user, only: [:update, :show, :get_round_and_attempt, :my_rank, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends, :sent_gift, :received_gift, :ask_for_gift_to, :ask_for_gift_by]
 
 	def create
 		@user = User.new(user_params)
@@ -50,6 +50,26 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			only: [:login_token, :online],
 			methods: [:full_name, :image_url]
 		})
+	end
+
+	def sent_gift
+		@gift_sent = @user.gift_requests_sent.where(is_asked: false)
+		render json: @gift_sent
+	end
+
+	def received_gift
+		@gift_received = GiftRequest.where(send_to_id: @user.id, is_asked: false)
+		render json: @gift_received
+	end
+
+	def ask_for_gift_to
+		@asked_to = @user.gift_requests_sent.where(is_asked: true)
+		render json: @asked_to
+	end
+
+	def ask_for_gift_by
+		@asked_by = GiftRequest.where(send_to_id: @user.id, is_asked: true)
+		render json: @asked_by
 	end
 
 	def get_round_and_attempt

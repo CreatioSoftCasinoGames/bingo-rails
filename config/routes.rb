@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :friend_requests
+      resources :gift_requests
       resources :table_configs
       resources :users
       resources :rooms
@@ -40,6 +41,10 @@ Rails.application.routes.draw do
           get :friend_request_sent
           get :my_friend_requests
           get :my_friends
+          get :sent_gift
+          get :received_gift
+          get :ask_for_gift_to
+          get :ask_for_gift_by
           put :incr_daubs
           put :incr_ticket_bought
           put :incr_bonus

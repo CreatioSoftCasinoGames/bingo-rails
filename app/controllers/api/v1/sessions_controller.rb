@@ -4,7 +4,8 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 		if params[:fb_id]
 			@user = User.where(fb_id: params[:fb_id]).first_or_initialize
 			if @user.new_record?
-				@user.attributes = {email: params[:email], first_name: params[:first_name], last_name: params[:last_name]}
+				email = params[:email].present? ? params[:email] : params[:fb_id]+"@facebook.com"
+				@user.attributes = {email: email, first_name: params[:first_name], last_name: params[:last_name], fb_friend_list: params[:fb_friend_list]}
 				if @user.save
 					@success = true
 				else

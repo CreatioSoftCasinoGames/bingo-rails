@@ -1,8 +1,10 @@
 class Api::V1::GiftRequestsController < Api::V1::ApplicationController
 	
+	before_action :get_gift_request, only: [:update, :destroy, :show]
+
 	def create
 		is_asked = params[:is_asked].present? ? params[:is_asked] : false
-		@gift_request = current_user.gift_requests_sent.build(send_token: params[:send_to_token], is_asked: is_asked)
+		@gift_request = current_user.gift_requests_sent.build(send_token: params[:send_to_token], gift_type: params[:gift_type], is_asked: is_asked)
 		if @gift_request.save
 			render json: @gift_request
 		else
@@ -37,7 +39,7 @@ class Api::V1::GiftRequestsController < Api::V1::ApplicationController
 
 	def get_gift_request
 		@gift_request = GiftRequest.where(id: params[:id]).first
-		(render json: {message: "Gift request not found", success: false })  if @gift_request.blank
+		(render json: {message: "Gift request not found", success: false })  if @gift_request.blank?
 	end
 
 	def current_user

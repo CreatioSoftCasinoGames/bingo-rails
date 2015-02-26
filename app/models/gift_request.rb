@@ -5,6 +5,7 @@ class GiftRequest < ActiveRecord::Base
 	validate :valid_request, on: :create
 	validate :send_once, on: :create
 	validate :max_send, on: :create
+	validate :credit_gift
 
 	belongs_to :reciever, class_name: "User", foreign_key: "send_to_id"
 
@@ -54,9 +55,28 @@ class GiftRequest < ActiveRecord::Base
 
 	def max_send
 		at_begin = Time.now.beginning_of_day
-		at_end = at_begin + 1
-		if user.gift_requests_sent.where("created_at >= ? and created_at <= ?", at_begin, at_end).count >= 2
+		at_end = at_begin + 1.day
+		if user.gift_requests_sent.where("created_at >= ? and created_at <= ?", at_begin, at_end).count() >= 3
 			self.errors.add(:base, "Limit reached!")
+		end
+	end
+
+	def credit_gift
+		if self.changes.include?(:confirmed)
+			if gift_type == "coins"
+				gift_coins = reciever.coins + gift_value
+				self.reciever.update_attributes(coins: gift_coins)
+			else
+				if gift_type == "tickets"
+					tickets = reciever.ticket_bought + gift_value
+					self.reciever.update_attributes(ticket_bought: tickets)
+				else
+					if gift_type == "powerups"
+						powerups = reciever.powerups_remaining + gift_value
+						self.reciever.update_attributes(powerups_remaining: powerups)
+					end
+				end
+			end
 		end
 	end
 

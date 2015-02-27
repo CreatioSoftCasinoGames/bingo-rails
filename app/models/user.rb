@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :in_app_purchases
   accepts_nested_attributes_for :powerup
   accepts_nested_attributes_for :login_histories
-  attr_accessor :reward_coins, :reward_tickets, :fb_friend_list
+  attr_accessor :reward_coins, :reward_tickets, :fb_friends_list
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
@@ -80,7 +80,7 @@ class User < ActiveRecord::Base
   end
 
   def set_fb_friends
-    if fb_friend_list
+    if fb_friends_list
       user_ids = User.where(fb_id: fb_friends_list).collect(&:id)
       friend_ids = self.friends.collect(&:id)
       new_friend_ids = user_ids - friend_ids

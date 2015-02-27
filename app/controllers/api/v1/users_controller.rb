@@ -58,7 +58,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def received_gift
-		@gift_received = GiftRequest.where(send_to_id: @user.id, is_asked: false)
+		@gift_received = GiftRequest.where(send_to_id: @user.id, is_asked: false, confirmed: true)
 		render json: @gift_received
 	end
 

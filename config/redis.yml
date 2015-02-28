@@ -8,5 +8,5 @@ development:
 
 # production environment
 production:
-    host: 'poker-redis.bingoapi.com'
+    host: 'bingo-redis.bingoapi.com'
     port: '6379'

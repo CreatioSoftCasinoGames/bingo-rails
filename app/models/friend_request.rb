@@ -8,13 +8,6 @@ class FriendRequest < ActiveRecord::Base
 	validate :valid_request, :on => :create
 	attr_accessor :requested_token
 
-	def update_friend
-		if confirmed
-			Friendship.create(user_id: self.user_id, friend_id: self.requested_to_id)
-			Friendship.create(friend_id: self.user_id, user_id: self.requested_to_id)
-		end
-	end
-
 	def image_url
 		requested_to.image_url
 	end
@@ -51,5 +44,13 @@ class FriendRequest < ActiveRecord::Base
 			self.errors.add(:base, "Already requested friend")
 		end
 	end
+
+	def update_friend
+		if self.changes.include?(:confirmed)
+			Friendship.create(user_id: self.user_id, friend_id: self.requested_to_id)
+			Friendship.create(friend_id: self.user_id, user_id: self.requested_to_id)
+		end
+	end
+
 	
 end

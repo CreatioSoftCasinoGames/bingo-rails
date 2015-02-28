@@ -25,7 +25,7 @@ class Api::V1::RoomsController < Api::V1::ApplicationController
 		end
 		render json: {
 			leader_board: leader_board,
-			my_rank: @room.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
+			my_rank: @room.my_rank(@user.id)
 		}
 	end
 

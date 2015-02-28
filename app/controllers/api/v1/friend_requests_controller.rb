@@ -8,7 +8,8 @@ class Api::V1::FriendRequestsController < Api::V1::ApplicationController
 			render json: @friend_request
 		else
 			render json: {
-				errors: @friend_request.errors.full_messages.join(", ")
+				errors: @friend_request.errors.full_messages.join(", "),
+				success: false
 			}
 		end
 	end
@@ -18,7 +19,8 @@ class Api::V1::FriendRequestsController < Api::V1::ApplicationController
 			render json: @friend_request
 		else
 			render json: {
-				errors: @friend_request.errors.full_messages.join
+				errors: @friend_request.errors.full_messages.join,
+				success: false
 			}
 		end
 	end

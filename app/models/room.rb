@@ -8,4 +8,8 @@ class Room < ActiveRecord::Base
 		tournaments.where(active: true).last
 	end
 
+	def my_rank(user_id)
+		self.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(user_id).to_f + 1
+	end
+
 end

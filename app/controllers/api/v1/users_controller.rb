@@ -6,10 +6,13 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		if @user.save
 			render json: {
 				user: @user,
-				valid: true
+				success: true
 			}
 		else
-			render json: @user.errors.full_messages.join(", ")
+			render json: {
+				errors: @user.errors.full_messages.join(", "),
+				success: false
+			}
 		end
 	end
 
@@ -25,24 +28,25 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				})
 			}
 		else
-			render json: @user.errors.full_messages.join(", ")
+			render json: {
+				errors: @user.errors.full_messages.join(", "),
+				success: false
+			}
 		end
 	end
 
 	def friend_request_sent
-		@friend_requests = @user.friend_requests_sent.where(confirmed: false)
-		render json: @friend_requests
+		render json: @user.friend_requests_sent.where(confirmed: false)
 	end
 
 	def my_friend_requests
-		user_id = @user.id
-		@friend_requests = FriendRequest.where(requested_to_id: user_id, confirmed: false)
-		render json: @friend_requests
+		# user_id = @user.id
+		# @friend_requests = FriendRequest.where(requested_to_id: user_id, confirmed: false)
+		render json: @user.unconfirmed_friend_requests.where(confirmed: false)
 	end
 
 	def send_in_game_gift
-		@in_game_gifts = InGameGift.all
-		render json: @in_game_gifts
+		render json: InGameGift.all
 	end
 
 	def my_friends
@@ -53,23 +57,22 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def sent_gift
-		@gift_sent = @user.gift_requests_sent.where(is_asked: false)
-		render json: @gift_sent
+		# @gift_sent = 
+		render json: @user.gift_requests_sent.where(is_asked: false)
 	end
 
 	def received_gift
-		@gift_received = GiftRequest.where(send_to_id: @user.id, is_asked: false, confirmed: true)
-		render json: @gift_received
+		# @gift_received = GiftRequest.where(send_to_id: @user.id, is_asked: false, confirmed: false)
+		render json: @user.unconfirmed_gift_requests.where(is_asked: false, confirmed: false)
 	end
 
 	def ask_for_gift_to
-		@asked_to = @user.gift_requests_sent.where(is_asked: true)
-		render json: @asked_to
+		render json: @user.gift_requests_sent.where(is_asked: true)
 	end
 
 	def ask_for_gift_by
-		@asked_by = GiftRequest.where(send_to_id: @user.id, is_asked: true)
-		render json: @asked_by
+		# @asked_by = GiftRequest.where(send_to_id: @user.id, is_asked: true)
+		render json: @user.unconfirmed_gift_requests.where(is_asked: true)
 	end
 
 	def get_round_and_attempt
@@ -83,16 +86,15 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def my_rank
 		if params[:resource_type] == "tournament"
-			round_one_score = @user.round_users.where(room_id: params[:room_id], round_number: 1).pluck(:score).max().to_f
-			round_two_score = @user.round_users.where(room_id: params[:room_id], round_number: 2).pluck(:score).max().to_f
-			round_three_score = @user.round_users.where(room_id: params[:room_id], round_number: 3).pluck(:score).max().to_f
-			rank = TournamentUser.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
-			is_over = Tournament.where(room_id: params[:room_id]).last.tournament_users.where(user_id: @user.id).pluck(:over).last
+			@room = Room.where(id: params[:room_id]).first
+			@round_scores = @user.round_scores
+			rank = @room.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
+			is_over = @room.active_tournament.tournament_users.where(user_id: @user.id).last.over
 			@reward = @user.rewards.where(is_collected: false).first
 			render json: {
-				round_one: round_one_score,
-				round_two: round_two_score,
-				round_three: round_three_score,
+				round_one: @round_scores[:round_one_score],
+				round_two: @round_scores[:round_two_score],
+				round_three: @round_scores[:round_three_score],
 				remaining_time: Tournament.last.created_at - Time.now + 24.hours,
 				rank: rank,
 				is_over: is_over,

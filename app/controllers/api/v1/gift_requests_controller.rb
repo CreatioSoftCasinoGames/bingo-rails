@@ -8,7 +8,10 @@ class Api::V1::GiftRequestsController < Api::V1::ApplicationController
 		if @gift_request.save
 			render json: @gift_request
 		else
-			render json: @gift_request.errors.full_messages.join(", ")
+			render json: {
+					success: false,
+					message: @gift_request.errors.full_messages.join(", ")
+				} 
 		end
 	end
 

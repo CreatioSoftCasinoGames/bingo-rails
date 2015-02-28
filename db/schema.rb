@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150116053514) do
+ActiveRecord::Schema.define(version: 20150226073922) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
@@ -20,10 +20,44 @@ ActiveRecord::Schema.define(version: 20150116053514) do
     t.datetime "updated_at"
   end
 
+  create_table "friend_requests", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "requested_to_id"
+    t.boolean  "confirmed",       default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "friendships", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "friend_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "gift_requests", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "send_to_id"
+    t.boolean  "confirmed",                           default: false
+    t.boolean  "is_asked",                            default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "gift_type",                                           null: false
+    t.decimal  "gift_value", precision: 10, scale: 0, default: 5
+  end
+
   create_table "in_app_purchases", force: true do |t|
     t.decimal  "amount",     precision: 10, scale: 0
     t.string   "title"
     t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "login_histories", force: true do |t|
+    t.boolean  "active"
+    t.integer  "user_id"
+    t.string   "login_token"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -38,12 +72,36 @@ ActiveRecord::Schema.define(version: 20150116053514) do
     t.integer "user_id"
   end
 
+  create_table "rewards", force: true do |t|
+    t.integer "tournament_id"
+    t.integer "user_id"
+    t.integer "rank"
+    t.boolean "is_collected",  default: false
+  end
+
   create_table "rooms", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "room_type"
-    t.decimal  "timeout",    precision: 10, scale: 0, default: 1000000
+    t.decimal  "timeout",          precision: 10, scale: 0, default: 1000000
+    t.string   "num_bingo_factor"
+    t.integer  "divider"
+  end
+
+  create_table "round_users", force: true do |t|
+    t.integer  "room_id"
+    t.integer  "round_id"
+    t.integer  "user_id"
+    t.integer  "daubs"
+    t.integer  "bingos"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "is_waiting"
+    t.integer  "card_count"
+    t.integer  "score",          default: 0
+    t.integer  "attempt_number", default: 1
+    t.integer  "round_number",   default: 0
   end
 
   create_table "rounds", force: true do |t|
@@ -53,7 +111,39 @@ ActiveRecord::Schema.define(version: 20150116053514) do
     t.integer  "num_cards"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",      default: true
+    t.boolean  "active",        default: true
+    t.string   "uuid"
+    t.string   "resource_type"
+    t.integer  "resource_id"
+  end
+
+  create_table "tournament_rewards", force: true do |t|
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tournament_users", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "tournament_id"
+    t.integer  "room_id"
+    t.decimal  "score",         precision: 10, scale: 0, default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "over",                                   default: false
+    t.decimal  "rank",          precision: 10, scale: 0
+  end
+
+  create_table "tournaments", force: true do |t|
+    t.string   "name"
+    t.integer  "room_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "tournament_type"
+    t.boolean  "active",          default: true
   end
 
   create_table "users", force: true do |t|
@@ -107,6 +197,7 @@ ActiveRecord::Schema.define(version: 20150116053514) do
     t.decimal  "fastest_bingo",                precision: 10, scale: 0, default: 0
     t.string   "device_id"
     t.integer  "bingo_by_corner_pattern",                               default: 0
+    t.string   "login_token"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

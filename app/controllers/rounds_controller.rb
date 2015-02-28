@@ -25,7 +25,6 @@ class RoundsController < ApplicationController
   def new
     @round = Round.new
   end
-
   # GET /rounds/1/edit
   def edit
   end
@@ -78,6 +77,6 @@ class RoundsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def round_params
-      params.require(:round).permit(:room_id, :num_players, :deck, :num_cards)
+      params.require(:round).permit(:num_players, :deck, :num_cards)
     end
 end

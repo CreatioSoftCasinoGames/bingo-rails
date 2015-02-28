@@ -1,0 +1,38 @@
+- model_class = TournamentUser
+div class="page-header"
+  h1=t '.title', :default => model_class.model_name.human.titleize
+
+p
+  strong= model_class.human_attribute_name(:tournament_id) + ':'
+  br
+  = @tournament_user.tournament_id
+p
+  strong= model_class.human_attribute_name(:user_id) + ':'
+  br
+  = @tournament_user.user_id
+p
+  strong= model_class.human_attribute_name(:round) + ':'
+  br
+  = @tournament_user.round
+p
+  strong= model_class.human_attribute_name(:daubs) + ':'
+  br
+  = @tournament_user.daubs
+p
+  strong= model_class.human_attribute_name(:bingos) + ':'
+  br
+  = @tournament_user.bingos
+p
+  strong= model_class.human_attribute_name(:coins) + ':'
+  br
+  = @tournament_user.coins
+p
+  strong= model_class.human_attribute_name(:attempt_number) + ':'
+  br
+  = @tournament_user.attempt_number
+
+= link_to t('.back', :default => t("helpers.links.back")), tournament_users_path, :class => 'btn btn-default'
+'
+= link_to t('.edit', :default => t("helpers.links.edit")), edit_tournament_user_path(@tournament_user), :class => 'btn btn-default'
+'
+= link_to t('.destroy', :default => t("helpers.links.destroy")), tournament_user_path(@tournament_user), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'

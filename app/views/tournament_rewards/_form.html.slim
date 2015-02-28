@@ -1,0 +1,11 @@
+= form_for @tournament_reward, html: { class: "form form-horizontal tournament_reward", :multipart => true } do |f|
+  .form-group
+    = f.label :file, :class => 'control-label col-lg-2'
+    .col-lg-10
+      = f.file_field :file, :class => 'form-control'
+    = f.error_span(:file_file_name)
+  .form-group
+    .col-lg-offset-2.col-lg-10
+      = f.submit nil, :class => 'btn btn-primary'
+      '
+      = link_to t('.cancel', :default => t("helpers.links.cancel")), tournament_rewards_path, :class => 'btn'

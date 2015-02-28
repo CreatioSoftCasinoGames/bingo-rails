@@ -40,6 +40,7 @@ gem "font-awesome-rails"
 
 gem 'paperclip'
 gem 'aws-sdk'
+gem 'sidekiq'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

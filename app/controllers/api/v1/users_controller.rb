@@ -40,8 +40,6 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def my_friend_requests
-		# user_id = @user.id
-		# @friend_requests = FriendRequest.where(requested_to_id: user_id, confirmed: false)
 		render json: @user.unconfirmed_friend_requests.where(confirmed: false)
 	end
 
@@ -57,12 +55,10 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def sent_gift
-		# @gift_sent = 
 		render json: @user.gift_requests_sent.where(is_asked: false)
 	end
 
 	def received_gift
-		# @gift_received = GiftRequest.where(send_to_id: @user.id, is_asked: false, confirmed: false)
 		render json: @user.unconfirmed_gift_requests.where(is_asked: false, confirmed: false)
 	end
 
@@ -71,7 +67,6 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def ask_for_gift_by
-		# @asked_by = GiftRequest.where(send_to_id: @user.id, is_asked: true)
 		render json: @user.unconfirmed_gift_requests.where(is_asked: true)
 	end
 
@@ -107,7 +102,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def in_game_inapp
-		if Tournament.where(room_id: params[:room_id]).last.tournament_users.where(user_id: @user.id).last.update_attributes(over: false)
+		if Room.where(room_id: params[:room_id]).first.active_tournament.tournament_users.where(user_id: @user.id).last.update_attributes(over: false)
 			render json: {
 				success: true
 			}

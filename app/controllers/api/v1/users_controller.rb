@@ -84,7 +84,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			@room = Room.where(id: params[:room_id]).first
 			@round_scores = @user.round_scores
 			rank = @room.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
-			is_over = @room.active_tournament.tournament_users.where(user_id: @user.id).last.over
+			@is_over = @room.active_tournament.tournament_users.where(user_id: @user.id).last
 			@reward = @user.rewards.where(is_collected: false).first
 			render json: {
 				round_one: @round_scores[:round_one_score],
@@ -92,7 +92,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				round_three: @round_scores[:round_three_score],
 				remaining_time: Tournament.last.created_at - Time.now + 24.hours,
 				rank: rank,
-				is_over: is_over,
+				is_over: @is_over ? @is_over.over : false
 				reward_collected: @reward ? @reward.is_collected : nil,
 				reward_id: @reward ? @reward.id : nil
 			}

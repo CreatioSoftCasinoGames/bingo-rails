@@ -39,10 +39,16 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 			if @user.update_attributes(login_token: login_token, login_histories_attributes: {id: nil, active: true, login_token: login_token })
 				render json: @user
 			else
-				render json: @user.errors.full_messages.join(", ")
+				render json: {
+					errors: @user.errors.full_messages.join(", "),
+					success: false
+				}
 			end
 		else
-			render json: @message
+			render json: {
+				errors: @message,
+				success: false
+			}
 		end
 	end
 
@@ -58,7 +64,8 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 				}
 			else
 				render json: {
-					errors: @user.errors.full_messages.join(", ")
+					errors: @user.errors.full_messages.join(", "),
+					success: false
 				}
 			end
 		else

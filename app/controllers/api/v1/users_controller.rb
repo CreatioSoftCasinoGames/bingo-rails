@@ -102,7 +102,8 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def in_game_inapp
-		if Room.where(room_id: params[:room_id]).first.active_tournament.tournament_users.where(user_id: @user.id).last.update_attributes(over: false)
+		@room = Room.where(id: params[:room_id]).first
+		if @room.active_tournament.tournament_users.where(user_id: @user.id).last.update_attributes(over: false)
 			render json: {
 				success: true
 			}

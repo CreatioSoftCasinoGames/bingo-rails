@@ -92,7 +92,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				round_three: @round_scores[:round_three_score],
 				remaining_time: Tournament.last.created_at - Time.now + 24.hours,
 				rank: rank,
-				is_over: @is_over ? @is_over.over : false
+				is_over: @is_over ? @is_over.over : false,
 				reward_collected: @reward ? @reward.is_collected : nil,
 				reward_id: @reward ? @reward.id : nil
 			}

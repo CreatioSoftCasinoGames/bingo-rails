@@ -80,7 +80,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def my_rank
-		if params[:resource_type] == "tournament"
+		if params[:resource_type] == "Tournament"
 			@room = Room.where(id: params[:room_id]).first
 			@round_scores = @user.round_scores
 			rank = @room.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
@@ -93,7 +93,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				remaining_time: Tournament.last.created_at - Time.now + 24.hours,
 				rank: rank,
 				is_over: @is_over ? @is_over.over : false,
-				reward_collected: @reward ? @reward.is_collected : nil,
+				reward_collected: @reward ? @reward.is_collected : false,
 				reward_id: @reward ? @reward.id : nil
 			}
 		else

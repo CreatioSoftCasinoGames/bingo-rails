@@ -72,6 +72,11 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def get_round_and_attempt
 		@round_user = @user.round_users.where(room_id: params[:room_id]).last
+		@room = Room.where(id: params[:room_id]).first
+		tournament_user = @user.tournament_users.where(room_id: params[:room_id]).last
+    if tournament_user.present? && tournament_user.tournament.tournament_type == "weekly" && @round_user.updated_at.to_date < Time.now.to_date
+      @round_user.update_attributes(round_number: 1)
+    end
 		render json: {
 			round_info: @round_user.as_json({
 				only: [:round_number, :attempt_number]

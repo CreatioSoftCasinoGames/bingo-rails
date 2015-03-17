@@ -75,7 +75,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		@room = Room.where(id: params[:room_id]).first
 		tournament_user = @user.tournament_users.where(room_id: params[:room_id]).last
     if tournament_user.present? && tournament_user.tournament.tournament_type == "weekly" && @round_user.updated_at.to_date < Time.now.to_date
-      @round_user.update_attributes(round_number: 1)
+      @round_user.update_attributes(round_number: 0)
     end
 		render json: {
 			round_info: @round_user.as_json({

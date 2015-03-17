@@ -25,7 +25,7 @@ class Round < ActiveRecord::Base
   		user = round_user.user
       point = 2*node_obj['daubs'].to_f + 10*node_obj['bingo'].to_f
       round_number = (node_obj['round'] <= 3) ? node_obj['round'] : 1
-  		round_users_attributes.push({
+      round_users_attributes.push({
   			id: round_user.id,
   			daubs: node_obj['daubs'],
   			bingos: node_obj['bingo'],

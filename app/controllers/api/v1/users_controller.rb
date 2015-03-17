@@ -72,6 +72,11 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def get_round_and_attempt
 		@round_user = @user.round_users.where(room_id: params[:room_id]).last
+		@room = Room.where(id: params[:room_id]).first
+		tournament_user = @user.tournament_users.where(room_id: params[:room_id]).last
+    if tournament_user.present? && tournament_user.tournament.tournament_type == "weekly" && @round_user.updated_at.to_date < Time.now.to_date
+      @round_user.update_attributes(round_number: 0)
+    end
 		render json: {
 			round_info: @round_user.as_json({
 				only: [:round_number, :attempt_number]
@@ -80,7 +85,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def my_rank
-		if params[:resource_type] == "tournament"
+		if params[:resource_type] == "Tournament"
 			@room = Room.where(id: params[:room_id]).first
 			@round_scores = @user.round_scores
 			rank = @room.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
@@ -93,7 +98,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				remaining_time: Tournament.last.created_at - Time.now + 24.hours,
 				rank: rank,
 				is_over: @is_over ? @is_over.over : false,
-				reward_collected: @reward ? @reward.is_collected : nil,
+				reward_collected: @reward ? @reward.is_collected : false,
 				reward_id: @reward ? @reward.id : nil
 			}
 		else
@@ -102,7 +107,8 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def in_game_inapp
-		if Room.where(room_id: params[:room_id]).first.active_tournament.tournament_users.where(user_id: @user.id).last.update_attributes(over: false)
+		@room = Room.where(id: params[:room_id]).first
+		if @room.active_tournament.tournament_users.where(user_id: @user.id).last.update_attributes(over: false)
 			render json: {
 				success: true
 			}

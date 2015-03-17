@@ -1,5 +1,13 @@
 Rails.application.routes.draw do
 
+  resources :ais do
+    member do
+      get :bots_probabilities
+    end
+  end
+
+  get 'bots_probabilities/index'
+
   resources :tournament_rewards
 
   resources :in_game_gifts
@@ -15,6 +23,8 @@ Rails.application.routes.draw do
   resources :table_configs
 
   resources :rooms
+  
+  resources :bots_probabilities
 
   devise_for :users
   get "utility/show_api_key", to: "utility#show_api_key", as: "show_api_key"

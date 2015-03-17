@@ -33,6 +33,14 @@ class Api::V1::RoomsController < Api::V1::ApplicationController
 				player_obj[:rank] = i + 1
 				player_obj
 			end
+		elsif tournament_type == "monthly"
+			leader_board = Tournament.where(id: @room.find_tournament_id(@room.id, @user.id)).first.tournament_users.order("score desc").limit(20).as_json({
+				only: [:score],
+				methods: [:full_name, :image_url]
+			}).each_with_index.map do |player_obj, i|
+				player_obj[:rank] = i + 1
+				player_obj
+			end
 		end	
 		render json: {
 			leader_board: leader_board,

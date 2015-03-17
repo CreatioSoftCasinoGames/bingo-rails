@@ -19,7 +19,7 @@ class Tournament < ActiveRecord::Base
     #End and start a weekly bingo tournament
     weekly_tournaments = self.where(active: true, tournament_type: "weekly")
     if weekly_tournaments.present?
-      current_weekly_tournament = weekly_tournaments.select {|weekly_tournament| weekly_tournament.created_at.to_date == (Time.now - 1.day).to_date}.first
+      current_weekly_tournament = weekly_tournaments.select {|weekly_tournament| weekly_tournament.created_at.to_date == (Time.now - 7.day).to_date}.first
       if current_weekly_tournament.present?
         current_weekly_tournament.tournament_users.order("score DESC").limit(3).each_with_index do |tournament_user, i|
           Reward.create(tournament_id: tournament_user.tournament_id, user_id: tournament_user.user_id, rank: i+1)
@@ -27,6 +27,19 @@ class Tournament < ActiveRecord::Base
         current_weekly_tournament.update_attributes(active: false)
       end
       Tournament.create(room_id: weekly_tournaments.last.room_id, active: true, tournament_type: "weekly")
+    end
+
+    #End and start a weekly bingo tournament
+    monthly_tournaments = self.where(active: true, tournament_type: "monthly")
+    if monthly_tournaments.present?
+      current_monthly_tournament = monthly_tournaments.select {|monthly_tournament| monthly_tournament.created_at.to_date == (Time.now - 30.day).to_date}.first
+      if current_monthly_tournament.present?
+        current_monthly_tournament.tournament_users.order("score DESC").limit(3).each_with_index do |tournament_user, i|
+          Reward.create(tournament_id: tournament_user.tournament_id, user_id: tournament_user.user_id, rank: i+1)
+        end
+        current_monthly_tournament.update_attributes(active: false)
+      end
+      Tournament.create(room_id: monthly_tournaments.last.room_id, active: true, tournament_type: "monthly")
     end
 
   end

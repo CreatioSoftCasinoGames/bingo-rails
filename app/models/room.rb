@@ -13,9 +13,9 @@ class Room < ActiveRecord::Base
 	end
 
 	def find_tournament_id(room_id, user_id)
-		weekly_tournaments = Room.where(id: room_id).first.tournaments.where(active: true)
-		weekly_tournaments.each do |weekly_tournament|
-			tournament = weekly_tournament.tournament_users.where(user_id: user_id).last
+		active_tournaments = Room.where(id: room_id).first.tournaments.where(active: true)
+		active_tournaments.each do |active_tournament|
+			tournament = active_tournament.tournament_users.where(user_id: user_id).last
 			if tournament.present?
 				tournament_id = tournament.tournament_id
 			end

@@ -23,8 +23,13 @@ class Round < ActiveRecord::Base
   	data.each do |node_obj|
   		round_user = round_users.where(user_id: node_obj['playerId']).first
   		user = round_user.user
+      tournament_type = Tournament.find(self.resource_id).tournament_type
       point = 2*node_obj['daubs'].to_f + 10*node_obj['bingo'].to_f
-      round_number = (node_obj['round'] <= 3) ? node_obj['round'] : 1
+      if tournament_type == "monthly"
+        round_number = (node_obj['round'] <= 5) ? node_obj['round'] : 1
+      else
+        round_number = (node_obj['round'] <= 3) ? node_obj['round'] : 1
+      end
       round_users_attributes.push({
   			id: round_user.id,
   			daubs: node_obj['daubs'],
@@ -32,6 +37,7 @@ class Round < ActiveRecord::Base
         room_id: node_obj['room_id'],
         attempt_number: node_obj['attempt_number'],
         round_number: round_number,
+        tournament_id: self.resource_id,
         score: point
   		})
   		bingo_played = user.bingo_played.to_f + 1
@@ -44,10 +50,14 @@ class Round < ActiveRecord::Base
         coins: user.try(:coins).to_f + point
   		})
       tournament_user = TournamentUser.where(tournament_id: self.resource_id, user_id: user.id).first
-      total_score = RoundUser.where(room_id: node_obj['room_id'], round_number: round_number, user_id: user.id).pluck(:score).max().to_f
+      total_score = RoundUser.where(room_id: node_obj['room_id'], round_number: round_number, user_id: user.id, tournament_id: self.resource_id).pluck(:score).max().to_f
       score_get = (point > total_score) ? point : total_score
       score = tournament_user.try(:score).to_f + score_get.to_f
-      over = (node_obj['round'] >= 3)
+      if tournament_type == "monthly"
+        over = (node_obj['round'] >= 5)
+      else
+        over = (node_obj['round'] >= 3)
+      end
       tournament_users_attributes.push({
         id: tournament_user.try(:id),
         user_id: user.id,

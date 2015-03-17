@@ -85,21 +85,37 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def my_rank
-		if params[:resource_type] == "Tournament"
+		if params[:resource_type] == "tournament"
 			@room = Room.where(id: params[:room_id]).first
-			@round_scores = @user.round_scores
-			rank = @room.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
-			@is_over = @room.active_tournament.tournament_users.where(user_id: @user.id).last
-			@reward = @user.rewards.where(is_collected: false).first
+			tournament_type = @room.active_tournament.tournament_type
+			if tournament_type == "daily"
+				@tournament = @room.active_tournament
+				@round_scores = @user.round_scores(@room.id, @tournament.id)
+				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
+				@is_over = @room.active_tournament.tournament_users.where(user_id: @user.id).last
+				@reward = @user.rewards.where(is_collected: false).first
+			elsif tournament_type == "weekly"
+				@tournament = Tournament.where(id: @room.find_tournament_id(@room.id, @user.id)).first
+				@round_scores = @user.round_scores(@room.id, @tournament.id)
+				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
+				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
+				@reward = @user.rewards.where(is_collected: false).first
+			elsif tournament_type == "monthly"
+				@tournament = Tournament.where(id: @room.find_tournament_id(@room.id, @user.id)).first
+				@round_scores = @user.round_scores(@room.id, @tournament.id)
+				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
+				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
+				@reward = @user.rewards.where(is_collected: false).first
+			end
 			render json: {
 				round_one: @round_scores[:round_one_score],
 				round_two: @round_scores[:round_two_score],
 				round_three: @round_scores[:round_three_score],
 				remaining_time: Tournament.last.created_at - Time.now + 24.hours,
 				rank: rank,
-				is_over: @is_over ? @is_over.over : false,
-				reward_collected: @reward ? @reward.is_collected : false,
-				reward_id: @reward ? @reward.id : nil
+				is_over: @is_over.present? ? @is_over.over : false,
+				reward_collected: @reward.present? ? @reward.is_collected : false,
+				reward_id: @reward.present? ? @reward.id : nil
 			}
 		else
 			render json: nil

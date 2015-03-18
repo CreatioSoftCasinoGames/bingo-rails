@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20150317120619) do
   create_table "bots_probabilities", force: true do |t|
     t.integer  "min_players"
     t.integer  "max_players"
-    t.integer  "no_of_bots"
+    t.integer  "num_bots"
     t.float    "probability", limit: 24
     t.integer  "ai_id"
     t.datetime "created_at"

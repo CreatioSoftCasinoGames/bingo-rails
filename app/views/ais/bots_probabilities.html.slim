@@ -20,4 +20,6 @@ h1 Bots Probabilities
               = hidden_field_tag "ai[bots_probabilities_attributes][][min_players]", range[0]
               = hidden_field_tag "ai[bots_probabilities_attributes][][max_players]", range[1]
               = hidden_field_tag "ai[bots_probabilities_attributes][][num_bots]", num_bots
-  = f.submit
+              / = f.hidden_field :redirect_path, value: "ais/"+(@ai.id).to_s+"/bots_probabilities_path"
+  = hidden_field_tag :redirection_action, "bots_probabilities"
+  = f.submit "Update AI", class: "btn btn-primary"

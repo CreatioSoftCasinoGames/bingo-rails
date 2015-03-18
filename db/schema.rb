@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150317120619) do
+ActiveRecord::Schema.define(version: 20150318055959) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -132,6 +132,15 @@ ActiveRecord::Schema.define(version: 20150317120619) do
     t.string   "uuid"
     t.string   "resource_type"
     t.integer  "resource_id"
+  end
+
+  create_table "ticket_probabilities", force: true do |t|
+    t.integer  "num_ticket"
+    t.float    "probability", limit: 24
+    t.integer  "room_id"
+    t.integer  "ai_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tournament_rewards", force: true do |t|

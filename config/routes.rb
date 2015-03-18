@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
 
+  get 'ticket_probabilities/index'
+
   resources :ais do
     member do
       get :bots_probabilities
+      get :ticket_probabilities
     end
   end
 
@@ -25,6 +28,8 @@ Rails.application.routes.draw do
   resources :rooms
   
   resources :bots_probabilities
+
+  resources :ticket_probabilities
 
   devise_for :users
   get "utility/show_api_key", to: "utility#show_api_key", as: "show_api_key"

@@ -1,7 +1,10 @@
 class AisController < ApplicationController
-  before_action :set_ai, only: [:show, :edit, :update, :destroy, :bots_probabilities]
+  before_action :set_ai, only: [:show, :edit, :update, :destroy, :bots_probabilities, :ticket_probabilities]
   
   def bots_probabilities
+  end
+
+  def ticket_probabilities
   end
   # GET /ais
   # GET /ais.json
@@ -53,7 +56,12 @@ class AisController < ApplicationController
   def update
     respond_to do |format|
       if @ai.update(ai_params)
-        format.html { redirect_to @ai, notice: 'Ai was successfully updated.' }
+        if params[:redirection_action]
+          format.html { redirect_to "#{ai_url(@ai)}/#{params[:redirection_action]}", notice: 'Ai was successfully updated.' }
+          format.html { redirect_to "#{ai_url(@ai)}/#{params[:redirection_action]}", notice: 'Ai was successfully updated.' }
+        else
+          format.html { redirect_to @ai, notice: 'Ai was successfully updated.' }
+        end
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -80,6 +88,7 @@ class AisController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def ai_params
-      params.require(:ai).permit(:name, :active, bots_probabilities_attributes: [:probability, :id, :min_players, :max_players, :no_of_bots])
+      params.require(:ai).permit(:name, :active, :redirect_path, bots_probabilities_attributes: [:probability, :id, :min_players, :max_players, :num_bots],
+                                                 ticket_probabilities_attributes: [:room_id, :num_ticket, :id, :probability])
     end
 end

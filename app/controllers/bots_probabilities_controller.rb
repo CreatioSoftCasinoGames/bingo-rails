@@ -10,10 +10,10 @@ class BotsProbabilitiesController < ApplicationController
   private
 
   def set_bots_probability
-      @round = BotsProbability.find(params[:id])
-    end
+    @bots_probabilities = BotsProbability.find(params[:id])
+  end
 
   def bots_probability_params
-      params.require(:botsprobability).permit(:min_players, :max_players, :no_of_bots, :probability, :ai_id)
+    params.require(:botsprobability).permit(:min_players, :max_players, :num_bots, :probability, :ai_id)
   end
 end

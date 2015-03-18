@@ -1,0 +1,17 @@
+-model_class = TicketProbability
+h1 Ticket Probabilities 
+table.table
+  thead
+    tr
+      th Room Id
+      - (1..4).to_a.each do |num_tickets|
+        th= num_tickets
+    - (1..28).each do |room_id|
+      tr
+        td
+          = text_field_tag :room_id
+        - (1..4).to_a.each do |num_ticket|  
+          - ticket_probability = TicketProbability.where(num_ticket: num_ticket).first
+          td
+            = text_field_tag :probability, ticket_probability.try(:probability), class: "col-md-3"
+            = hidden_field_tag :ticket_probability_id, ticket_probability.try(:id)

@@ -11,8 +11,14 @@ class UtilityController < ApplicationController
 
 	def sync_data
 		Room.all.each do |room|
+			tournament = room.tournaments.first
+			if tournament.present?
+				tournament_type = tournament.tournament_type
+			else
+				tournament_type = ""
+			end
 			REDIS_CLIENT.SADD("rooms", "room:#{room.id}")
-			REDIS_CLIENT.HMSET("room:#{room.id}", "name", room.name, "room_type", room.room_type, "timeout", room.timeout, "factor", room.num_bingo_factor, "divider", room.divider)
+			REDIS_CLIENT.HMSET("room:#{room.id}", "name", room.name, "room_type", room.room_type, "timeout", room.timeout, "factor", room.num_bingo_factor, "divider", room.divider, "tournament_type", tournament_type)
 		end
 		redirect_to root_path, flash: {success: "Data successfully synced !" }
 	end

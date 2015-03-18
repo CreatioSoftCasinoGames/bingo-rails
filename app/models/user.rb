@@ -49,7 +49,9 @@ class User < ActiveRecord::Base
     round_one_score = round_users.select {|round_user| round_user.round_number == 1 && round_user.room_id == room_id && round_user.tournament_id == tournament_id}.max().try(:score)
     round_two_score = round_users.select {|round_user| round_user.round_number == 2 && round_user.room_id == room_id && round_user.tournament_id == tournament_id}.max().try(:score)
     round_three_score = round_users.select {|round_user| round_user.round_number == 3 && round_user.room_id == room_id && round_user.tournament_id == tournament_id}.max().try(:score)
-    return {round_one_score: round_one_score, round_two_score: round_two_score, round_three_score: round_three_score}
+    round_four_score = round_users.select {|round_user| round_user.round_number == 3 && round_user.room_id == room_id && round_user.tournament_id == tournament_id}.max().try(:score)
+    round_five_score = round_users.select {|round_user| round_user.round_number == 3 && round_user.room_id == room_id && round_user.tournament_id == tournament_id}.max().try(:score)
+    return {round_one_score: round_one_score, round_two_score: round_two_score, round_three_score: round_three_score, round_four_score: round_four_score, round_five_score: round_five_score}
   end
 
   def self.fetch_by_login_token(login_token)

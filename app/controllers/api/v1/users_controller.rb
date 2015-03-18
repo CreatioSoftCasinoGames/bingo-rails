@@ -76,6 +76,8 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		tournament_user = @user.tournament_users.where(room_id: params[:room_id]).last
     if tournament_user.present? && tournament_user.tournament.tournament_type == "weekly" && @round_user.updated_at.to_date < Time.now.to_date
       @round_user.update_attributes(round_number: 0)
+    elsif tournament_user.present? && tournament_user.tournament.tournament_type == "monthly" && @round_user.updated_at.to_date < Time.now.to_date
+    	@round_user.update_attributes(round_number: 0)
     end
 		render json: {
 			round_info: @round_user.as_json({
@@ -111,6 +113,8 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				round_one: @round_scores[:round_one_score],
 				round_two: @round_scores[:round_two_score],
 				round_three: @round_scores[:round_three_score],
+				round_four: @round_scores[:round_four_score],
+				round_five: @round_scores[:round_five_score],
 				remaining_time: Tournament.last.created_at - Time.now + 24.hours,
 				rank: rank,
 				is_over: @is_over.present? ? @is_over.over : false,

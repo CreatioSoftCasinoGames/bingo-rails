@@ -3,7 +3,7 @@ class Round < ActiveRecord::Base
   belongs_to :resource, polymorphic: true
   belongs_to :tournament, class_name: "Tournament", foreign_key: "resource_id"
   has_many :tournament_users, through: :tournament
-	before_create :create_deck
+	# before_create :create_deck
 	has_many :users, through: :round_users
 	has_many :round_users
 
@@ -11,9 +11,9 @@ class Round < ActiveRecord::Base
 	accepts_nested_attributes_for :round_users
   accepts_nested_attributes_for :tournament
 
-	def deck
-		YAML.load read_attribute(:deck)
-	end
+	# def deck
+	# 	YAML.load read_attribute(:deck)
+	# end
 
   def analize(data)
     params = {active: false}  
@@ -78,14 +78,16 @@ class Round < ActiveRecord::Base
   	end
   	params[:round_users_attributes] = round_users_attributes
   	params[:users_attributes] = users_attributes
-    params[:tournament_attributes] = {id: self.resource_id, tournament_users_attributes: tournament_users_attributes}
+    if self.resource_type == "Tournament"
+      params[:tournament_attributes] = {id: self.resource_id, tournament_users_attributes: tournament_users_attributes}
+    end
   	self.update_attributes(params)
   end
 
 	private
 
-		def create_deck
-			self.deck = (1..75).to_a.shuffle.to_yaml
-		end
+		# def create_deck
+		# 	self.deck = (1..75).to_a.shuffle.to_yaml
+		# end
 
 end

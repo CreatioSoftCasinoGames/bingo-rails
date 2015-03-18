@@ -71,19 +71,27 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def get_round_and_attempt
-		@round_user = @user.round_users.where(room_id: params[:room_id]).last
-		@room = Room.where(id: params[:room_id]).first
-		tournament_user = @user.tournament_users.where(room_id: params[:room_id]).last
-    if tournament_user.present? && tournament_user.tournament.tournament_type == "weekly" && @round_user.updated_at.to_date < Time.now.to_date
-      @round_user.update_attributes(round_number: 0)
-    elsif tournament_user.present? && tournament_user.tournament.tournament_type == "monthly" && @round_user.updated_at.to_date < Time.now.to_date
-    	@round_user.update_attributes(round_number: 0)
-    end
-		render json: {
-			round_info: @round_user.as_json({
-				only: [:round_number, :attempt_number]
-			})
-		}
+		if params[:resource_type] == "Tournament"
+			@round_user = @user.round_users.where(room_id: params[:room_id]).last
+			@room = Room.where(id: params[:room_id]).first
+			tournament_type = @room.active_tournament.tournament_type
+			tournament_user = @user.tournament_users.where(room_id: params[:room_id]).last
+	    if tournament_user.present? && tournament_user.tournament.tournament_type == "weekly" && @round_user.updated_at.to_date < Time.now.to_date
+	      @round_user.update_attributes(round_number: 0)
+	    elsif tournament_user.present? && tournament_user.tournament.tournament_type == "monthly" && @round_user.updated_at.to_date < Time.now.to_date
+	    	@round_user.update_attributes(round_number: 0)
+	    end
+			render json: {
+				round_info: @round_user.as_json({
+					only: [:round_number, :attempt_number]
+				}),
+				tournament_type: tournament_type
+			}
+		else
+			render json: {
+				round_and_attempt: nil
+			}
+		end
 	end
 
 	def my_rank
@@ -122,10 +130,13 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				rank: rank,
 				is_over: @is_over.present? ? @is_over.over : false,
 				reward_collected: @reward.present? ? @reward.is_collected : false,
+				tournament_type: tournament_type,
 				reward_id: @reward.present? ? @reward.id : nil
 			}
 		else
-			render json: nil
+			render json: {
+				my_rank: nil
+			}
 		end
 	end
 

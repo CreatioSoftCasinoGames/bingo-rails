@@ -58,7 +58,6 @@ class AisController < ApplicationController
       if @ai.update(ai_params)
         if params[:redirection_action]
           format.html { redirect_to "#{ai_url(@ai)}/#{params[:redirection_action]}", notice: 'Ai was successfully updated.' }
-          format.html { redirect_to "#{ai_url(@ai)}/#{params[:redirection_action]}", notice: 'Ai was successfully updated.' }
         else
           format.html { redirect_to @ai, notice: 'Ai was successfully updated.' }
         end

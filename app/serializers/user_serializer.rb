@@ -37,6 +37,7 @@ class UserSerializer < ActiveModel::Serializer
 						 :bingo_by_corner_pattern, 
 						 :coins_collected_in_game, 
 						 :player_since,
+						 :is_bot,
 						 :image_url
 
 			has_one :powerup

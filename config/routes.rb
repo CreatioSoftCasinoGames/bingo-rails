@@ -81,6 +81,7 @@ Rails.application.routes.draw do
         member do
           get :get_bingo_factor
           get :leader_board
+          get :find_ticket_probability
         end
       end
       resources :rewards do

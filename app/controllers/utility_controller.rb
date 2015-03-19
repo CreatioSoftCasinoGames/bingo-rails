@@ -14,7 +14,11 @@ class UtilityController < ApplicationController
 			REDIS_CLIENT.SADD("rooms", "room:#{room.id}")
 			REDIS_CLIENT.HMSET("room:#{room.id}", "name", room.name, "room_type", room.room_type, "timeout", room.timeout, "factor", room.num_bingo_factor, "divider", room.divider)
 		end
+		TicketProbability.all.each do |probability|
+		  REDIS_CLIENT.SADD("ticket_probability", "ticket_probability:#{probability.id}")
+			REDIS_CLIENT.HMSET("ticket_probability:#{probability.id}", "probability", TicketProbability.get_tickets)
+		end	
 		redirect_to root_path, flash: {success: "Data successfully synced !" }
 	end
-
 end
+

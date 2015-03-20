@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150317131328) do
+ActiveRecord::Schema.define(version: 20150320053609) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
@@ -200,6 +200,7 @@ ActiveRecord::Schema.define(version: 20150317131328) do
     t.integer  "bingo_by_corner_pattern",                               default: 0
     t.string   "login_token"
     t.boolean  "is_bot",                                                default: false
+    t.boolean  "online",                                                default: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

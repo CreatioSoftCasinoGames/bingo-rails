@@ -6,12 +6,16 @@ h1 Bots Probabilities
         th Number Of Players
         - (1..10).to_a.each do |num_bots|
           th= num_bots
-      - [[0,1],[1,2],[2,3],[3,4],[4,5]].each do |range|
+      - [[0,1],[1,2],[2,3],[3,4],[4,8]].each do |range|
         tr
-          td.col-xs-1
-            = text_field_tag :from, range[0]
+          td.ranges
+            - bots_probability = BotsProbability.where(min_players: range[0], max_players: range[1], num_bots: 0).first
+            = hidden_field_tag "ai[bots_probabilities_attributes][][probability]", bots_probability.try(:probability)
+            = hidden_field_tag "ai[bots_probabilities_attributes][][id]", bots_probability.try(:id)
+            = text_field_tag "ai[bots_probabilities_attributes][][min_players]", range[0], class: "box_width"
             | - To - 
-            = text_field_tag :to, range[1]
+            = text_field_tag "ai[bots_probabilities_attributes][][max_players]", range[1], class: "box_width"
+            = hidden_field_tag "ai[bots_probabilities_attributes][][num_bots]", 0
           - (1..10).to_a.each do |num_bots|
             - bots_probability = BotsProbability.where(min_players: range[0], max_players: range[1], num_bots: num_bots).first
             td
@@ -21,7 +25,10 @@ h1 Bots Probabilities
               = hidden_field_tag "ai[bots_probabilities_attributes][][max_players]", range[1]
               = hidden_field_tag "ai[bots_probabilities_attributes][][num_bots]", num_bots
   = hidden_field_tag :redirection_action, "bots_probabilities"
+  =button_to "Add More", '#', class: "btn btn-primary"
+  br 
   = f.submit "Update AI", class: "btn btn-primary"
+
 
 
  

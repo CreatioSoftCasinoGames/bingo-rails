@@ -1,0 +1,17 @@
+tr
+  td.ranges
+    - bots_probability = BotsProbability.where(min_players: range[0], max_players: range[1], num_bots: 0).first
+    = hidden_field_tag "ai[bots_probabilities_attributes][][probability]", bots_probability.try(:probability)
+    = hidden_field_tag "ai[bots_probabilities_attributes][][id]", bots_probability.try(:id)
+    = text_field_tag "ai[bots_probabilities_attributes][][min_players]", range[0], class: "box_width"
+    | - To - 
+    = text_field_tag "ai[bots_probabilities_attributes][][max_players]", range[1], class: "box_width"
+    = hidden_field_tag "ai[bots_probabilities_attributes][][num_bots]", 0
+  - (1..10).to_a.each do |num_bots|
+    - bots_probability = BotsProbability.where(min_players: range[0], max_players: range[1], num_bots: num_bots).first
+    td
+      = text_field_tag "ai[bots_probabilities_attributes][][probability]", bots_probability.try(:probability), class: "col-xs-12"
+      = hidden_field_tag "ai[bots_probabilities_attributes][][id]", bots_probability.try(:id)
+      = hidden_field_tag "ai[bots_probabilities_attributes][][min_players]", range[0]
+      = hidden_field_tag "ai[bots_probabilities_attributes][][max_players]", range[1]
+      = hidden_field_tag "ai[bots_probabilities_attributes][][num_bots]", num_bots

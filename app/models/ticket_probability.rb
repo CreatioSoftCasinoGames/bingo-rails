@@ -1,9 +1,11 @@
 class TicketProbability < ActiveRecord::Base
 	belongs_to :ai
+	belongs_to :room
 
 	def self.get_tickets
 		ticket_probability_map = {}
-		Room.all.each do |room|
+		rooms = Room.all
+		rooms.each do |room|
 			ticket_probabilities = room.ticket_probabilities
 			ticket_probability_map[room.id] = []
 			(1..4).to_a.each do |num_ticket|

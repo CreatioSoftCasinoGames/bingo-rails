@@ -84,14 +84,6 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				only: [:round_number, :attempt_number]
 			})
 		}
-		
-		# if params[:resource_type] == "Tournament"
-			
-		# else
-		# 	render json: {
-		# 		round_and_attempt: nil
-		# 	}
-		# end
 	end
 
 	def my_rank
@@ -104,30 +96,34 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
 				@is_over = @room.active_tournament.tournament_users.where(user_id: @user.id).last
 				@reward = @user.rewards.where(is_collected: false).first
-				remaining_time = Tournament.last.created_at - Time.now + 24.hours
+				remaining_time = @room.active_tournament.created_at - Time.now + 24.hours
 			elsif tournament_type == "weekly"
-				@tournament = Tournament.where(id: @room.find_tournament_id(@user.id)).first
-				@round_scores = @user.round_scores(@room.id, @tournament.id)
-				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
-				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
-				@reward = @user.rewards.where(is_collected: false).first
-				remaining_time = Tournament.last.created_at - Time.now + 7.day
+				@tournament = @room.find_tournament(@room.id, @user.id)
+				if @tournament.present?
+					@round_scores = @user.round_scores(@room.id, @tournament.id)
+					rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
+					@is_over = @tournament.tournament_users.where(user_id: @user.id).last
+					@reward = @user.rewards.where(is_collected: false).first
+					remaining_time = @tournament.created_at - Time.now + 7.day
+				end
 			elsif tournament_type == "monthly"
-				@tournament = Tournament.where(id: @room.find_tournament_id(@user.id)).first
-				@round_scores = @user.round_scores(@room.id, @tournament.id)
-				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
-				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
-				@reward = @user.rewards.where(is_collected: false).first
-				remaining_time = Tournament.last.created_at - Time.now + 30.day
+				@tournament = @room.find_tournament(@room.id, @user.id)
+				if @tournament.present?
+					@round_scores = @user.round_scores(@room.id, @tournament.id)
+					rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
+					@is_over = @tournament.tournament_users.where(user_id: @user.id).last
+					@reward = @user.rewards.where(is_collected: false).first
+					remaining_time = @tournament.created_at - Time.now + 30.day
+				end
 			end
 			render json: {
-				round_one: @round_scores[:round_one_score],
-				round_two: @round_scores[:round_two_score],
-				round_three: @round_scores[:round_three_score],
-				round_four: @round_scores[:round_four_score],
-				round_five: @round_scores[:round_five_score],
-				remaining_time: remaining_time,
-				rank: rank,
+				round_one: @round_scores.present? ? @round_scores[:round_one_score] : 0,
+				round_two: @round_scores.present? ? @round_scores[:round_two_score] : 0,
+				round_three: @round_scores.present? ? @round_scores[:round_three_score] : 0,
+				round_four: @round_scores.present? ? @round_scores[:round_four_score] : 0,
+				round_five: @round_scores.present? ? @round_scores[:round_five_score] : 0,
+				remaining_time: remaining_time.present? ? remaining_time : 0,
+				rank: rank.present? ? rank : 0,
 				is_over: @is_over.present? ? @is_over.over : false,
 				reward_collected: @reward.present? ? @reward.is_collected : false,
 				tournament_type: tournament_type,
@@ -154,7 +150,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			rank_map = {}
 			rooms = Room.where(room_type: params[:room_type])
 			rooms.each do |room|
-				@tournament = Tournament.where(id: room.find_tournament_id(@user.id)).first
+				@tournament = room.find_tournament(room.id, @user.id)
 				if @tournament.present?
 					rank_map[room.id] = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
 				else

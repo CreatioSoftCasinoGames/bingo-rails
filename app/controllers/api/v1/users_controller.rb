@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
-	before_action :find_user, only: [:update, :show, :get_round_and_attempt, :my_rank, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends, :sent_gift, :received_gift, :ask_for_gift_to, :ask_for_gift_by]
+	before_action :find_user, only: [:update, :show, :get_round_and_attempt, :my_rank, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends, :sent_gift, :received_gift, :ask_for_gift_to, :ask_for_gift_by, :player_rank]
 
 	def create
 		@user = User.new(user_params)
@@ -106,14 +106,14 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				@reward = @user.rewards.where(is_collected: false).first
 				remaining_time = Tournament.last.created_at - Time.now + 24.hours
 			elsif tournament_type == "weekly"
-				@tournament = Tournament.where(id: @room.find_tournament_id(@room.id, @user.id)).first
+				@tournament = Tournament.where(id: @room.find_tournament_id(@user.id)).first
 				@round_scores = @user.round_scores(@room.id, @tournament.id)
 				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
 				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
 				@reward = @user.rewards.where(is_collected: false).first
 				remaining_time = Tournament.last.created_at - Time.now + 7.day
 			elsif tournament_type == "monthly"
-				@tournament = Tournament.where(id: @room.find_tournament_id(@room.id, @user.id)).first
+				@tournament = Tournament.where(id: @room.find_tournament_id(@user.id)).first
 				@round_scores = @user.round_scores(@room.id, @tournament.id)
 				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
 				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
@@ -139,6 +139,36 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			}
 		end
 	end
+
+	def get_online_players
+		room_map = {}
+		rooms = Room.where(room_type: params[:room_type])
+		rooms.each do |room|
+			room_map[room.id] = User.where(id: room.round_users.collect(&:user_id), online: true).count
+		end
+		render json: room_map
+	end
+
+	def player_rank
+		if params[:room_type].capitalize == "Tournament"
+			rank_map = {}
+			rooms = Room.where(room_type: params[:room_type])
+			rooms.each do |room|
+				@tournament = Tournament.where(id: room.find_tournament_id(@user.id)).first
+				if @tournament.present?
+					rank_map[room.id] = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
+				else
+					rank_map[room.id] = 0
+				end
+			end
+			render json: rank_map
+		else
+			render json:{
+				error: "This is not a Tournament!"
+			}
+		end
+	end
+
 
 	def in_game_inapp
 		@room = Room.where(id: params[:room_id]).first

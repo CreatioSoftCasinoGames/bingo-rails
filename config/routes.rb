@@ -59,6 +59,8 @@ Rails.application.routes.draw do
           get :get_round_and_attempt
           get :my_rank
           get :in_game_inapp
+          get :get_online_players
+          get :player_rank
         end
       end
 

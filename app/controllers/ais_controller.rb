@@ -6,11 +6,12 @@ class AisController < ApplicationController
 
   def ticket_probabilities
   end
+  
+
   # GET /ais
   # GET /ais.json
   def index
     @ais = Ai.all
-
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @ais }

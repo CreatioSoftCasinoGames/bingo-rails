@@ -1,34 +1,20 @@
+= javascript_include_tag "bots_probabilities.js"
 h1 Bots Probabilities 
-= form_for @ai do |f|
-  table.table
+= form_for @ai, html:{class: "botsProbability"} do |f|
+  table.table#bot_probabilities
     thead
       tr
         th Number Of Players
         - (1..10).to_a.each do |num_bots|
           th= num_bots
-      - [[0,1],[1,2],[2,3],[3,4],[4,8]].each do |range|
-        tr
-          td.ranges
-            - bots_probability = BotsProbability.where(min_players: range[0], max_players: range[1], num_bots: 0).first
-            = hidden_field_tag "ai[bots_probabilities_attributes][][probability]", bots_probability.try(:probability)
-            = hidden_field_tag "ai[bots_probabilities_attributes][][id]", bots_probability.try(:id)
-            = text_field_tag "ai[bots_probabilities_attributes][][min_players]", range[0], class: "box_width"
-            | - To - 
-            = text_field_tag "ai[bots_probabilities_attributes][][max_players]", range[1], class: "box_width"
-            = hidden_field_tag "ai[bots_probabilities_attributes][][num_bots]", 0
-          - (1..10).to_a.each do |num_bots|
-            - bots_probability = BotsProbability.where(min_players: range[0], max_players: range[1], num_bots: num_bots).first
-            td
-              = text_field_tag "ai[bots_probabilities_attributes][][probability]", bots_probability.try(:probability), class: "col-xs-12"
-              = hidden_field_tag "ai[bots_probabilities_attributes][][id]", bots_probability.try(:id)
-              = hidden_field_tag "ai[bots_probabilities_attributes][][min_players]", range[0]
-              = hidden_field_tag "ai[bots_probabilities_attributes][][max_players]", range[1]
-              = hidden_field_tag "ai[bots_probabilities_attributes][][num_bots]", num_bots
-  = hidden_field_tag :redirection_action, "bots_probabilities"
-  =button_to "Add More", '#', class: "btn btn-primary"
+        th &nbsp;
+      - @ai.bots_probabilities.where(num_bots: 0).each do |bp|
+        = render :partial => "bots_probability_row", locals: {range: [bp.min_players, bp.max_players]}
+  = link_to "Add More", "#", class: "btn btn-primary", id: "btnAdd"
   br 
-  = f.submit "Update AI", class: "btn btn-primary"
+  br
+  = f.submit "Update AI", class: "btn btn-primary", id: "btnSub"
 
-
-
- 
+#templates.hide
+  table
+    = render :partial => "bots_probability_row", locals: {range: [0,0]}

@@ -20,7 +20,6 @@ class RoundsWorker
 				end
 			end
 		else
-			# round_data["resource_type"] = round_data["resource_type"]
 			round_data["resource_id"] = round_data["room_id"]
 		end
 		Round.create(round_data)

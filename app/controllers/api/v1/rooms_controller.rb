@@ -6,6 +6,23 @@ class Api::V1::RoomsController < Api::V1::ApplicationController
 		render json: Room.all
 	end
 
+	def create
+		@room = Room.new(room_config_id: params[:room_config_id])
+		if @room.save
+			render json: {
+				room: @room.as_json({
+					only: [:id, :name, :room_config_id]
+				}),
+				valid: true
+			}
+		else
+			render json: {
+				errors: @room.errors.full_messages.join(", "),
+				valid: false
+			}
+		end
+	end
+
 	def get_bingo_factor
 		render json: {
 			bingo_factor: @room.as_json({

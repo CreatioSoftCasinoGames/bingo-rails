@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  type: 
+  min_players: 1
+  max_players: 1
+  timeout: 9.99
+  num_bingo_factor: 1
+  divider: 1
+
+two:
+  name: MyString
+  type: 
+  min_players: 1
+  max_players: 1
+  timeout: 9.99
+  num_bingo_factor: 1
+  divider: 1

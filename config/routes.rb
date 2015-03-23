@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :room_configs
+
   resources :tournament_rewards
 
   resources :in_game_gifts
@@ -70,6 +72,8 @@ Rails.application.routes.draw do
           get :leader_board
         end
       end
+      resources :room_config_users, only: [:create]
+      get "room_configs/:room_type/rooms" => "room_configs#get_room_type"
       resources :rewards do
         member do
           put :mark_as_collected

@@ -30,6 +30,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :room_configs
       resources :friend_requests
       resources :gift_requests
       resources :table_configs
@@ -72,11 +73,7 @@ Rails.application.routes.draw do
           get :leader_board
         end
       end
-      resources :room_configs do
-        member do
-          get :get_room_type
-        end
-      end
+      get "room_configs/:room_type/rooms" => "room_configs#get_room_type"
       resources :rewards do
         member do
           put :mark_as_collected

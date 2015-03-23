@@ -27,7 +27,9 @@ class Room < ActiveRecord::Base
 	private
 
 	def set_name
-		count = (table_config.tables.last.name.split(" ").last.to_i rescue 0)
+		p "-----------------------------------------------------------------"
+		p room_config.try(:name)
+		count = (room_config.rooms.last.name.split(" ").last.to_i rescue 0)
 		self.name = "#{room_config.try(:name)} #{count+1}"
 	end
 

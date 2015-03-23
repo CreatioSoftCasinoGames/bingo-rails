@@ -10,9 +10,7 @@ class Api::V1::RoomsController < Api::V1::ApplicationController
 		@room = Room.new(room_config_id: params[:room_config_id])
 		if @room.save
 			render json: {
-				room: @room.as_json({
-					only: [:id, :name, :room_config_id]
-				}),
+				room: @room,
 				valid: true
 			}
 		else

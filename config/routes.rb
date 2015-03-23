@@ -1,15 +1,12 @@
 Rails.application.routes.draw do
 
-  get 'ticket_probabilities/index'
-
   resources :ais do
     member do
       get :bots_probabilities
       get :ticket_probabilities
+      delete :bot_probabilities
     end
   end
-
-  get 'bots_probabilities/index'
 
   resources :tournament_rewards
 

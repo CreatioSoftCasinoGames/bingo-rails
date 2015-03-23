@@ -7,6 +7,13 @@ class AisController < ApplicationController
   def ticket_probabilities
   end
   
+  def bot_probabilities
+    Ai.where(id: params[:id]).first.bots_probabilities.where(min_players: params[:min_players], max_players: params[:max_players]).delete_all
+    respond_to do |format|
+      format.html { redirect_to :back }
+      format.json { head :no_content }
+    end
+  end
 
   # GET /ais
   # GET /ais.json

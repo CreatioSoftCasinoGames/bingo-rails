@@ -1,7 +1,7 @@
 = javascript_include_tag "bots_probabilities.js"
 h1 Bots Probabilities 
 = form_for @ai, html:{class: "botsProbability"} do |f|
-  table.table#bot_probabilities
+  table.table#bot_probabilities data-ai_id=(@ai.id)
     thead
       tr
         th Number Of Players

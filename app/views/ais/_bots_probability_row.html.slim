@@ -1,4 +1,4 @@
-tr.bots_probability_row
+tr.bots_probability_row data-min=(range[0]) data-max=(range[1]) 
   td.ranges
     - bots_probability = BotsProbability.where(min_players: range[0], max_players: range[1], num_bots: 0).first
     = hidden_field_tag "ai[bots_probabilities_attributes][][probability]", 0.0
@@ -17,4 +17,4 @@ tr.bots_probability_row
       = hidden_field_tag "ai[bots_probabilities_attributes][][num_bots]", num_bots
   = hidden_field_tag :redirection_action, "bots_probabilities"
   td
-    = link_to "Del", "#", class: "btn btn-xs btn-danger"
+    = link_to "Del", "#", class: "btn btn-xs btn-danger delete-bots-probabilities"

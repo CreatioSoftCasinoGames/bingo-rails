@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150323093019) do
+ActiveRecord::Schema.define(version: 20150323110208) do
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(version: 20150323093019) do
     t.integer  "min_players"
     t.integer  "max_players"
     t.decimal  "timeout",          precision: 10, scale: 0, default: 1000000
-    t.integer  "num_bingo_factor"
+    t.string   "num_bingo_factor"
     t.integer  "divider"
     t.datetime "created_at"
     t.datetime "updated_at"

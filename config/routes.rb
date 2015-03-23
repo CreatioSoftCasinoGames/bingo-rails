@@ -72,8 +72,11 @@ Rails.application.routes.draw do
           get :leader_board
         end
       end
-      resources :room_config_users, only: [:create]
-      get "room_configs/:room_type/rooms" => "room_configs#get_room_type"
+      resources :room_configs do
+        member do
+          get :get_room_type
+        end
+      end
       resources :rewards do
         member do
           put :mark_as_collected

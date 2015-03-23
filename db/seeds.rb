@@ -15,13 +15,13 @@ special_rooms = ["Speed_Bingo", "Pure_Bingo", "Reverse_Bingo", "QuickShot_Bingo"
 tournament_rooms = ["Daily_Free", "Weekly", "Monthly"]
 
 normal_rooms.each do |room_name|
-	Room.create(name: room_name, room_type: "Normal")
+	RoomConfig.create(name: room_name, room_type: "Normal")
 end
 
 special_rooms.each do |room_name|
-	Room.create(name: room_name, room_type: "Special")
+	RoomConfig.create(name: room_name, room_type: "Special")
 end
 
 tournament_rooms.each do |room_name|
-	Room.create(name: room_name, room_type: "Tournament")
+	RoomConfig.create(name: room_name, room_type: "Tournament")
 end

@@ -17,7 +17,7 @@ class UtilityController < ApplicationController
 				REDIS_CLIENT.SADD("rooms","room:#{room.id}")
 				REDIS_CLIENT.SADD("room_config_rooms:#{room.room_config_id}", "room:#{room.id}")
 				REDIS_CLIENT.ZADD("room_config_occupancy:#{room.room_config_id}", 0, "room:#{room.id}")
-				REDIS_CLIENT.HMSET("room:#{room.id}", "name", room.name, "room_config_id", room.room_config_id)
+				REDIS_CLIENT.HMSET("room:#{room.id}", "name", room.name, "room_config_id", room.room_config_id, "bingo_factor", room_config.num_bingo_factor, "divider", room_config.divider)
 			end
 		end
 		redirect_to root_path, flash: {success: "Data successfully synced !" }

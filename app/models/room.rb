@@ -31,6 +31,8 @@ class Room < ActiveRecord::Base
 		p room_config.try(:name)
 		count = (room_config.rooms.last.name.split(" ").last.to_i rescue 0)
 		self.name = "#{room_config.try(:name)} #{count+1}"
+		self.num_bingo_factor = room_config.num_bingo_factor
+		self.divider = room_config.divider
 	end
 
 end

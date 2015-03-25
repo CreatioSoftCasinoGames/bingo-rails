@@ -21,6 +21,7 @@ class Round < ActiveRecord::Base
   	users_attributes = []
     tournament_users_attributes = []
   	data.each do |node_obj|
+      p "--------------------------------Node Object-------------------------"
       p node_obj
   		round_user = round_users.where(user_id: node_obj['playerId']).first
   		user = round_user.user
@@ -48,12 +49,12 @@ class Round < ActiveRecord::Base
         tournament_id: tournament_id,
         score: point
   		})
-  		bingo_played = user.bingo_played.to_f + 1
-  		total_daubs = user.total_daubs.to_f + node_obj['daubs'].to_f
+  		# bingo_played = user.bingo_played.to_f + 1
+  		# total_daubs = user.total_daubs.to_f + node_obj['daubs'].to_f
   		users_attributes.push({
   			id: user.id,
-  			total_daubs: total_daubs,
-  			bingo_played: bingo_played,
+  			total_daubs: user.total_daubs.to_f + node_obj['daubs'].to_f,
+  			bingo_played: user.bingo_played.to_f + 1,
         tickets_purchased: node_obj['cards'],
         coins: user.try(:coins).to_f + point
   		})

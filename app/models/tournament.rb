@@ -27,6 +27,8 @@ class Tournament < ActiveRecord::Base
         current_weekly_tournament.update_attributes(active: false)
       end
       Tournament.create(room_id: weekly_tournaments.last.room_id, active: true, tournament_type: "weekly")
+    # else
+    #   Tournament.create(room_id: weekly_tournaments.last.room_id, active: true, tournament_type: "weekly")
     end
 
     #End and start a weekly bingo tournament
@@ -40,6 +42,8 @@ class Tournament < ActiveRecord::Base
         current_monthly_tournament.update_attributes(active: false)
       end
       Tournament.create(room_id: monthly_tournaments.last.room_id, active: true, tournament_type: "monthly")
+    # else
+    #   Tournament.create(room_id: monthly_tournaments.last.room_id, active: true, tournament_type: "monthly")
     end
 
   end

@@ -96,6 +96,6 @@ class AisController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def ai_params
       params.require(:ai).permit(:name, :active, :redirect_path, bots_probabilities_attributes: [:probability, :id, :min_players, :max_players, :num_bots],
-                                                 ticket_probabilities_attributes: [:room_id, :num_ticket, :id, :probability])
+                                                 ticket_probabilities_attributes: [:room_config_id, :num_ticket, :id, :probability])
     end
 end

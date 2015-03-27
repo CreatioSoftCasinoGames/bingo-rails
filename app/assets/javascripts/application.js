@@ -22,7 +22,8 @@ $(function() {
 	});
 
 	$(document).on("click", ".delete-bots-probabilities", function() {
-		// if(confirm("Are you sure?")) {
+		if(confirm("Are you sure?")) {
+			var parent_row = $(this).closest(".bots_probability_row");
 			var ai_id = $("#bot_probabilities").data("ai_id");
 			var min = $(this).closest(".bots_probability_row").data("min")
 			var max = $(this).closest(".bots_probability_row").data("max")
@@ -32,11 +33,10 @@ $(function() {
         method: "delete",
         data: {min_players: min, max_players: max},
         success: function(data, status) {
-          rowValue.replaceWith("")
+          parent_row.replaceWith("")
         }
       });
-      
-		// }	
+		}	
 		return false
 	});	
 

@@ -6,18 +6,17 @@ h1 Ticket Probabilities
         th &nbsp;
         - (1..4).to_a.each do |num_tickets|
           th= num_tickets
-      - @rooms = Room.all
-      - @rooms.each do |room|
+      - RoomConfig.all.each do |room_config|
         tr
           td
-            b= room.name
+            b= room_config.name
           - (1..4).to_a.each do |num_ticket|  
-            - ticket_probability = TicketProbability.where(num_ticket: num_ticket, room_id: room.id).first
+            - ticket_probability = TicketProbability.where(num_ticket: num_ticket, room_config_id: room_config.id).first
             td.col-xs-2
               = text_field_tag "ai[ticket_probabilities_attributes][][probability]", ticket_probability.try(:probability), class: "col-xs-4"
               = hidden_field_tag "ai[ticket_probabilities_attributes][][id]", ticket_probability.try(:id)
               = hidden_field_tag "ai[ticket_probabilities_attributes][][num_ticket]", num_ticket
-              = hidden_field_tag "ai[ticket_probabilities_attributes][][room_id]", room.id
+              = hidden_field_tag "ai[ticket_probabilities_attributes][][room_config_id]", room_config.id
   = hidden_field_tag :redirection_action, "ticket_probabilities"
   = f.submit "Update AI", class: "btn btn-primary"
 

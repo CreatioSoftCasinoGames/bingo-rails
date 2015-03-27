@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
 
-  before_validation  :set_fb_password, :set_login_details
+  before_validation  :set_fb_password, :set_login_details, :bot_login_details
 
   has_many :friend_requests, :dependent => :destroy, foreign_key: "requested_to_id"
   has_many :friend_requests_sent, :dependent => :destroy, foreign_key: "user_id", class_name: "FriendRequest"
@@ -79,6 +79,15 @@ class User < ActiveRecord::Base
     if is_guest
       generated_password = SecureRandom.hex(9)
       self.email = "guest_#{SecureRandom.hex(8)}@bingoapi.com"
+      self.password = generated_password
+      self.password_confirmation = generated_password
+    end
+  end
+
+  def bot_login_details
+    if is_bot
+      generated_password = SecureRandom.hex(9)
+      self.email = "bot_#{SecureRandom.hex(8)}@bingoapi.com"
       self.password = generated_password
       self.password_confirmation = generated_password
     end

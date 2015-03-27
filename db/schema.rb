@@ -13,9 +13,26 @@
 
 ActiveRecord::Schema.define(version: 20150323110208) do
 
+  create_table "ais", force: true do |t|
+    t.string   "name"
+    t.boolean  "active"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+  
   create_table "api_keys", force: true do |t|
     t.string   "token"
     t.boolean  "active",     default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "bots_probabilities", force: true do |t|
+    t.integer  "min_players"
+    t.integer  "max_players"
+    t.integer  "num_bots"
+    t.float    "probability", limit: 24
+    t.integer  "ai_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -129,6 +146,15 @@ ActiveRecord::Schema.define(version: 20150323110208) do
     t.string   "uuid"
     t.string   "resource_type"
     t.integer  "resource_id"
+  end
+
+  create_table "ticket_probabilities", force: true do |t|
+    t.integer  "num_ticket"
+    t.float    "probability", limit: 24
+    t.integer  "room_id"
+    t.integer  "ai_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tournament_rewards", force: true do |t|

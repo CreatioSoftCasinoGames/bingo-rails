@@ -55,6 +55,10 @@ class Api::V1::RoomsController < Api::V1::ApplicationController
 		}
 	end
 
+	def find_ticket_probability
+    render json: TicketProbability.where(room_id: params[:id]).collect(&:probability)
+	end
+
 	def show
 		render json: @room
 	end

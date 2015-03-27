@@ -12,5 +12,51 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require twitter/bootstrap
 //= require_tree .
+
+$(function() {
+
+	$("#btnAdd").click(function (e) {
+		$("#bot_probabilities").append($("#templates .bots_probability_row").clone());
+		return(false)
+	});
+
+	$(document).on("click", ".delete-bots-probabilities", function() {
+		// if(confirm("Are you sure?")) {
+			var ai_id = $("#bot_probabilities").data("ai_id");
+			var min = $(this).closest(".bots_probability_row").data("min")
+			var max = $(this).closest(".bots_probability_row").data("max")
+			var rowValue = $(this).closest("#bot_probabilities").data("ai_id")
+      $.ajax({
+        url: "/ais/" + rowValue + "/bot_probabilities.json",
+        method: "delete",
+        data: {min_players: min, max_players: max},
+        success: function(data, status) {
+          rowValue.replaceWith("")
+        }
+      });
+      
+		// }	
+		return false
+	});	
+
+	$(document).on("change", ".box_width.min_players", function() {
+		$(this).closest(".bots_probability_row").find(".min_players").val($(this).val())
+	})
+
+	$(document).on("change", ".box_width.max_players", function() {
+		$(this).closest(".bots_probability_row").find(".max_players").val($(this).val())
+	})
+
+	
+
+
+})
+
+
+
+
+
+
+
+

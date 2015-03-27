@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  num_ticket: 1
+  probability: 1.5
+  room_id: 1
+
+two:
+  num_ticket: 1
+  probability: 1.5
+  room_id: 1

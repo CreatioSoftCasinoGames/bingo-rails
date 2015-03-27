@@ -13,3 +13,10 @@
  *= require_tree .
  *= require_self
  */
+.box_width {
+width: 50px;
+}
+
+.ranges {
+	width: 170px;
+}

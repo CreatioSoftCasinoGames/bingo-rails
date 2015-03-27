@@ -11,7 +11,7 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 					@success = true
 				else
 					@success = false
-					@message = @user.errors.full_messages.join(", ")
+					@message = @user.errors.full_messages.join(" , ")
 				end
 			end
 		else
@@ -29,6 +29,14 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 							@success = false
 							@message = @user.errors.full_messages.join(", ")
 						end
+					end
+				elsif params[:is_bot]
+					@user = User.create(first_name: params[:first_name], last_name: params[:last_name], is_bot: true)
+					if @user.save
+						@success = true
+					else
+						@success = false
+						@message = @user.errors.full_messages.join(", ")
 					end
 				end
 			end

@@ -6,7 +6,8 @@ class Room < ActiveRecord::Base
 	has_many :tournaments
 	has_many :round_users
 	before_save :set_name
-
+	has_many :ticket_probabilities
+	
 	def active_tournament
 		tournaments.where(active: true).last
 	end

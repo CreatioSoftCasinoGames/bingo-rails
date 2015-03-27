@@ -2,6 +2,14 @@ Rails.application.routes.draw do
 
   resources :room_configs
 
+  resources :ais do
+    member do
+      get :bots_probabilities
+      get :ticket_probabilities
+      delete :bot_probabilities
+    end
+  end
+
   resources :tournament_rewards
 
   resources :in_game_gifts
@@ -17,6 +25,10 @@ Rails.application.routes.draw do
   resources :table_configs
 
   resources :rooms
+  
+  resources :bots_probabilities
+
+  resources :ticket_probabilities
 
   devise_for :users
   get "utility/show_api_key", to: "utility#show_api_key", as: "show_api_key"
@@ -71,6 +83,7 @@ Rails.application.routes.draw do
         member do
           get :get_bingo_factor
           get :leader_board
+          get :find_ticket_probability
         end
       end
       get "room_configs/:room_type/rooms" => "room_configs#get_room_type"

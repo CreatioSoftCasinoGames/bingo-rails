@@ -21,8 +21,6 @@ class Round < ActiveRecord::Base
   	users_attributes = []
     tournament_users_attributes = []
   	data.each do |node_obj|
-      p "--------------------------------Node Object-------------------------"
-      p node_obj
   		round_user = round_users.where(user_id: node_obj['playerId']).first
   		user = round_user.user
       round_number = 0
@@ -43,7 +41,7 @@ class Round < ActiveRecord::Base
   			id: round_user.id,
   			daubs: node_obj['daubs'],
   			bingos: node_obj['bingo'],
-        room_id: node_obj['room_id'],
+        # room_id: node_obj['room_id'],
         attempt_number: node_obj['attempt_number'],
         round_number: round_number,
         tournament_id: tournament_id,

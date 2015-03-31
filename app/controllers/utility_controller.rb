@@ -28,6 +28,10 @@ class UtilityController < ApplicationController
 			REDIS_CLIENT.ZADD("bots_probabilities_sorted_set", max_players, "bots_probability_players:#{max_players}")
 			REDIS_CLIENT.set("bots_probability_players:#{max_players}", probabilities)
 		end
+		User.where(is_bot: true).each do |bot_player|
+			REDIS_CLIENT.SADD("bot_available", bot_player.login_token)
+		end
+		REDIS_CLIENT.DEL("bot_busy")
 		redirect_to root_path, flash: {success: "Data successfully synced !" }
 	end
 end

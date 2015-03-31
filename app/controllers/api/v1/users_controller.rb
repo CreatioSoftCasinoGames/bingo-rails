@@ -152,9 +152,9 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def get_online_players
 		room_map = {}
-		rooms = Room.where(room_type: params[:room_type])
+		rooms = RoomConfig.where(room_type: params[:room_type]).first.rooms
 		rooms.each do |room|
-			room_map[room.id] = User.where(id: room.round_users.collect(&:user_id), online: true).count
+			room_map[room.room_config_id] = User.where(id: room.round_users.collect(&:user_id), online: true).count
 		end
 		render json: room_map
 	end

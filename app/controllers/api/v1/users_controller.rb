@@ -127,7 +127,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	# end
 
 	def player_rank
-		if params[:room_config_type].capitalize == "Tournament"
+		if params[:room_type].capitalize == "Tournament"
 			rank_map = {}
 			room_configs = RoomConfig.where(room_type: params[:room_type])
 			room_configs.each do |room_config|

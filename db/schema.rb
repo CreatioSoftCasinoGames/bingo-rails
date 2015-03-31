@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150327074111) do
+ActiveRecord::Schema.define(version: 20150331132138) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -106,6 +106,7 @@ ActiveRecord::Schema.define(version: 20150327074111) do
     t.integer  "divider"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "duration"
   end
 
   create_table "rooms", force: true do |t|
@@ -120,7 +121,7 @@ ActiveRecord::Schema.define(version: 20150327074111) do
   end
 
   create_table "round_users", force: true do |t|
-    t.integer  "room_id"
+    t.integer  "room_config_id"
     t.integer  "round_id"
     t.integer  "user_id"
     t.integer  "daubs"
@@ -136,13 +137,13 @@ ActiveRecord::Schema.define(version: 20150327074111) do
   end
 
   create_table "rounds", force: true do |t|
-    t.integer  "room_id"
+    t.integer  "room_config_id"
     t.integer  "num_players"
     t.text     "deck"
     t.integer  "num_cards"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",        default: true
+    t.boolean  "active",         default: true
     t.string   "uuid"
     t.string   "resource_type"
     t.integer  "resource_id"
@@ -169,12 +170,12 @@ ActiveRecord::Schema.define(version: 20150327074111) do
   create_table "tournament_users", force: true do |t|
     t.integer  "user_id"
     t.integer  "tournament_id"
-    t.integer  "room_id"
-    t.decimal  "score",         precision: 10, scale: 0, default: 0
+    t.integer  "room_config_id"
+    t.decimal  "score",          precision: 10, scale: 0, default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "over",                                   default: false
-    t.decimal  "rank",          precision: 10, scale: 0
+    t.boolean  "over",                                    default: false
+    t.decimal  "rank",           precision: 10, scale: 0
   end
 
   create_table "tournaments", force: true do |t|
@@ -184,6 +185,7 @@ ActiveRecord::Schema.define(version: 20150327074111) do
     t.datetime "updated_at"
     t.string   "tournament_type"
     t.boolean  "active",          default: true
+    t.integer  "room_config_id"
   end
 
   create_table "users", force: true do |t|

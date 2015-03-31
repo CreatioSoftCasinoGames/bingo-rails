@@ -11,11 +11,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150226073922) do
+ActiveRecord::Schema.define(version: 20150331132138) do
+
+  create_table "ais", force: true do |t|
+    t.string   "name"
+    t.boolean  "active"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "api_keys", force: true do |t|
     t.string   "token"
     t.boolean  "active",     default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "bots_probabilities", force: true do |t|
+    t.integer  "min_players"
+    t.integer  "max_players"
+    t.integer  "num_bots"
+    t.float    "probability", limit: 24
+    t.integer  "ai_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -79,6 +96,19 @@ ActiveRecord::Schema.define(version: 20150226073922) do
     t.boolean "is_collected",  default: false
   end
 
+  create_table "room_configs", force: true do |t|
+    t.string   "name"
+    t.string   "room_type"
+    t.integer  "min_players"
+    t.integer  "max_players"
+    t.decimal  "timeout",          precision: 10, scale: 0, default: 1000000
+    t.string   "num_bingo_factor"
+    t.integer  "divider"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "duration"
+  end
+
   create_table "rooms", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -87,10 +117,11 @@ ActiveRecord::Schema.define(version: 20150226073922) do
     t.decimal  "timeout",          precision: 10, scale: 0, default: 1000000
     t.string   "num_bingo_factor"
     t.integer  "divider"
+    t.integer  "room_config_id"
   end
 
   create_table "round_users", force: true do |t|
-    t.integer  "room_id"
+    t.integer  "room_config_id"
     t.integer  "round_id"
     t.integer  "user_id"
     t.integer  "daubs"
@@ -102,19 +133,29 @@ ActiveRecord::Schema.define(version: 20150226073922) do
     t.integer  "score",          default: 0
     t.integer  "attempt_number", default: 1
     t.integer  "round_number",   default: 0
+    t.integer  "tournament_id"
   end
 
   create_table "rounds", force: true do |t|
-    t.integer  "room_id"
+    t.integer  "room_config_id"
     t.integer  "num_players"
     t.text     "deck"
     t.integer  "num_cards"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",        default: true
+    t.boolean  "active",         default: true
     t.string   "uuid"
     t.string   "resource_type"
     t.integer  "resource_id"
+  end
+
+  create_table "ticket_probabilities", force: true do |t|
+    t.integer  "num_ticket"
+    t.float    "probability",    limit: 24
+    t.integer  "room_config_id"
+    t.integer  "ai_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tournament_rewards", force: true do |t|
@@ -129,12 +170,12 @@ ActiveRecord::Schema.define(version: 20150226073922) do
   create_table "tournament_users", force: true do |t|
     t.integer  "user_id"
     t.integer  "tournament_id"
-    t.integer  "room_id"
-    t.decimal  "score",         precision: 10, scale: 0, default: 0
+    t.integer  "room_config_id"
+    t.decimal  "score",          precision: 10, scale: 0, default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "over",                                   default: false
-    t.decimal  "rank",          precision: 10, scale: 0
+    t.boolean  "over",                                    default: false
+    t.decimal  "rank",           precision: 10, scale: 0
   end
 
   create_table "tournaments", force: true do |t|
@@ -144,6 +185,7 @@ ActiveRecord::Schema.define(version: 20150226073922) do
     t.datetime "updated_at"
     t.string   "tournament_type"
     t.boolean  "active",          default: true
+    t.integer  "room_config_id"
   end
 
   create_table "users", force: true do |t|
@@ -198,6 +240,8 @@ ActiveRecord::Schema.define(version: 20150226073922) do
     t.string   "device_id"
     t.integer  "bingo_by_corner_pattern",                               default: 0
     t.string   "login_token"
+    t.boolean  "is_bot",                                                default: false
+    t.boolean  "online",                                                default: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

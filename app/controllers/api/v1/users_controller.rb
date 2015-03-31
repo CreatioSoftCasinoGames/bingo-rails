@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
-	before_action :find_user, only: [:update, :show, :get_round_and_attempt, :my_rank, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends, :sent_gift, :received_gift, :ask_for_gift_to, :ask_for_gift_by]
+	before_action :find_user, only: [:update, :show, :get_round_and_attempt, :my_rank, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends, :sent_gift, :received_gift, :ask_for_gift_to, :ask_for_gift_by, :player_rank]
 
 	def create
 		@user = User.new(user_params)
@@ -40,8 +40,6 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def my_friend_requests
-		# user_id = @user.id
-		# @friend_requests = FriendRequest.where(requested_to_id: user_id, confirmed: false)
 		render json: @user.unconfirmed_friend_requests.where(confirmed: false)
 	end
 
@@ -57,12 +55,10 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def sent_gift
-		# @gift_sent = 
 		render json: @user.gift_requests_sent.where(is_asked: false)
 	end
 
 	def received_gift
-		# @gift_received = GiftRequest.where(send_to_id: @user.id, is_asked: false, confirmed: false)
 		render json: @user.unconfirmed_gift_requests.where(is_asked: false, confirmed: false)
 	end
 
@@ -71,12 +67,18 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def ask_for_gift_by
-		# @asked_by = GiftRequest.where(send_to_id: @user.id, is_asked: true)
 		render json: @user.unconfirmed_gift_requests.where(is_asked: true)
 	end
 
 	def get_round_and_attempt
-		@round_user = @user.round_users.where(room_id: params[:room_id]).last
+		@round_user = @user.round_users.where(room_config_id: params[:room_id]).last
+		# @room = Room.where(id: params[:room_id]).first
+		tournament_user = @user.tournament_users.where(room_config_id: params[:room_id]).last
+    if tournament_user.present? && tournament_user.tournament.tournament_type == "Weekly" && @round_user.updated_at.to_date < Time.now.to_date
+      @round_user.update_attributes(round_number: 0)
+    elsif tournament_user.present? && tournament_user.tournament.tournament_type == "Monthly" && @round_user.updated_at.to_date < Time.now.to_date
+    	@round_user.update_attributes(round_number: 0)
+    end
 		render json: {
 			round_info: @round_user.as_json({
 				only: [:round_number, :attempt_number]
@@ -85,29 +87,69 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def my_rank
-		if params[:resource_type] == "tournament"
-			@room = Room.where(id: params[:room_id]).first
-			@round_scores = @user.round_scores
-			rank = @room.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
-			is_over = @room.active_tournament.tournament_users.where(user_id: @user.id).last.over
-			@reward = @user.rewards.where(is_collected: false).first
+		if params[:resource_type] == "Tournament"
+			@room_config = RoomConfig.where(id: params[:room_config_id]).first
+			@tournament = @room_config.find_tournament(@room_config.id, @user.id)
+			if @tournament.present?
+				@round_scores = @user.round_scores(@room_config.id, @tournament.id)
+				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
+				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
+				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).first
+				remaining_time = @tournament.created_at - Time.now + @room_config.duration
+			end
 			render json: {
-				round_one: @round_scores[:round_one_score],
-				round_two: @round_scores[:round_two_score],
-				round_three: @round_scores[:round_three_score],
-				remaining_time: Tournament.last.created_at - Time.now + 24.hours,
-				rank: rank,
-				is_over: is_over,
-				reward_collected: @reward ? @reward.is_collected : nil,
-				reward_id: @reward ? @reward.id : nil
+				round_one: @round_scores.present? ? @round_scores[:round_one_score] : 0,
+				round_two: @round_scores.present? ? @round_scores[:round_two_score] : 0,
+				round_three: @round_scores.present? ? @round_scores[:round_three_score] : 0,
+				round_four: @round_scores.present? ? @round_scores[:round_four_score] : 0,
+				round_five: @round_scores.present? ? @round_scores[:round_five_score] : 0,
+				remaining_time: remaining_time.present? ? remaining_time : 0,
+				rank: rank.present? ? rank : 0,
+				is_over: @is_over.present? ? @is_over.over : false,
+				reward_collected: @reward.present? ? @reward.is_collected : true,
+				tournament_type: @tournament.present? ? @tournament.tournament_type : nil,
+				reward_id: @reward.present? ? @reward.id : nil
 			}
 		else
-			render json: nil
+			render json: {
+				my_rank: nil
+			}
 		end
 	end
 
+	# def get_online_players
+	# 	room_map = {}
+	# 	rooms = RoomConfig.where(room_type: params[:room_type]).first.rooms
+	# 	rooms.each do |room|
+	# 		room_map[room.room_config_id] = User.where(id: room.round_users.collect(&:user_id), online: true).count
+	# 	end
+	# 	render json: room_map
+	# end
+
+	def player_rank
+		if params[:room_type].capitalize == "Tournament"
+			rank_map = {}
+			room_configs = RoomConfig.where(room_type: params[:room_type])
+			room_configs.each do |room_config|
+				@tournament = room_config.find_tournament(room_config.id, @user.id)
+				if @tournament.present?
+					rank_map[room_config.id] = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
+				else
+					rank_map[room_config.id] = 0
+				end
+			end
+			render json: rank_map
+		else
+			render json:{
+				error: "This is not a Tournament!"
+			}
+		end
+	end
+
+
 	def in_game_inapp
-		if Tournament.where(room_id: params[:room_id]).last.tournament_users.where(user_id: @user.id).last.update_attributes(over: false)
+		@room_config = RoomConfig.where(id: params[:room_config_id]).first
+		if @room_config.active_tournament.tournament_users.where(user_id: @user.id).last.update_attributes(over: false)
 			render json: {
 				success: true
 			}

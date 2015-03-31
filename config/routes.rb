@@ -1,5 +1,15 @@
 Rails.application.routes.draw do
 
+  resources :room_configs
+
+  resources :ais do
+    member do
+      get :bots_probabilities
+      get :ticket_probabilities
+      delete :bot_probabilities
+    end
+  end
+
   resources :tournament_rewards
 
   resources :in_game_gifts
@@ -15,6 +25,10 @@ Rails.application.routes.draw do
   resources :table_configs
 
   resources :rooms
+  
+  resources :bots_probabilities
+
+  resources :ticket_probabilities
 
   devise_for :users
   get "utility/show_api_key", to: "utility#show_api_key", as: "show_api_key"
@@ -28,6 +42,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :room_configs
       resources :friend_requests
       resources :gift_requests
       resources :table_configs
@@ -59,6 +74,8 @@ Rails.application.routes.draw do
           get :get_round_and_attempt
           get :my_rank
           get :in_game_inapp
+          get :get_online_players
+          get :player_rank
         end
       end
 
@@ -66,8 +83,10 @@ Rails.application.routes.draw do
         member do
           get :get_bingo_factor
           get :leader_board
+          get :find_ticket_probability
         end
       end
+      get "room_configs/:room_type/rooms" => "room_configs#get_room_type"
       resources :rewards do
         member do
           put :mark_as_collected

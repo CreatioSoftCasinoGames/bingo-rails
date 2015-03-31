@@ -4,7 +4,7 @@ class RoundUser < ActiveRecord::Base
 	belongs_to :user
 
 	def is_over
-		Tournament.where(room_id: room_id).last.tournament_users.where(user_id: user.id).pluck(:over).last
+		Room.where(room_id: room_id).first.active_tournament.tournament_users.where(user_id: user.id).first.over
 	end
 
 end

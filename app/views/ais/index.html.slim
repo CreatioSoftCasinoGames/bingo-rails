@@ -1,0 +1,23 @@
+h1 Listing ais
+
+table
+  thead
+    tr
+      th Name
+      th Active
+      th
+      th
+      th
+
+  tbody
+    - @ais.each do |ai|
+      tr
+        td = ai.name
+        td = ai.active
+        td = link_to 'Show', ai
+        td = link_to 'Edit', edit_ai_path(ai)
+        td = link_to 'Destroy', ai, data: {:confirm => 'Are you sure?'}, :method => :delete
+
+br
+
+= link_to 'New Ai', new_ai_path

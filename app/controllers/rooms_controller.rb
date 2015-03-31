@@ -12,7 +12,6 @@ class RoomsController < ApplicationController
     end
   end
 
-  # GET /rooms/1
   # GET /rooms/1.json
   def show
     respond_to do |format|

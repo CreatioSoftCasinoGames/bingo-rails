@@ -1,0 +1,10 @@
+p
+  strong Name:
+  = @ai.name
+p
+  strong Active:
+  = @ai.active
+
+= link_to 'Edit', edit_ai_path(@ai)
+'|
+= link_to 'Back', ais_path

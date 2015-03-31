@@ -1,0 +1,20 @@
+= javascript_include_tag "bots_probabilities.js"
+h1 Bots Probabilities 
+= form_for @ai, html:{class: "botsProbability"} do |f|
+  table.table#bot_probabilities data-ai_id=(@ai.id)
+    thead
+      tr
+        th Number Of Players
+        - (1..10).to_a.each do |num_bots|
+          th= num_bots
+        th &nbsp;
+      - @ai.bots_probabilities.where(num_bots: 0).each do |bp|
+        = render :partial => "bots_probability_row", locals: {range: [bp.min_players, bp.max_players]}
+  = link_to "Add More", "#", class: "btn btn-primary", id: "btnAdd"
+  br 
+  br
+  = f.submit "Update AI", class: "btn btn-primary", id: "btnSub"
+
+#templates.hide
+  table
+    = render :partial => "bots_probability_row", locals: {range: [0,0]}

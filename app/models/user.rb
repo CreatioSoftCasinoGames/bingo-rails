@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
 
-  before_validation  :set_fb_password, :set_login_details
+  before_validation  :set_fb_password, :set_login_details, :bot_login_details
 
   has_many :friend_requests, :dependent => :destroy, foreign_key: "requested_to_id"
   has_many :friend_requests_sent, :dependent => :destroy, foreign_key: "user_id", class_name: "FriendRequest"
@@ -14,7 +14,8 @@ class User < ActiveRecord::Base
   has_many :gift_requests_sent, :dependent => :destroy, class_name: "GiftRequest", foreign_key: "user_id"
   has_many :unconfirmed_gift_request, -> { where(confirmed: false) }, class_name: "GiftRequest", foreign_key: "send_to_id"
   has_one :powerup, :dependent => :destroy
-  has_many :tournaments
+  has_many :tournament_users, :dependent => :destroy
+  has_many :tournaments, through: :tournament_users
   has_many :round_users
   has_many :rewards
   has_many :login_histories, :dependent => :destroy
@@ -43,12 +44,14 @@ class User < ActiveRecord::Base
     end
   end
 
-  def round_scores
+  def round_scores(room_config_id, tournament_id)
     round_users = self.round_users
-    round_one_score = round_users.select {|round_user| round_user.round_number == 1}.max().score
-    round_two_score = round_users.select {|round_user| round_user.round_number == 2}.max().score
-    round_three_score = round_users.select {|round_user| round_user.round_number == 3}.max().score
-    return {round_one_score: round_one_score, round_two_score: round_two_score, round_three_score: round_three_score}
+    round_one_score = round_users.select {|round_user| round_user.round_number == 1 && round_user.room_config_id == room_id && round_user.tournament_id == tournament_id}.max().try(:score)
+    round_two_score = round_users.select {|round_user| round_user.round_number == 2 && round_user.room_config_id == room_id && round_user.tournament_id == tournament_id}.max().try(:score)
+    round_three_score = round_users.select {|round_user| round_user.round_number == 3 && round_user.room_config_id == room_id && round_user.tournament_id == tournament_id}.max().try(:score)
+    round_four_score = round_users.select {|round_user| round_user.round_number == 4 && round_user.room_config_id == room_id && round_user.tournament_id == tournament_id}.max().try(:score)
+    round_five_score = round_users.select {|round_user| round_user.round_number == 5 && round_user.room_config_id == room_id && round_user.tournament_id == tournament_id}.max().try(:score)
+    return {round_one_score: round_one_score, round_two_score: round_two_score, round_three_score: round_three_score, round_four_score: round_four_score, round_five_score: round_five_score}
   end
 
   def self.fetch_by_login_token(login_token)
@@ -76,6 +79,15 @@ class User < ActiveRecord::Base
     if is_guest
       generated_password = SecureRandom.hex(9)
       self.email = "guest_#{SecureRandom.hex(8)}@bingoapi.com"
+      self.password = generated_password
+      self.password_confirmation = generated_password
+    end
+  end
+
+  def bot_login_details
+    if is_bot
+      generated_password = SecureRandom.hex(9)
+      self.email = "bot_#{SecureRandom.hex(8)}@bingoapi.com"
       self.password = generated_password
       self.password_confirmation = generated_password
     end

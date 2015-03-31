@@ -41,14 +41,11 @@ class Round < ActiveRecord::Base
   			id: round_user.id,
   			daubs: node_obj['daubs'],
   			bingos: node_obj['bingo'],
-        # room_id: node_obj['room_id'],
         attempt_number: node_obj['attempt_number'],
         round_number: round_number,
         tournament_id: tournament_id,
         score: point
   		})
-  		# bingo_played = user.bingo_played.to_f + 1
-  		# total_daubs = user.total_daubs.to_f + node_obj['daubs'].to_f
   		users_attributes.push({
   			id: user.id,
   			total_daubs: user.total_daubs.to_f + node_obj['daubs'].to_f,
@@ -58,10 +55,10 @@ class Round < ActiveRecord::Base
   		})
       if self.resource_type == "Tournament"
         tournament_user = TournamentUser.where(tournament_id: self.resource_id, user_id: user.id).first
-        total_score = RoundUser.where(room_id: node_obj['room_id'], round_number: round_number, user_id: user.id, tournament_id: self.resource_id).pluck(:score).max().to_f
+        total_score = RoundUser.where(room_config_id: node_obj['room_config_id'], round_number: round_number, user_id: user.id, tournament_id: self.resource_id).pluck(:score).max().to_f
         score_get = (point > total_score) ? point : total_score
         score = tournament_user.try(:score).to_f + score_get.to_f
-        if tournament_type == "monthly"
+        if tournament_type == "Monthly"
           over = (node_obj['round'] >= 5)
         else
           over = (node_obj['round'] >= 3)
@@ -70,7 +67,7 @@ class Round < ActiveRecord::Base
           id: tournament_user.try(:id),
           user_id: user.id,
           score: score,
-          room_id: node_obj['room_id'],
+          room_config_id: node_obj['room_config_id'],
           over: over
         })
       end

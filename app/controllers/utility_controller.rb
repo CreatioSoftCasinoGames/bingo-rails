@@ -1,5 +1,4 @@
 class UtilityController < ApplicationController
-	load_and_authorize_resource
 	def show_api_key
 		@api_key = ApiKey.where(active: true).first
 	end

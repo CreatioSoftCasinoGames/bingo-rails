@@ -1,4 +1,5 @@
 class RoomConfigsController < ApplicationController
+  load_and_authorize_resource
   before_action :set_room_config, only: [:show, :edit, :update, :destroy]
 
   # GET /room_configs

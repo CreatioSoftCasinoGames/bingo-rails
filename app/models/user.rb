@@ -25,7 +25,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :in_app_purchases
   accepts_nested_attributes_for :powerup
   accepts_nested_attributes_for :login_histories
-  attr_accessor :reward_coins, :reward_tickets, :fb_friends_list
+  attr_accessor :reward_coins, :reward_tickets, :fb_friends_list, :previous_login_token
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
@@ -52,6 +52,10 @@ class User < ActiveRecord::Base
     round_four_score = round_users.select {|round_user| round_user.round_number == 4 && round_user.room_config_id == room_config_id && round_user.tournament_id == tournament_id}.max().try(:score)
     round_five_score = round_users.select {|round_user| round_user.round_number == 5 && round_user.room_config_id == room_config_id && round_user.tournament_id == tournament_id}.max().try(:score)
     return {round_one_score: round_one_score, round_two_score: round_two_score, round_three_score: round_three_score, round_four_score: round_four_score, round_five_score: round_five_score}
+  end
+
+  def is?( requested_role )
+    self.role == requested_role.to_s
   end
 
   def self.fetch_by_login_token(login_token)

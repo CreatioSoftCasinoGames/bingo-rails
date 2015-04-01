@@ -39,7 +39,10 @@ class UserSerializer < ActiveModel::Serializer
 						 :player_since,
 						 :online,
 						 :is_bot,
-						 :image_url
+						 :image_url,
+						 :is_fb_connected,
+						 :parent_id,
+						 :previous_login_token
 
 			has_one :powerup
 			has_many :in_app_purchases

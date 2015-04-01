@@ -1,4 +1,5 @@
 class TournamentRewardsController < ApplicationController
+  load_and_authorize_resource
   before_action :set_tournament_reward, only: [:show, :edit, :update, :destroy]
 
   # GET /tournament_rewards

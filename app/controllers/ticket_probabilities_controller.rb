@@ -1,5 +1,6 @@
 class TicketProbabilitiesController < ApplicationController
-   def index
+  load_and_authorize_resource
+  def index
   	@ticket_probabilities = TicketProbability.all
   	respond_to do |format|
       format.html 

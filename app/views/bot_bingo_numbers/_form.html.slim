@@ -1,0 +1,10 @@
+= form_for @bot_bingo_number, html: { class: "form form-horizontal bot_bingo_number" } do |f|
+  .form-group
+    table.table
+      tr
+        th= "Number Of Bots"
+        th= "Starting Number"
+      tr
+        td= f.text_field :number_of_bots, :class => 'form-control text_field'
+        td= f.text_field :starting_number, :class => 'form-control text_field'
+    = f.submit nil, :class => "btn btn-primary"

@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :bot_bingo_numbers
+
   resources :room_configs
 
   resources :ais do

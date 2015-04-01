@@ -1,5 +1,7 @@
 legend API Keys
 .form-group
-  input type="text" value=( @api_key.try(:token) ) class="form-control" readonly="true"
-.form-group
-  = link_to "New Token", generate_api_key_path, method: "post", class: "btn btn-primary"
+  - if user_signed_in?
+    - if can? :update, @utility
+		  input type="text" value=( @api_key.try(:token) ) class="form-control" readonly="true"
+		  .form-group
+		    = link_to "New Token", generate_api_key_path, method: "post", class: "btn btn-primary"

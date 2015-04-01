@@ -1,0 +1,38 @@
+- model_class = RoomConfig
+div class="page-header"
+  h1=t '.title', :default => model_class.model_name.human.titleize
+
+p
+  strong= model_class.human_attribute_name(:name) + ':'
+  br
+  = @room_config.name
+p
+  strong= model_class.human_attribute_name(:room_type) + ':'
+  br
+  = @room_config.room_type
+p
+  strong= model_class.human_attribute_name(:min_players) + ':'
+  br
+  = @room_config.min_players
+p
+  strong= model_class.human_attribute_name(:max_players) + ':'
+  br
+  = @room_config.max_players
+p
+  strong= model_class.human_attribute_name(:timeout) + ':'
+  br
+  = @room_config.timeout
+p
+  strong= model_class.human_attribute_name(:num_bingo_factor) + ':'
+  br
+  = @room_config.num_bingo_factor
+p
+  strong= model_class.human_attribute_name(:divider) + ':'
+  br
+  = @room_config.divider
+
+= link_to t('.back', :default => t("helpers.links.back")), room_configs_path, :class => 'btn btn-default'
+'
+= link_to t('.edit', :default => t("helpers.links.edit")), edit_room_config_path(@room_config), :class => 'btn btn-default'
+'
+= link_to t('.destroy', :default => t("helpers.links.destroy")), room_config_path(@room_config), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'

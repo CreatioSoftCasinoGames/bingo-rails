@@ -2,17 +2,30 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
 
-  before_update :set_daubs, :set_coins_collected, :set_bingo_diagonal, :set_bingo_vertical, :set_bingo_horizontal, :set_bingo_corner, :set_keys_collected, :set_daubs_collected, :set_mystry_chests, :set_bonus, :set_ticket
+  before_validation  :set_fb_password, :set_login_details, :bot_login_details
 
-  before_validation  :set_fb_password, :set_login_details
-
-  attr_accessor :daubs, :ticket, :bonus, :mystery_chests, :daubs_collected, :keys_collected, :bingo_vertical, :bingo_horizontal, :bingo_diagonal, :bingo_corner, :coins_collected
-
+  has_many :friend_requests, :dependent => :destroy, foreign_key: "requested_to_id"
+  has_many :friend_requests_sent, :dependent => :destroy, foreign_key: "user_id", class_name: "FriendRequest"
+  has_many :unconfirmed_friend_requests, -> { where(confirmed: false) }, class_name: "FriendRequest", foreign_key: "requested_to_id"
+  has_many :friendships, :dependent => :destroy
+  has_many :friends, through: :friendships
   has_many :in_app_purchases, :dependent => :destroy
+  has_many :gift_requests, :dependent => :destroy, foreign_key: "send_to_id"
+  has_many :gift_requests_sent, :dependent => :destroy, class_name: "GiftRequest", foreign_key: "user_id"
+  has_many :unconfirmed_gift_request, -> { where(confirmed: false) }, class_name: "GiftRequest", foreign_key: "send_to_id"
   has_one :powerup, :dependent => :destroy
+  has_many :tournament_users, :dependent => :destroy
+  has_many :tournaments, through: :tournament_users
+  has_many :round_users
+  has_many :rewards
+  has_many :login_histories, :dependent => :destroy
+  validate :increase_ticket_and_coins
+  validate :set_fb_friends
 
   accepts_nested_attributes_for :in_app_purchases
   accepts_nested_attributes_for :powerup
+  accepts_nested_attributes_for :login_histories
+  attr_accessor :reward_coins, :reward_tickets, :fb_friends_list, :previous_login_token
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
@@ -21,72 +34,41 @@ class User < ActiveRecord::Base
   	created_at.strftime("%B,%Y")
   end
 
-  private
-
-  def set_daubs
-  	if daubs
-  		self.total_daubs = total_daubs + daubs.to_f
-  	end
+  def full_name
+    [first_name, last_name].join(" ")
   end
-
-  def set_ticket
-  	if ticket
-  		self.ticket_bought = ticket_bought + ticket.to_f
-  	end
-  end
-
-  def set_bonus
-  	if bonus
-  		self.bounus_coins_and_tickets = bounus_coins_and_tickets + bonus.to_f
-  	end
-  end
-
-  def set_mystry_chests
-  	if mystery_chests
-  		self.mystery_chests_opened = mystery_chests_opened + mystery_chests.to_f
-  	end
-  end
-
-  def set_daubs_collected
-  	if daubs_collected
-  		self.free_daubs_collected = free_daubs_collected + daubs_collected.to_f
-  	end
-  end
-
-  def set_keys_collected
-  	if keys_collected
-  		self.keys_collected_in_game = keys_collected_in_game + keys_collected.to_f
-  	end
-  end
-
-  def set_bingo_vertical
-  	if bingo_vertical
-  		self.bingo_by_vertical_pattern = bingo_by_vertical_pattern + bingo_vertical.to_f
-  	end
-  end
-
-  def set_bingo_horizontal
-  	if bingo_horizontal
-  		self.bingo_by_horizontal_pattern = bingo_by_horizontal_pattern + bingo_horizontal.to_f
-  	end
-  end
-
-  def set_bingo_diagonal
-  	if bingo_diagonal
-  		self.bingo_by_diagonal_pattern = bingo_by_diagonal_pattern + bingo_diagonal.to_f
-  	end
-  end
-
-  def set_bingo_corner
-    if bingo_corner
-      self.bingo_by_corner_pattern = bingo_by_corner_pattern + bingo_corner.to_f
+  
+  def image_url 
+    if fb_id
+      "http://graph.facebook.com/#{fb_id}/picture"
     end
   end
 
-  def set_coins_collected
-  	if coins_collected
-  		self.coins_collected_in_game = coins_collected_in_game + coins_collected.to_f
-  	end
+  def round_scores(room_config_id, tournament_id)
+    round_users = self.round_users
+    round_one_score = round_users.select {|round_user| round_user.round_number == 1 && round_user.room_config_id == room_config_id && round_user.tournament_id == tournament_id}.max().try(:score)
+    round_two_score = round_users.select {|round_user| round_user.round_number == 2 && round_user.room_config_id == room_config_id && round_user.tournament_id == tournament_id}.max().try(:score)
+    round_three_score = round_users.select {|round_user| round_user.round_number == 3 && round_user.room_config_id == room_config_id && round_user.tournament_id == tournament_id}.max().try(:score)
+    round_four_score = round_users.select {|round_user| round_user.round_number == 4 && round_user.room_config_id == room_config_id && round_user.tournament_id == tournament_id}.max().try(:score)
+    round_five_score = round_users.select {|round_user| round_user.round_number == 5 && round_user.room_config_id == room_config_id && round_user.tournament_id == tournament_id}.max().try(:score)
+    return {round_one_score: round_one_score, round_two_score: round_two_score, round_three_score: round_three_score, round_four_score: round_four_score, round_five_score: round_five_score}
+  end
+
+  def is?( requested_role )
+    self.role == requested_role.to_s
+  end
+
+  def self.fetch_by_login_token(login_token)
+    self.where(login_token: login_token).first || LoginHistory.where(login_token: login_token).first.user
+  end
+
+  private
+
+  def increase_ticket_and_coins
+    if reward_coins && reward_tickets
+      self.coins = coins + reward_coins.to_f
+      self.ticket_bought = ticket_bought + reward_tickets.to_f
+    end
   end
 
   def set_fb_password
@@ -97,12 +79,38 @@ class User < ActiveRecord::Base
     end
   end
 
-   def set_login_details
+  def set_login_details
     if is_guest
       generated_password = SecureRandom.hex(9)
       self.email = "guest_#{SecureRandom.hex(8)}@bingoapi.com"
       self.password = generated_password
       self.password_confirmation = generated_password
+    end
+  end
+
+  def bot_login_details
+    if is_bot
+      generated_password = SecureRandom.hex(9)
+      self.email = "bot_#{SecureRandom.hex(8)}@bingoapi.com"
+      self.password = generated_password
+      self.password_confirmation = generated_password
+    end
+  end
+
+  def set_fb_friends
+    if fb_friends_list
+      user_ids = User.where(fb_id: fb_friends_list).collect(&:id)
+      friend_ids = self.friends.collect(&:id)
+      new_friend_ids = user_ids - friend_ids
+      deleted_friends_ids = friend_ids - user_ids
+      new_friend_ids.each do |friend_id|
+        Friendship.create(user_id: self.id, friend_id: friend_id)
+        Friendship.create(user_id: friend_id, friend_id: self.id)
+      end
+      deleted_friends_ids.each do |deleted_friend_id|
+        Friendship.where(user_id: self.id, friend_id: deleted_friend_id).first.delete
+        Friendship.where(user_id: deleted_friend_id, friend_id: self.id).first.delete
+      end
     end
   end
 

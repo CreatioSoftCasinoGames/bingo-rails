@@ -3,6 +3,7 @@ class UserSerializer < ActiveModel::Serializer
   					 :first_name, 
   					 :last_name, 
   					 :email, 
+  					 :login_token,
   					 :total_daubs, 
   					 :tokens, 
   					 :coins,	
@@ -35,7 +36,13 @@ class UserSerializer < ActiveModel::Serializer
 						 :bingo_by_diagonal_pattern,
 						 :bingo_by_corner_pattern, 
 						 :coins_collected_in_game, 
-						 :player_since
+						 :player_since,
+						 :online,
+						 :is_bot,
+						 :image_url,
+						 :is_fb_connected,
+						 :parent_id,
+						 :previous_login_token
 
 			has_one :powerup
 			has_many :in_app_purchases

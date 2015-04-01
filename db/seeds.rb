@@ -6,7 +6,7 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-user = User.create(:email => "rishabh@creatiosoft.com", :password => "@creatiosoft", :password_confirmation => "@creatiosoft")
+user = User.create(:email => "rishabh@creatiosoft.com", :password => "@creatiosoft", :password_confirmation => "@creatiosoft", :role => "admin")
 user.save
 
 
@@ -15,13 +15,13 @@ special_rooms = ["Speed_Bingo", "Pure_Bingo", "Reverse_Bingo", "QuickShot_Bingo"
 tournament_rooms = ["Daily_Free", "Weekly", "Monthly"]
 
 normal_rooms.each do |room_name|
-	Room.create(name: room_name, room_type: "normal")
+	RoomConfig.create(name: room_name, room_type: "Normal")
 end
 
 special_rooms.each do |room_name|
-	Room.create(name: room_name, room_type: "special")
+	RoomConfig.create(name: room_name, room_type: "Special")
 end
 
 tournament_rooms.each do |room_name|
-	Room.create(name: room_name, room_type: "tournament")
+	RoomConfig.create(name: room_name, room_type: "Tournament")
 end

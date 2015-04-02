@@ -27,6 +27,10 @@ class UtilityController < ApplicationController
 			REDIS_CLIENT.ZADD("bots_probabilities_sorted_set", max_players, "bots_probability_players:#{max_players}")
 			REDIS_CLIENT.set("bots_probability_players:#{max_players}", probabilities)
 		end
+		BotBingoNumber.all.each do |bot_bingo|
+			REDIS_CLIENT.SADD("bot_bingos", "bot_bingo:#{bot_bingo.number_of_bots}")
+			REDIS_CLIENT.SET("bot_bingo:#{bot_bingo.number_of_bots}", bot_bingo.starting_number)
+		end
 		User.where(is_bot: true).each do |bot_player|
 			REDIS_CLIENT.SADD("bot_available", bot_player.login_token)
 		end

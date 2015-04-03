@@ -7,7 +7,7 @@ class BotsProbability < ActiveRecord::Base
 		limits.each do |limit|
 			bots_probability_map[limit.last] = []
 			bots_probabilities = BotsProbability.all
-			(1..10).to_a.each do |num_bots|
+			(0..10).to_a.each do |num_bots|
 				bots_probability = bots_probabilities.select {|bp| (num_bots == bp.num_bots) && (limit[0] == bp.min_players) && (limit[1] == bp.max_players) }.first
 				if bots_probability
 					bots_probability_map[limit.last] << bots_probability.probability

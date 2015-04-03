@@ -5,10 +5,10 @@ h1 Bots Probabilities
     thead
       tr
         th Number Of Players
-        - (1..10).to_a.each do |num_bots|
+        - (0..10).to_a.each do |num_bots|
           th= num_bots
         th &nbsp;
-      - @ai.bots_probabilities.where(num_bots: 0).each do |bp|
+      - @ai.bots_probabilities.where(num_bots: -1).each do |bp|
         = render :partial => "bots_probability_row", locals: {range: [bp.min_players, bp.max_players]}
   = link_to "Add More", "#", class: "btn btn-primary", id: "btnAdd"
   br 

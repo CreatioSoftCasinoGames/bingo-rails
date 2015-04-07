@@ -10,6 +10,14 @@ class UtilityController < ApplicationController
 
 	def sync_data
 		RoomConfig.includes(:rooms).all.each do |room_config|
+			if (room_config.room_type=="Normal")
+				REDIS_CLIENT.SADD("normal_room_players", "onlinePlayer:#{room_config.id}")
+			elsif (room_config.room_type=="Special")
+					REDIS_CLIENT.SADD("special_room_players", "onlinePlayer:#{room_config.id}")
+			else
+				REDIS_CLIENT.SADD("tournament_room_players", "onlinePlayer:#{room_config.id}")				
+			end
+			
 			REDIS_CLIENT.SADD("room_configs", "room_config:#{room_config.id}")
 			REDIS_CLIENT.HMSET("room_config:#{room_config.id}", "name", room_config.name, "min_players", room_config.min_players, "max_players", room_config.max_players, "room_type", room_config.room_type);
 			room_config.rooms.each do |room|

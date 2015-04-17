@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
-	before_action :find_user, only: [:update, :show, :get_round_and_attempt, :my_rank, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends, :sent_gift, :received_gift, :ask_for_gift_to, :ask_for_gift_by, :player_rank]
+	before_action :find_user, only: [:update, :show, :get_round_and_attempt, :my_rank, :game_data, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends, :sent_gift, :received_gift, :ask_for_gift_to, :ask_for_gift_by, :player_rank]
 
 	def create
 		@user = User.new(user_params)
@@ -146,6 +146,14 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		end
 	end
 
+	def game_data
+		render json: @user.as_json({
+			only: [:coins, :ticket_bought, :keys, :powerups_remaining, :xp_earned, :current_level, :total_daubs, 
+				     :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, 
+				     :achievement_data_string, :total_scratch_count, :daily_bonus_time_remaining, :special_reward_timer
+				    ]
+		})
+	end
 
 	def in_game_inapp
 		@room_config = RoomConfig.where(id: params[:room_config_id]).first
@@ -164,8 +172,18 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def user_params
 		params.require(:user).permit(:email, :password, :password_confirmation, :first_name, :last_name, :fb_id, :is_guest, :tokens, :coins, 
-			:powerups_remaining, :keys, :bingo_win, :tickets_purchased, :current_level, :xp_earned, :achievements_won, :jigsaw_pieces_collected, :powerups_used, :bingo_played, :tournaments_participated, :tournaments_won, :best_tournament_position, 
-			:best_bingo_position, :ticket_bought, :total_daubs, :keys_collected_in_game, :free_daubs_collected, :mystery_chests_opened, :bounus_coins_and_tickets, :coins_collected_in_game, :bingo_by_corner_pattern, :bingo_by_horizontal_pattern, :bingo_by_vertical_pattern, :bingo_by_diagonal_pattern, :daily_free_tickets_available, :is_invited_facebook_friend, :is_gifted_to_friend, :is_bingo_on_all_card, :fastest_bingo, in_app_purchases_attributes: [:amount, :title], powerup_attributes: [:free_cell, :instant_bingo, :mystry_chests, :reveal_and_daub, :double_payout, :free_coins, :id])
+			:powerups_remaining, :keys, :bingo_win, :tickets_purchased, :current_level, :xp_earned, :achievements_won, :jigsaw_pieces_collected, 
+			:powerups_used, :bingo_played, :tournaments_participated, :tournaments_won, :best_tournament_position, 
+			:best_bingo_position, :ticket_bought, :total_daubs, :keys_collected_in_game, :free_daubs_collected, :mystery_chests_opened, :bounus_coins_and_tickets, 
+			:coins_collected_in_game, :bingo_by_corner_pattern, :bingo_by_horizontal_pattern, :bingo_by_vertical_pattern, :bingo_by_diagonal_pattern, 
+			:daily_free_tickets_available, :is_invited_facebook_friend, :is_gifted_to_friend, :is_bingo_on_all_card, :fastest_bingo, 
+			:total_jigsaw_completed, :total_bing, :total_daily_participitated, 
+			:total_weekly_participated, :total_card_used, :total_monthly_participated,
+			:total_daily_won, :total_weekly_won, :jigsaw_data_string, :total_monthly_won, 
+			:achievement_data_string, :best_daily_position, :best_monthly_position, :best_weekly_position,
+			:best_special_position, :total_free_spin_count, :total_scratch_count, :daily_bonus_time_remaining, 
+			:special_reward_timer, :total_room_unlocked,
+			in_app_purchases_attributes: [:amount, :title], powerup_attributes: [:free_cell, :instant_bingo, :mystry_chests, :reveal_and_daub, :double_payout, :free_coins, :id])
 	end
 
 	def find_user

@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  coins: 9.99
+  powerups: 1
+  tickets: 1
+  key: 1
+  chest: 1
+
+two:
+  coins: 9.99
+  powerups: 1
+  tickets: 1
+  key: 1
+  chest: 1

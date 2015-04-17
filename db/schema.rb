@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150401095044) do
+ActiveRecord::Schema.define(version: 20150417131532) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -23,6 +23,15 @@ ActiveRecord::Schema.define(version: 20150401095044) do
   create_table "api_keys", force: true do |t|
     t.string   "token"
     t.boolean  "active",     default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "bingo_points", force: true do |t|
+    t.integer  "xp",                                   default: 0
+    t.decimal  "cell_coin",   precision: 10, scale: 0, default: 0
+    t.decimal  "ticket_cost", precision: 10, scale: 0, default: 0
+    t.integer  "theme_level",                          default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -156,6 +165,16 @@ ActiveRecord::Schema.define(version: 20150401095044) do
     t.integer  "resource_id"
   end
 
+  create_table "scratch_card_rewards", force: true do |t|
+    t.decimal  "coins",      precision: 10, scale: 0, default: 0
+    t.integer  "powerups",                            default: 0
+    t.integer  "tickets",                             default: 0
+    t.integer  "key",                                 default: 0
+    t.integer  "chest",                               default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "ticket_probabilities", force: true do |t|
     t.integer  "num_ticket"
     t.float    "probability",    limit: 24
@@ -251,6 +270,26 @@ ActiveRecord::Schema.define(version: 20150401095044) do
     t.boolean  "online",                                                default: false
     t.integer  "parent_id",                                             default: 0
     t.boolean  "is_fb_connected",                                       default: false
+    t.integer  "total_jigsaw_completed",                                default: 0
+    t.integer  "total_bing",                                            default: 0
+    t.integer  "total_daily_participitated",                            default: 0
+    t.integer  "total_weekly_participated",                             default: 0
+    t.integer  "total_card_used",                                       default: 0
+    t.integer  "total_monthly_participated",                            default: 0
+    t.integer  "total_daily_won",                                       default: 0
+    t.integer  "total_weekly_won",                                      default: 0
+    t.string   "jigsaw_data_string"
+    t.integer  "total_monthly_won",                                     default: 0
+    t.string   "achievement_data_string"
+    t.integer  "best_daily_position",                                   default: 0
+    t.integer  "best_monthly_position",                                 default: 0
+    t.integer  "best_weekly_position",                                  default: 0
+    t.integer  "best_special_position",                                 default: 0
+    t.integer  "total_free_spin_count",                                 default: 0
+    t.integer  "total_scratch_count",                                   default: 0
+    t.decimal  "daily_bonus_time_remaining",   precision: 10, scale: 0, default: 0
+    t.decimal  "special_reward_timer",         precision: 10, scale: 0, default: 0
+    t.integer  "total_room_unlocked",                                   default: 0
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

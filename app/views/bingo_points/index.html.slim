@@ -1,0 +1,29 @@
+- model_class = BingoPoint
+div class="page-header"
+  h1=t '.title', :default => model_class.model_name.human.pluralize.titleize
+table class="table table-striped"
+  thead
+    tr
+      th= model_class.human_attribute_name(:id)
+      th= model_class.human_attribute_name(:xp)
+      th= model_class.human_attribute_name(:cell_coin)
+      th= model_class.human_attribute_name(:ticket_cost)
+      th= model_class.human_attribute_name(:theme_level)
+      th= model_class.human_attribute_name(:created_at)
+      th=t '.actions', :default => t("helpers.actions")
+  tbody
+    - @bingo_points.each do |bingo_point|
+      tr
+        td= link_to bingo_point.id, bingo_point_path(bingo_point)
+        td= bingo_point.xp
+        td= bingo_point.cell_coin
+        td= bingo_point.ticket_cost
+        td= bingo_point.theme_level
+        td=l bingo_point.created_at
+        td
+          = link_to t('.edit', :default => t("helpers.links.edit")), edit_bingo_point_path(bingo_point), :class => 'btn btn-default btn-xs'
+          '
+          = link_to t('.destroy', :default => t("helpers.links.destroy")), bingo_point_path(bingo_point), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+
+= link_to t('.new', :default => t("helpers.links.new")), new_bingo_point_path, :class => 'btn btn-primary'
+

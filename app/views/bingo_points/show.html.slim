@@ -1,0 +1,26 @@
+- model_class = BingoPoint
+div class="page-header"
+  h1=t '.title', :default => model_class.model_name.human.titleize
+
+p
+  strong= model_class.human_attribute_name(:xp) + ':'
+  br
+  = @bingo_point.xp
+p
+  strong= model_class.human_attribute_name(:cell_coin) + ':'
+  br
+  = @bingo_point.cell_coin
+p
+  strong= model_class.human_attribute_name(:ticket_cost) + ':'
+  br
+  = @bingo_point.ticket_cost
+p
+  strong= model_class.human_attribute_name(:theme_level) + ':'
+  br
+  = @bingo_point.theme_level
+
+= link_to t('.back', :default => t("helpers.links.back")), bingo_points_path, :class => 'btn btn-default'
+'
+= link_to t('.edit', :default => t("helpers.links.edit")), edit_bingo_point_path(@bingo_point), :class => 'btn btn-default'
+'
+= link_to t('.destroy', :default => t("helpers.links.destroy")), bingo_point_path(@bingo_point), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'

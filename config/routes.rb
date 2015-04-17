@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  resources :scratch_card_rewards
+
+  resources :bingo_points
+
   resources :bot_bingo_numbers
 
   resources :room_configs
@@ -48,6 +52,8 @@ Rails.application.routes.draw do
       resources :friend_requests
       resources :gift_requests
       resources :table_configs
+      resources :scratch_card_rewards
+      resources :bingo_points
       resources :users
       resources :rooms
       resources :tournaments
@@ -78,6 +84,7 @@ Rails.application.routes.draw do
           get :in_game_inapp
           get :get_online_players
           get :player_rank
+          get :game_data
         end
       end
 

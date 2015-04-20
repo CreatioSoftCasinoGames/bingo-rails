@@ -1,7 +1,7 @@
 class AddFieldsToUsers < ActiveRecord::Migration
   def change
   	add_column :users, :total_jigsaw_completed, :integer, default: 0
-  	add_column :users, :total_bing, :integer, default: 0
+  	add_column :users, :total_bingo, :integer, default: 0
   	add_column :users, :total_daily_participitated, :integer, default: 0
   	add_column :users, :total_weekly_participated, :integer, default: 0
   	add_column :users, :total_card_used, :integer, default: 0

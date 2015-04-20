@@ -177,7 +177,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			:best_bingo_position, :ticket_bought, :total_daubs, :keys_collected_in_game, :free_daubs_collected, :mystery_chests_opened, :bounus_coins_and_tickets, 
 			:coins_collected_in_game, :bingo_by_corner_pattern, :bingo_by_horizontal_pattern, :bingo_by_vertical_pattern, :bingo_by_diagonal_pattern, 
 			:daily_free_tickets_available, :is_invited_facebook_friend, :is_gifted_to_friend, :is_bingo_on_all_card, :fastest_bingo, 
-			:total_jigsaw_completed, :total_bing, :total_daily_participitated, 
+			:total_jigsaw_completed, :total_bingo, :total_daily_participitated, 
 			:total_weekly_participated, :total_card_used, :total_monthly_participated,
 			:total_daily_won, :total_weekly_won, :jigsaw_data_string, :total_monthly_won, 
 			:achievement_data_string, :best_daily_position, :best_monthly_position, :best_weekly_position,

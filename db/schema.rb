@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150417131532) do
+ActiveRecord::Schema.define(version: 20150420132341) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -233,8 +233,8 @@ ActiveRecord::Schema.define(version: 20150417131532) do
     t.string   "role",                                                  default: "PLAYER"
     t.boolean  "is_guest"
     t.decimal  "tokens",                       precision: 10, scale: 0, default: 0
-    t.decimal  "coins",                        precision: 10, scale: 0, default: 0
-    t.integer  "powerups_remaining",                                    default: 30
+    t.decimal  "coins",                        precision: 10, scale: 0, default: 100
+    t.integer  "powerups_remaining",                                    default: 5
     t.integer  "keys",                                                  default: 20
     t.integer  "bingo_win",                                             default: 0
     t.integer  "tickets_purchased",                                     default: 0
@@ -245,7 +245,7 @@ ActiveRecord::Schema.define(version: 20150417131532) do
     t.integer  "total_daubs",                                           default: 0
     t.integer  "powerups_used",                                         default: 0
     t.integer  "bingo_played",                                          default: 0
-    t.integer  "ticket_bought",                                         default: 0
+    t.integer  "ticket_bought",                                         default: 10
     t.integer  "tournaments_participated",                              default: 0
     t.integer  "tournaments_won",                                       default: 0
     t.integer  "best_tournament_position",                              default: 0
@@ -271,7 +271,7 @@ ActiveRecord::Schema.define(version: 20150417131532) do
     t.integer  "parent_id",                                             default: 0
     t.boolean  "is_fb_connected",                                       default: false
     t.integer  "total_jigsaw_completed",                                default: 0
-    t.integer  "total_bing",                                            default: 0
+    t.integer  "total_bingo",                                           default: 0
     t.integer  "total_daily_participitated",                            default: 0
     t.integer  "total_weekly_participated",                             default: 0
     t.integer  "total_card_used",                                       default: 0

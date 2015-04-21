@@ -71,7 +71,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def get_round_and_attempt
-		@round_user = @user.round_users.where(room_config_id: params[:room_id]).last
+		@round_user = @user.round_users.where(room_config_id: params[:room_config_id]).last
 		# @room = Room.where(id: params[:room_id]).first
 		tournament_user = @user.tournament_users.where(room_config_id: params[:room_id]).last
     if tournament_user.present? && tournament_user.tournament.tournament_type == "Weekly" && @round_user.updated_at.to_date < Time.now.to_date
@@ -95,7 +95,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
 				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
 				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).first
-				remaining_time = @tournament.created_at - Time.now + @room_config.duration.day
+				remaining_time = @tournament.created_at - Time.now #+ @room_config.duration.day
 			end
 			render json: {
 				round_one: @round_scores.present? ? @round_scores[:round_one_score] : 0,

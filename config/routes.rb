@@ -48,7 +48,11 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :room_configs
+      resources :room_configs do
+        member do
+          get :leader_board
+        end
+      end
       resources :friend_requests
       resources :gift_requests
       resources :table_configs

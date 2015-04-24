@@ -42,7 +42,27 @@ class UserSerializer < ActiveModel::Serializer
 						 :image_url,
 						 :is_fb_connected,
 						 :parent_id,
-						 :previous_login_token
+						 :previous_login_token,
+						 :total_jigsaw_completed,
+						 :total_bing, 
+						 :total_daily_participitated, 
+						 :total_weekly_participated, 
+						 :total_card_used, 
+						 :total_monthly_participated,
+						 :total_daily_won, 
+						 :total_weekly_won, 
+						 :jigsaw_data_string, 
+						 :total_monthly_won, 
+						 :achievement_data_string, 
+						 :best_daily_position, 
+						 :best_monthly_position, 
+						 :best_weekly_position,
+					 	 :best_special_position, 
+					 	 :total_free_spin_count, 
+					 	 :total_scratch_count,
+					 	 :daily_bonus_time_remaining, 
+						 :special_reward_timer, 
+						 :total_room_unlocked 
 
 			has_one :powerup
 			has_many :in_app_purchases

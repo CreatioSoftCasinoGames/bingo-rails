@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  xp: 1
+  cell_coin: 9.99
+  ticket_cost: 9.99
+  theme_level: 1
+
+two:
+  xp: 1
+  cell_coin: 9.99
+  ticket_cost: 9.99
+  theme_level: 1

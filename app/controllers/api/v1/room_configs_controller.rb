@@ -1,5 +1,7 @@
 class Api::V1::RoomConfigsController < Api::V1::ApplicationController
+
 	before_action :find_room_config, only: [:leader_board]
+	
 	def index
 		@room_configs = RoomConfig.where(true)
 		(@room_configs = @room_configs.where(room_type: params[:room_type])) if params[:room_type]
@@ -34,9 +36,9 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 		if tournament_type == "Daily_Free"
 			users_score = @room_config.active_tournament.tournament_users.order("score desc")
 		elsif tournament_type == "Weekly"
-			users_score = @room_config.find_tournament(@room.id, @user.id).tournament_users.order("score desc")
+			users_score = @room_config.find_tournament(@room_config.id, @user.id).tournament_users.order("score desc")
 		elsif tournament_type == "Monthly"
-			users_score = @room_config.find_tournament(@room.id, @user.id).tournament_users.order("score desc")
+			users_score = @room_config.find_tournament(@room_config.id, @user.id).tournament_users.order("score desc")
 		end
 		leader_board = users_score.limit(20).as_json({
 			only: [:score],

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150420132341) do
+ActiveRecord::Schema.define(version: 20150430114627) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -125,6 +125,21 @@ ActiveRecord::Schema.define(version: 20150420132341) do
     t.integer  "duration"
   end
 
+  create_table "room_users", force: true do |t|
+    t.integer  "daubs"
+    t.integer  "bingos"
+    t.boolean  "is_waiting"
+    t.integer  "cards_count"
+    t.integer  "attempt_no",                           default: 1
+    t.integer  "round_no",                             default: 0
+    t.decimal  "score",       precision: 10, scale: 0, default: 0
+    t.boolean  "over",                                 default: false
+    t.integer  "room_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "rooms", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -134,6 +149,8 @@ ActiveRecord::Schema.define(version: 20150420132341) do
     t.string   "num_bingo_factor"
     t.integer  "divider"
     t.integer  "room_config_id"
+    t.integer  "round_number"
+    t.string   "uuid"
   end
 
   create_table "round_users", force: true do |t|

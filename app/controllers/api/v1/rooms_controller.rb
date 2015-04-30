@@ -12,7 +12,7 @@ class Api::V1::RoomsController < Api::V1::ApplicationController
 		if @room.save
 			render json: {
 				room: @room.as_json({
-					only: [:id, :name, :room_type, :timeout, :num_bingo_factor, :divider, :room_config_id]
+					only: [:id, :name, :room_type, :timeout, :num_bingo_factor, :divider, :room_config_id, :round_number, :uuid]
 					}),
 				valid: true
 			}

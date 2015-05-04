@@ -53,6 +53,11 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 		}
 	end
 
+	def find_room_id
+		@room_id = RoomConfig.where(id: params[:id]).first.rooms.where(round_number: params[:round_number]).first.id
+		render json: @room_id
+	end
+
 	private
 
 	def find_room_config

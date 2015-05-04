@@ -32,6 +32,7 @@ class Api::V1::RoomsController < Api::V1::ApplicationController
 		}
 	end
 
+	
 	# def leader_board
 	# 	@user = User.fetch_by_login_token(params[:login_token])
 	# 	tournament_type = @room.active_tournament.tournament_type

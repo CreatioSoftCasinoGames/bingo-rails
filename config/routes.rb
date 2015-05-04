@@ -51,6 +51,7 @@ Rails.application.routes.draw do
       resources :room_configs do
         member do
           get :leader_board
+          get :find_room_id
         end
       end
       resources :friend_requests
@@ -163,3 +164,5 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 end
+
+

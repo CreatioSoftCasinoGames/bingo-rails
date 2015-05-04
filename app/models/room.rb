@@ -6,6 +6,8 @@ class Room < ActiveRecord::Base
 	has_many :round_users
 	before_save :set_name
 	has_many :ticket_probabilities
+	has_many :room_users, :dependent => :destroy
+	has_many :users, :through => :room_users
 
 	private
 

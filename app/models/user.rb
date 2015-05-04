@@ -19,6 +19,8 @@ class User < ActiveRecord::Base
   has_many :round_users
   has_many :rewards
   has_many :login_histories, :dependent => :destroy
+  has_many :room_users, :dependent => :destroy
+  has_many :rooms, :through => :room_users
   validate :increase_ticket_and_coins
   validate :set_fb_friends
 

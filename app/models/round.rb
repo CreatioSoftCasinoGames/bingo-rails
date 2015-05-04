@@ -10,6 +10,7 @@ class Round < ActiveRecord::Base
 	accepts_nested_attributes_for :users
 	accepts_nested_attributes_for :round_users
   accepts_nested_attributes_for :tournament
+  # accepts_nested_attributes_for :round_users
 
 	# def deck
 	# 	YAML.load read_attribute(:deck)

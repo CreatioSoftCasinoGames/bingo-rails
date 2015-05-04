@@ -46,6 +46,14 @@ class User < ActiveRecord::Base
     end
   end
 
+  def num_friend_request
+    FriendRequest.where(requested_to_id: self.id, confirmed: false).count()
+  end
+
+  def num_gift_request
+    GiftRequest.where(send_to_id: self.id, confirmed: false).count()
+  end
+
   def round_scores(room_config_id, tournament_id)
     round_users = self.round_users
     round_one_score = round_users.select {|round_user| round_user.round_number == 1 && round_user.room_config_id == room_config_id && round_user.tournament_id == tournament_id}.max().try(:score)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150430114627) do
+ActiveRecord::Schema.define(version: 20150505075149) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -288,16 +288,16 @@ ActiveRecord::Schema.define(version: 20150430114627) do
     t.integer  "parent_id",                                             default: 0
     t.boolean  "is_fb_connected",                                       default: false
     t.integer  "total_jigsaw_completed",                                default: 0
-    t.integer  "total_bingo",                                            default: 0
+    t.integer  "total_bingo",                                           default: 0
     t.integer  "total_daily_participitated",                            default: 0
     t.integer  "total_weekly_participated",                             default: 0
     t.integer  "total_card_used",                                       default: 0
     t.integer  "total_monthly_participated",                            default: 0
     t.integer  "total_daily_won",                                       default: 0
     t.integer  "total_weekly_won",                                      default: 0
-    t.string   "jigsaw_data_string"
+    t.text     "jigsaw_data_string"
     t.integer  "total_monthly_won",                                     default: 0
-    t.string   "achievement_data_string"
+    t.text     "achievement_data_string"
     t.integer  "best_daily_position",                                   default: 0
     t.integer  "best_monthly_position",                                 default: 0
     t.integer  "best_weekly_position",                                  default: 0

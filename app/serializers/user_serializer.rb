@@ -45,7 +45,6 @@ class UserSerializer < ActiveModel::Serializer
 						 :parent_id,
 						 :previous_login_token,
 						 :total_jigsaw_completed,
-						 :total_bingo, 
 						 :total_daily_participitated, 
 						 :total_weekly_participated, 
 						 :total_card_used, 

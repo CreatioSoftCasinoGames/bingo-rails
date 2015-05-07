@@ -19,6 +19,8 @@ class User < ActiveRecord::Base
   has_many :round_users
   has_many :rewards
   has_many :login_histories, :dependent => :destroy
+  has_many :room_users, :dependent => :destroy
+  has_many :rooms, :through => :room_users
   validate :increase_ticket_and_coins
   validate :set_fb_friends
 
@@ -42,6 +44,14 @@ class User < ActiveRecord::Base
     if fb_id
       "http://graph.facebook.com/#{fb_id}/picture"
     end
+  end
+
+  def num_friend_request
+    FriendRequest.where(requested_to_id: self.id, confirmed: false).count()
+  end
+
+  def num_gift_request
+    GiftRequest.where(send_to_id: self.id, confirmed: false).count()
   end
 
   def round_scores(room_config_id, tournament_id)

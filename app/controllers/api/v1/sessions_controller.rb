@@ -63,11 +63,12 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 
 		if @user.present?
 			login_token = SecureRandom.hex(5)
+			# login_token = @user.id
 			if @user.update_attributes(login_token: login_token, online: true, login_histories_attributes: {id: nil, active: true, login_token: login_token })
 				@user.previous_login_token = @user.login_histories.order("created_at desc").limit(2).last.try(:login_token)
 				render json: @user.as_json({
-					only: [:login_token, :previous_login_token, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :daily_bonus_time_remaining, :special_reward_timer, :ticket_bought],
-					methods: [:num_friend_request, :num_gift_request, :player_since, :image_url],
+					only: [:login_token, :bingo_played, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :daily_bonus_time_remaining, :special_reward_timer, :ticket_bought],
+					methods: [:num_friend_request, :num_gift_request, :player_since, :image_url, :previous_login_token],
 					include: [:powerup, :in_app_purchases]
 				})
 			else

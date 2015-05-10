@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150331132138) do
+ActiveRecord::Schema.define(version: 20150505122140) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -23,6 +23,22 @@ ActiveRecord::Schema.define(version: 20150331132138) do
   create_table "api_keys", force: true do |t|
     t.string   "token"
     t.boolean  "active",     default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "bingo_points", force: true do |t|
+    t.integer  "xp",                                   default: 0
+    t.decimal  "cell_coin",   precision: 10, scale: 0, default: 0
+    t.decimal  "ticket_cost", precision: 10, scale: 0, default: 0
+    t.integer  "theme_level",                          default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "bot_bingo_numbers", force: true do |t|
+    t.integer  "number_of_bots"
+    t.integer  "starting_number"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -109,6 +125,21 @@ ActiveRecord::Schema.define(version: 20150331132138) do
     t.integer  "duration"
   end
 
+  create_table "room_users", force: true do |t|
+    t.integer  "daubs"
+    t.integer  "bingos"
+    t.boolean  "is_waiting"
+    t.integer  "cards_count"
+    t.integer  "attempt_no",                           default: 1
+    t.integer  "round_no",                             default: 0
+    t.decimal  "score",       precision: 10, scale: 0, default: 0
+    t.boolean  "over",                                 default: false
+    t.integer  "room_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "rooms", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -118,6 +149,8 @@ ActiveRecord::Schema.define(version: 20150331132138) do
     t.string   "num_bingo_factor"
     t.integer  "divider"
     t.integer  "room_config_id"
+    t.integer  "round_number"
+    t.string   "uuid"
   end
 
   create_table "round_users", force: true do |t|
@@ -147,6 +180,16 @@ ActiveRecord::Schema.define(version: 20150331132138) do
     t.string   "uuid"
     t.string   "resource_type"
     t.integer  "resource_id"
+  end
+
+  create_table "scratch_card_rewards", force: true do |t|
+    t.decimal  "coins",      precision: 10, scale: 0, default: 0
+    t.integer  "powerups",                            default: 0
+    t.integer  "tickets",                             default: 0
+    t.integer  "key",                                 default: 0
+    t.integer  "chest",                               default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "ticket_probabilities", force: true do |t|
@@ -207,8 +250,8 @@ ActiveRecord::Schema.define(version: 20150331132138) do
     t.string   "role",                                                  default: "PLAYER"
     t.boolean  "is_guest"
     t.decimal  "tokens",                       precision: 10, scale: 0, default: 0
-    t.decimal  "coins",                        precision: 10, scale: 0, default: 0
-    t.integer  "powerups_remaining",                                    default: 30
+    t.decimal  "coins",                        precision: 10, scale: 0, default: 100
+    t.integer  "powerups_remaining",                                    default: 5
     t.integer  "keys",                                                  default: 20
     t.integer  "bingo_win",                                             default: 0
     t.integer  "tickets_purchased",                                     default: 0
@@ -219,7 +262,7 @@ ActiveRecord::Schema.define(version: 20150331132138) do
     t.integer  "total_daubs",                                           default: 0
     t.integer  "powerups_used",                                         default: 0
     t.integer  "bingo_played",                                          default: 0
-    t.integer  "ticket_bought",                                         default: 0
+    t.integer  "ticket_bought",                                         default: 10
     t.integer  "tournaments_participated",                              default: 0
     t.integer  "tournaments_won",                                       default: 0
     t.integer  "best_tournament_position",                              default: 0
@@ -242,6 +285,28 @@ ActiveRecord::Schema.define(version: 20150331132138) do
     t.string   "login_token"
     t.boolean  "is_bot",                                                default: false
     t.boolean  "online",                                                default: false
+    t.integer  "parent_id",                                             default: 0
+    t.boolean  "is_fb_connected",                                       default: false
+    t.integer  "total_jigsaw_completed",                                default: 0
+    t.integer  "total_daily_participitated",                            default: 0
+    t.integer  "total_weekly_participated",                             default: 0
+    t.integer  "total_card_used",                                       default: 0
+    t.integer  "total_monthly_participated",                            default: 0
+    t.integer  "total_daily_won",                                       default: 0
+    t.integer  "total_weekly_won",                                      default: 0
+    t.text     "jigsaw_data_string"
+    t.integer  "total_monthly_won",                                     default: 0
+    t.text     "achievement_data_string"
+    t.integer  "best_daily_position",                                   default: 0
+    t.integer  "best_monthly_position",                                 default: 0
+    t.integer  "best_weekly_position",                                  default: 0
+    t.integer  "best_special_position",                                 default: 0
+    t.integer  "total_free_spin_count",                                 default: 0
+    t.integer  "total_scratch_count",                                   default: 0
+    t.decimal  "daily_bonus_time_remaining",   precision: 10, scale: 0, default: 0
+    t.decimal  "special_reward_timer",         precision: 10, scale: 0, default: 0
+    t.integer  "total_room_unlocked",                                   default: 0
+    t.integer  "total_bingo",                                           default: 0
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

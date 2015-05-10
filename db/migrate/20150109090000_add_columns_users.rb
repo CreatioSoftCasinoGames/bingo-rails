@@ -31,6 +31,7 @@ class AddColumnsUsers < ActiveRecord::Migration
   	add_column :users, :is_gifted_to_friend, :boolean, default: 0
   	add_column :users, :is_bingo_on_all_card, :boolean, default: 0
   	add_column :users, :fastest_bingo, :decimal, default: 0
+
   end
 
 end

@@ -10,6 +10,7 @@ class Round < ActiveRecord::Base
 	accepts_nested_attributes_for :users
 	accepts_nested_attributes_for :round_users
   accepts_nested_attributes_for :tournament
+  # accepts_nested_attributes_for :round_users
 
 	# def deck
 	# 	YAML.load read_attribute(:deck)
@@ -29,7 +30,7 @@ class Round < ActiveRecord::Base
       if self.resource_type == "Tournament"
         tournament_type = Tournament.find(self.resource_id).tournament_type
         point = 2*node_obj['daubs'].to_f + 10*node_obj['bingo'].to_f
-        if tournament_type == "monthly"
+        if tournament_type == "Monthly"
           round_number = (node_obj['round'] <= 5) ? node_obj['round'] : 1
           tournament_id = self.resource_id
         else

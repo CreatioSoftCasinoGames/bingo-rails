@@ -1,4 +1,5 @@
 class AisController < ApplicationController
+  load_and_authorize_resource
   before_action :set_ai, only: [:show, :edit, :update, :destroy, :bots_probabilities, :ticket_probabilities]
   
   def bots_probabilities

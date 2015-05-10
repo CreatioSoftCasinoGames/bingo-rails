@@ -1,4 +1,5 @@
 class TournamentsController < ApplicationController
+  load_and_authorize_resource
   before_action :set_tournament, only: [:show, :edit, :update, :destroy]
 
   # GET /tournaments

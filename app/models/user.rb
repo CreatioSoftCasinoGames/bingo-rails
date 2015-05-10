@@ -19,13 +19,16 @@ class User < ActiveRecord::Base
   has_many :round_users
   has_many :rewards
   has_many :login_histories, :dependent => :destroy
+  has_many :room_users, :dependent => :destroy
+  has_many :rooms, :through => :room_users
   validate :increase_ticket_and_coins
   validate :set_fb_friends
+  before_update :check_device_changed
 
   accepts_nested_attributes_for :in_app_purchases
   accepts_nested_attributes_for :powerup
   accepts_nested_attributes_for :login_histories
-  attr_accessor :reward_coins, :reward_tickets, :fb_friends_list
+  attr_accessor :reward_coins, :reward_tickets, :fb_friends_list, :previous_login_token, :device_changed
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
@@ -44,6 +47,14 @@ class User < ActiveRecord::Base
     end
   end
 
+  def num_friend_request
+    FriendRequest.where(requested_to_id: self.id, confirmed: false).count()
+  end
+
+  def num_gift_request
+    GiftRequest.where(send_to_id: self.id, confirmed: false).count()
+  end
+
   def round_scores(room_config_id, tournament_id)
     round_users = self.round_users
     round_one_score = round_users.select {|round_user| round_user.round_number == 1 && round_user.room_config_id == room_config_id && round_user.tournament_id == tournament_id}.max().try(:score)
@@ -52,6 +63,10 @@ class User < ActiveRecord::Base
     round_four_score = round_users.select {|round_user| round_user.round_number == 4 && round_user.room_config_id == room_config_id && round_user.tournament_id == tournament_id}.max().try(:score)
     round_five_score = round_users.select {|round_user| round_user.round_number == 5 && round_user.room_config_id == room_config_id && round_user.tournament_id == tournament_id}.max().try(:score)
     return {round_one_score: round_one_score, round_two_score: round_two_score, round_three_score: round_three_score, round_four_score: round_four_score, round_five_score: round_five_score}
+  end
+
+  def is?( requested_role )
+    self.role == requested_role.to_s
   end
 
   def self.fetch_by_login_token(login_token)
@@ -104,10 +119,15 @@ class User < ActiveRecord::Base
         Friendship.create(user_id: friend_id, friend_id: self.id)
       end
       deleted_friends_ids.each do |deleted_friend_id|
-        Friendship.where(user_id: self.id, friend_id: deleted_friend_id).first.delete
-        Friendship.where(user_id: deleted_friend_id, friend_id: self.id).first.delete
+        Friendship.where(user_id: id, friend_id: deleted_friend_id).first.try(:delete)
+        Friendship.where(user_id: deleted_friend_id, friend_id: id).first.try(:delete)
       end
     end
+  end
+
+  def check_device_changed
+    self.device_changed = true if self.changes.include?(:device_id)
+    true
   end
 
 end

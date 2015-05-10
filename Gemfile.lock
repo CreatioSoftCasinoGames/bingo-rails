@@ -52,6 +52,7 @@ GEM
       columnize (~> 0.8)
       debugger-linecache (~> 1.2)
       slop (~> 3.6)
+    cancancan (1.10.1)
     capistrano (2.15.5)
       highline
       net-scp (>= 1.0.0)
@@ -227,6 +228,7 @@ DEPENDENCIES
   active_model_serializers
   aws-sdk
   byebug
+  cancancan (~> 1.10)
   capistrano (= 2.15.5)
   capistrano-unicorn
   coffee-rails (~> 4.0.0)

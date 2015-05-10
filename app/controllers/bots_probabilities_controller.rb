@@ -1,4 +1,5 @@
 class BotsProbabilitiesController < ApplicationController
+  load_and_authorize_resource
   def index
   	@bots_probabilities = BotsProbability.all
   	respond_to do |format|

@@ -7,21 +7,20 @@ class CustomRoundsWorker
 		round_data = JSON.parse(data)
 		if round_data["resource_type"] == "Tournament"
 			round_data["round_users_attributes"].each do |round_user|
-				tournament_user = TournamentUser.where(room_id: round_data["room_id"], user_id: round_user["user_id"]).last
+				tournament_user = TournamentUser.where(room_config_id: round_data["room_config_id"], user_id: round_user["user_id"]).last
 				if tournament_user.present?
 					tournament = tournament_user.tournament
 					if tournament.active
 						round_data["resource_id"] = tournament.id
 					else
-						round_data["resource_id"] = Tournament.where(room_id: round_data["room_id"]).last.id
+						round_data["resource_id"] = Tournament.where(room_config_id: round_data["room_config_id"]).last.id
 					end
 				else
-					round_data["resource_id"] = Tournament.where(room_id: round_data["room_id"]).last.id
+					round_data["resource_id"] = Tournament.where(room_config_id: round_data["room_config_id"]).last.id
 				end
 			end
 		else
-			# round_data["resource_type"] = round_data["resource_type"]
-			round_data["resource_id"] = round_data["room_id"]
+			round_data["resource_id"] = round_data["room_config_id"]
 		end
 		Round.where(uuid: round_data["uuid"]).first.update(round_data)
 	end

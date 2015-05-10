@@ -27,7 +27,11 @@
   .form-group
     = f.label :num_bingo_factor, :class => 'control-label col-lg-2'
     .col-lg-10
-      = f.text_field :num_bingo_factor, :class => 'form-control'
+      = f.radio_button :num_bingo_factor, 'players'
+      = " Number Of Players"
+      .col-lg-2
+        = f.radio_button :num_bingo_factor, 'cards'
+        = " Number Of Cards"
     = f.error_span(:num_bingo_factor)
   .form-group
     = f.label :divider, :class => 'control-label col-lg-2'

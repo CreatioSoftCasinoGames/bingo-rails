@@ -3,7 +3,7 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 	before_action :find_room_config, only: [:leader_board]
 	
 	def index
-		@room_configs = RoomConfig.where(true)
+			@room_configs = RoomConfig.where(true)
 		(@room_configs = @room_configs.where(room_type: params[:room_type])) if params[:room_type]
 		render json: @room_configs
 	end
@@ -50,6 +50,20 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 		render json: {
 			leader_board: leader_board,
 			my_rank: @room_config.my_rank(@user.id)
+		}
+	end
+
+	def find_room_id
+		room = RoomConfig.where(id: params[:id]).first.rooms.where(round_number: params[:round_number]).first
+		if(room.blank?)
+			room = Room.create(room_config_id: params[:id], round_number: params[:round_number])
+		end
+		render json: {
+			room_id: room.id,
+			name: room.name,
+			room_config_id: room.room_config_id,
+			bingo_factor: room.room_config.num_bingo_factor,
+			divider: room.room_config.divider
 		}
 	end
 

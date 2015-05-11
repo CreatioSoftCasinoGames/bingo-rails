@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :dynamic_iaps
+
   resources :scratch_card_rewards
 
   resources :bingo_points
@@ -51,8 +53,10 @@ Rails.application.routes.draw do
       resources :room_configs do
         member do
           get :leader_board
+          get :find_room_id
         end
       end
+      resources :dynamic_iaps
       resources :friend_requests
       resources :gift_requests
       resources :table_configs
@@ -163,3 +167,5 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 end
+
+

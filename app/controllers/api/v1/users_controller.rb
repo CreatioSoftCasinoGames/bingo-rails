@@ -17,7 +17,11 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def show
-		render json: @user
+		render json: @user.as_json({
+			only: [:id, :login_token, :previous_login_token, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :daily_bonus_time_remaining, :special_reward_timer, :ticket_bought],
+			methods: [:num_friend_request, :num_gift_request, :player_since, :image_url],
+			include: [:powerup, :in_app_purchases]
+		})
 	end
 
 	def update

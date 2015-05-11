@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150420132341) do
+ActiveRecord::Schema.define(version: 20150511113354) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -51,6 +51,19 @@ ActiveRecord::Schema.define(version: 20150420132341) do
     t.integer  "ai_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "dynamic_iaps", force: true do |t|
+    t.decimal  "old_coins_value", precision: 10, scale: 0
+    t.decimal  "new_coins_value", precision: 10, scale: 0
+    t.decimal  "old_pricing",     precision: 10, scale: 0
+    t.decimal  "new_pricing",     precision: 10, scale: 0
+    t.boolean  "offer"
+    t.string   "currency"
+    t.string   "country"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "iap_id"
   end
 
   create_table "friend_requests", force: true do |t|
@@ -125,6 +138,21 @@ ActiveRecord::Schema.define(version: 20150420132341) do
     t.integer  "duration"
   end
 
+  create_table "room_users", force: true do |t|
+    t.integer  "daubs"
+    t.integer  "bingos"
+    t.boolean  "is_waiting"
+    t.integer  "cards_count"
+    t.integer  "attempt_no",                           default: 1
+    t.integer  "round_no",                             default: 0
+    t.decimal  "score",       precision: 10, scale: 0, default: 0
+    t.boolean  "over",                                 default: false
+    t.integer  "room_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "rooms", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -134,6 +162,8 @@ ActiveRecord::Schema.define(version: 20150420132341) do
     t.string   "num_bingo_factor"
     t.integer  "divider"
     t.integer  "room_config_id"
+    t.integer  "round_number"
+    t.string   "uuid"
   end
 
   create_table "round_users", force: true do |t|
@@ -271,16 +301,15 @@ ActiveRecord::Schema.define(version: 20150420132341) do
     t.integer  "parent_id",                                             default: 0
     t.boolean  "is_fb_connected",                                       default: false
     t.integer  "total_jigsaw_completed",                                default: 0
-    t.integer  "total_bingo",                                           default: 0
     t.integer  "total_daily_participitated",                            default: 0
     t.integer  "total_weekly_participated",                             default: 0
     t.integer  "total_card_used",                                       default: 0
     t.integer  "total_monthly_participated",                            default: 0
     t.integer  "total_daily_won",                                       default: 0
     t.integer  "total_weekly_won",                                      default: 0
-    t.string   "jigsaw_data_string"
+    t.text     "jigsaw_data_string"
     t.integer  "total_monthly_won",                                     default: 0
-    t.string   "achievement_data_string"
+    t.text     "achievement_data_string"
     t.integer  "best_daily_position",                                   default: 0
     t.integer  "best_monthly_position",                                 default: 0
     t.integer  "best_weekly_position",                                  default: 0
@@ -290,6 +319,7 @@ ActiveRecord::Schema.define(version: 20150420132341) do
     t.decimal  "daily_bonus_time_remaining",   precision: 10, scale: 0, default: 0
     t.decimal  "special_reward_timer",         precision: 10, scale: 0, default: 0
     t.integer  "total_room_unlocked",                                   default: 0
+    t.integer  "total_bingo",                                           default: 0
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

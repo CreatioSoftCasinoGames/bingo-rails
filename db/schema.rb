@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150505075149) do
+ActiveRecord::Schema.define(version: 20150505122140) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -288,7 +288,6 @@ ActiveRecord::Schema.define(version: 20150505075149) do
     t.integer  "parent_id",                                             default: 0
     t.boolean  "is_fb_connected",                                       default: false
     t.integer  "total_jigsaw_completed",                                default: 0
-    t.integer  "total_bingo",                                           default: 0
     t.integer  "total_daily_participitated",                            default: 0
     t.integer  "total_weekly_participated",                             default: 0
     t.integer  "total_card_used",                                       default: 0
@@ -307,6 +306,7 @@ ActiveRecord::Schema.define(version: 20150505075149) do
     t.decimal  "daily_bonus_time_remaining",   precision: 10, scale: 0, default: 0
     t.decimal  "special_reward_timer",         precision: 10, scale: 0, default: 0
     t.integer  "total_room_unlocked",                                   default: 0
+    t.integer  "total_bingo",                                           default: 0
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

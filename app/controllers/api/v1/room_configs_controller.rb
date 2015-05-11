@@ -54,8 +54,13 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 	end
 
 	def find_room_id
-		@room_id = RoomConfig.where(id: params[:id]).first.rooms.where(round_number: params[:round_number]).first.id
-		render json: @room_id
+		room_id = RoomConfig.where(id: params[:id]).first.rooms.where(round_number: params[:round_number]).first.try(:id)
+		if(room_id.blank?)
+			room_id = Room.create(room_config_id: params[:id], round_number: params[:round_number]).id
+		end
+		render json: {
+			room_id: room_id
+		}
 	end
 
 	private

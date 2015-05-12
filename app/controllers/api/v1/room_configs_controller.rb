@@ -31,26 +31,34 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 	end
 
 	def leader_board
-		@user = User.fetch_by_login_token(params[:login_token])
-		tournament_type = @room_config.active_tournament.tournament_type
-		if tournament_type == "Daily_Free"
-			users_score = @room_config.active_tournament.tournament_users.order("score desc")
-		elsif tournament_type == "Weekly"
-			users_score = @room_config.find_tournament(@room_config.id, @user.id).tournament_users.order("score desc")
-		elsif tournament_type == "Monthly"
-			users_score = @room_config.find_tournament(@room_config.id, @user.id).tournament_users.order("score desc")
+		if params[:login_token]
+			@user = User.fetch_by_login_token(params[:login_token])
+			tournament_type = @room_config.active_tournament.tournament_type
+			if tournament_type == "Daily_Free"
+				users_score = @room_config.active_tournament.tournament_users.order("score desc")
+			elsif tournament_type == "Weekly"
+				users_score = @room_config.find_tournament(@room_config.id, @user.id).tournament_users.order("score desc")
+			elsif tournament_type == "Monthly"
+				users_score = @room_config.find_tournament(@room_config.id, @user.id).tournament_users.order("score desc")
+			end
+			leader_board = users_score.limit(20).as_json({
+				only: [:score],
+				methods: [:full_name, :image_url]
+			}).each_with_index.map do |player_obj, i|
+				player_obj[:rank] = i + 1
+				player_obj
+			end
+			render json: {
+				leader_board: leader_board,
+				my_rank: @room_config.my_rank(@user.id).to_i
+			}
+		else
+			render json: {
+				leader_board: [],
+				my_rank: nil,
+				message: "login_token not passed"
+			}
 		end
-		leader_board = users_score.limit(20).as_json({
-			only: [:score],
-			methods: [:full_name, :image_url]
-		}).each_with_index.map do |player_obj, i|
-			player_obj[:rank] = i + 1
-			player_obj
-		end
-		render json: {
-			leader_board: leader_board,
-			my_rank: @room_config.my_rank(@user.id)
-		}
 	end
 
 	def find_room_id

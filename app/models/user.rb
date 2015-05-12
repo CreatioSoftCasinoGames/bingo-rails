@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
 
-  before_validation  :set_fb_password, :set_login_details, :bot_login_details
+  before_validation  :set_fb_password, :set_login_details, :bot_login_details, :set_fb_friends
 
   has_many :friend_requests, :dependent => :destroy, foreign_key: "requested_to_id"
   has_many :friend_requests_sent, :dependent => :destroy, foreign_key: "user_id", class_name: "FriendRequest"
@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   has_many :room_users, :dependent => :destroy
   has_many :rooms, :through => :room_users
   validate :increase_ticket_and_coins
-  validate :set_fb_friends
+  # validate :set_fb_friends
   before_update :check_device_changed
 
   accepts_nested_attributes_for :in_app_purchases
@@ -44,7 +44,7 @@ class User < ActiveRecord::Base
   
   def image_url 
     if fb_id
-      "http://graph.facebook.com/#{fb_id}/picture"
+      "http://graph.facebook.com/#{fb_id}/picture?height=32"
     end
   end
 
@@ -110,7 +110,8 @@ class User < ActiveRecord::Base
   end
 
   def set_fb_friends
-    if fb_friends_list
+    p fb_friends_list
+    unless fb_friends_list.blank?
       user_ids = User.where(fb_id: fb_friends_list).collect(&:id)
       friend_ids = self.friends.collect(&:id)
       new_friend_ids = user_ids - friend_ids

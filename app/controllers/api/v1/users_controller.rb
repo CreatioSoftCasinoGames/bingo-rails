@@ -63,7 +63,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def received_gift
-		render json: @user.unconfirmed_gift_requests.where(is_asked: false, confirmed: false)
+		render json: @user.unconfirmed_gift_requests.where(is_asked: false)
 	end
 
 	def ask_for_gift_to

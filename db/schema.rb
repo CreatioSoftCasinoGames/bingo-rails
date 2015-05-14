@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150511113354) do
+ActiveRecord::Schema.define(version: 20150514090055) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -49,6 +49,12 @@ ActiveRecord::Schema.define(version: 20150511113354) do
     t.integer  "num_bots"
     t.float    "probability", limit: 24
     t.integer  "ai_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "client_bugs", force: true do |t|
+    t.text     "exception"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

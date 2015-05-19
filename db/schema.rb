@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150514090055) do
+ActiveRecord::Schema.define(version: 20150519074952) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20150514090055) do
     t.text     "exception"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "bug_type"
   end
 
   create_table "dynamic_iaps", force: true do |t|

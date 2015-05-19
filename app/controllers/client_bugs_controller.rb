@@ -78,6 +78,6 @@ class ClientBugsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def client_bug_params
-      params.require(:client_bug).permit(:exception)
+      params.require(:client_bug).permit(:exception, :bug_type)
     end
 end

@@ -6,6 +6,7 @@ table class="table table-striped"
     tr
       th= model_class.human_attribute_name(:id)
       th= model_class.human_attribute_name(:exception)
+      th= model_class.human_attribute_name(:bug_type)
       th= model_class.human_attribute_name(:created_at)
       th=t '.actions', :default => t("helpers.actions")
   tbody
@@ -13,6 +14,7 @@ table class="table table-striped"
       tr
         td= link_to client_bug.id, client_bug_path(client_bug)
         td= client_bug.exception
+        td= client_bug.bug_type
         td=l client_bug.created_at
         td
           = link_to t('.edit', :default => t("helpers.links.edit")), edit_client_bug_path(client_bug), :class => 'btn btn-default btn-xs'

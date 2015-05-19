@@ -1,9 +1,11 @@
 class Api::V1::ClientBugsController < Api::V1::ApplicationController
 
 	def create
-	  @client_bug = ClientBug.new(exception: params[:exception])
+	  @client_bug = ClientBug.new(exception: params[:exception], bug_type: params[:bug_type])
     if @client_bug.save
-      render json: @client_bug
+      render json: {
+      	success: true
+      }
     else
       render json: {
 				success: false,

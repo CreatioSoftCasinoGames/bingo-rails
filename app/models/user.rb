@@ -23,7 +23,6 @@ class User < ActiveRecord::Base
   has_many :room_users, :dependent => :destroy
   has_many :rooms, :through => :room_users
   validate :increase_ticket_and_coins
-  # validate :set_fb_friends
   before_update :check_device_changed
 
   accepts_nested_attributes_for :in_app_purchases
@@ -39,7 +38,11 @@ class User < ActiveRecord::Base
   end
 
   def full_name
-    [first_name, last_name].join(" ")
+    if first_name
+      [first_name, last_name].join(" ")
+    else
+      "Guest User"
+    end
   end
   
   def image_url 
@@ -117,8 +120,10 @@ class User < ActiveRecord::Base
       new_friend_ids = user_ids - friend_ids
       deleted_friends_ids = friend_ids - user_ids
       new_friend_ids.each do |friend_id|
-        Friendship.create(user_id: self.id, friend_id: friend_id)
-        Friendship.create(user_id: friend_id, friend_id: self.id)
+        if Friendship.where(user_id: self.id, friend_id: friend_id).blank?
+          Friendship.create(user_id: self.id, friend_id: friend_id)
+          Friendship.create(user_id: friend_id, friend_id: self.id)
+        end
       end
       deleted_friends_ids.each do |deleted_friend_id|
         Friendship.where(user_id: id, friend_id: deleted_friend_id).first.try(:delete)

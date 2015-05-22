@@ -17,9 +17,9 @@ table class="table table-striped"
         td= client_bug.bug_type
         td=l client_bug.created_at
         td
-          = link_to t('.edit', :default => t("helpers.links.edit")), edit_client_bug_path(client_bug), :class => 'btn btn-default btn-xs'
-          '
+          / = link_to t('.edit', :default => t("helpers.links.edit")), edit_client_bug_path(client_bug), :class => 'btn btn-default btn-xs'
+          / '
           = link_to t('.destroy', :default => t("helpers.links.destroy")), client_bug_path(client_bug), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
 
-= link_to t('.new', :default => t("helpers.links.new")), new_client_bug_path, :class => 'btn btn-primary'
+/ = link_to t('.new', :default => t("helpers.links.new")), new_client_bug_path, :class => 'btn btn-primary'
 

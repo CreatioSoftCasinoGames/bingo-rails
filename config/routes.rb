@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :client_bugs
+
   resources :dynamic_iaps
 
   resources :scratch_card_rewards
@@ -56,6 +58,7 @@ Rails.application.routes.draw do
           get :find_room_id
         end
       end
+      resources :client_bugs
       resources :dynamic_iaps
       resources :friend_requests
       resources :gift_requests

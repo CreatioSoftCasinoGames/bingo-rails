@@ -45,5 +45,10 @@ class UtilityController < ApplicationController
 		REDIS_CLIENT.DEL("bot_busy")
 		redirect_to root_path, flash: {success: "Data successfully synced !" }
 	end
+
+	def flush_data
+		REDIS_CLIENT.FLUSHALL()
+		redirect_to root_path, flash: {success: "Data has been successfully cleaned, Please sync!" }
+	end
 end
 

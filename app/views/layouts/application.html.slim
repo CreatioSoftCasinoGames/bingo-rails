@@ -26,6 +26,7 @@ html lang="en"
             - if user_signed_in?
               - if can? :update, @user
                 li= link_to "AI", ai_path(Ai.where(active: true).first)
+                li= link_to "Bug Report", client_bugs_path
                 li= link_to "Room Configs", room_configs_path
                 li= link_to "Api Key", show_api_key_path
               li= link_to "Logout", destroy_user_session_path, :method => :delete

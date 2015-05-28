@@ -19,7 +19,7 @@ class UtilityController < ApplicationController
 			end
 			
 			REDIS_CLIENT.SADD("room_configs", "room_config:#{room_config.id}")
-			REDIS_CLIENT.HMSET("room_config:#{room_config.id}", "name", room_config.name, "min_players", room_config.min_players, "max_players", room_config.max_players, "room_type", room_config.room_type);
+			REDIS_CLIENT.HMSET("room_config:#{room_config.id}", "name", room_config.name, "min_players", room_config.min_players, "max_players", room_config.max_players, "room_type", room_config.room_type, "timeout", room_config.timeout);
 			room_config.rooms.each do |room|
 				REDIS_CLIENT.SADD("rooms","room:#{room.id}")
 				REDIS_CLIENT.SADD("room_config_rooms:#{room.room_config_id}", "room:#{room.id}")

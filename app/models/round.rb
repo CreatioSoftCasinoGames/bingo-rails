@@ -23,7 +23,6 @@ class Round < ActiveRecord::Base
   	users_attributes = []
     tournament_users_attributes = []
   	data.each do |node_obj|
-      p node_obj
   		round_user = round_users.where(user_id: node_obj['playerId']).first
   		user = round_user.user
       round_number = 0

@@ -36,14 +36,16 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 			tournament_type = @room_config.active_tournament.tournament_type
 			if tournament_type == "Daily_Free"
 				users_score = @room_config.active_tournament.tournament_users.order("score desc")
+				p users_score.count
 			elsif tournament_type == "Weekly"
 				users_score = @room_config.find_tournament(@room_config.id, @user.id).tournament_users.order("score desc")
+				p users_score
 			elsif tournament_type == "Monthly"
 				users_score = @room_config.find_tournament(@room_config.id, @user.id).tournament_users.order("score desc")
 			end
 			leader_board = users_score.limit(20).as_json({
 				only: [:score],
-				methods: [:full_name, :image_url]
+				methods: [:full_name, :image_url, :login_token]
 			}).each_with_index.map do |player_obj, i|
 				player_obj[:rank] = i + 1
 				player_obj

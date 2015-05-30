@@ -17,7 +17,6 @@ class Round < ActiveRecord::Base
 	# end
 
   def analize(data)
-    p data
     params = {active: false}  
   	round_users_attributes = []
   	users_attributes = []
@@ -60,15 +59,11 @@ class Round < ActiveRecord::Base
         total_score = RoundUser.where(room_config_id: node_obj['room_config_id'], round_number: round_number, user_id: user.id, tournament_id: self.resource_id).pluck(:score).max().to_f
         score_get = (point > total_score) ? point : total_score
         score = tournament_user.try(:score).to_f + score_get.to_f
-        p tournament_user
-        p node_obj['round']
-        p tournament_type
         if tournament_type == "Daily_Free"
           over = (node_obj['round'] >= 3)
         else
           over = (node_obj['round'] >= 5)
         end
-        p over
         tournament_users_attributes.push({
           id: tournament_user.try(:id),
           user_id: user.id,

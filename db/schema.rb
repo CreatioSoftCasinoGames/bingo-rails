@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150519074952) do
+ActiveRecord::Schema.define(version: 20150525062613) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -275,7 +275,7 @@ ActiveRecord::Schema.define(version: 20150519074952) do
     t.integer  "keys",                                                  default: 20
     t.integer  "bingo_win",                                             default: 0
     t.integer  "tickets_purchased",                                     default: 0
-    t.integer  "current_level",                                         default: 0
+    t.integer  "current_level",                                         default: 1
     t.integer  "xp_earned",                                             default: 0
     t.decimal  "achievements_won",             precision: 10, scale: 0, default: 0
     t.decimal  "jigsaw_pieces_collected",      precision: 10, scale: 0, default: 0

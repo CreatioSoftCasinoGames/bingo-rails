@@ -120,7 +120,7 @@ class User < ActiveRecord::Base
       new_friend_ids = user_ids - friend_ids
       deleted_friends_ids = friend_ids - user_ids
       new_friend_ids.each do |friend_id|
-        if Friendship.where(user_id: self.id, friend_id: friend_id).blank?
+        if Friendship.where(user_id: self.id, friend_id: friend_id).blank? && self.id != friend_id
           Friendship.create(user_id: self.id, friend_id: friend_id)
           Friendship.create(user_id: friend_id, friend_id: self.id)
         end

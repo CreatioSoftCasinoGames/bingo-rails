@@ -5,7 +5,6 @@ class RoundsWorker
 
 	def perform(data)
 		round_data = JSON.parse(data)
-		p round_data
 		if round_data["resource_type"] == "Tournament"
 			round_data["round_users_attributes"].each do |round_user|
 				tournament_user = TournamentUser.where(room_config_id: round_data["room_config_id"], user_id: round_user["user_id"]).last
@@ -23,7 +22,6 @@ class RoundsWorker
 		else
 			round_data["resource_id"] = round_data["room_config_id"]
 		end
-		p round_data["resource_id"]
 		Round.create(round_data)
 	end
 

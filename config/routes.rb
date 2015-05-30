@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   resources :utility do
     collection do
       get :sync_data
+      get :flush_data
     end
   end
 

@@ -18,7 +18,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def show
 		render json: @user.as_json({
-			only: [:id, :login_token, :previous_login_token, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :daily_bonus_time_remaining, :special_reward_timer, :ticket_bought],
+			only: [:id, :login_token, :previous_login_token, :first_name, :last_name, :powerups_remaining, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :daily_bonus_time_remaining, :special_reward_timer, :ticket_bought],
 			methods: [:num_friend_request, :num_gift_request, :player_since, :image_url],
 			include: [:powerup, :in_app_purchases]
 		})
@@ -96,11 +96,12 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			@tournament = @room_config.find_tournament(@room_config.id, @user.id)
 			if @tournament.present?
 				@round_scores = @user.round_scores(@room_config.id, @tournament.id)
-				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
+				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_i + 1
 				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
 				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).first
 				remaining_time = @tournament.created_at - Time.now + @room_config.duration.day
 			end
+			p rank
 			render json: {
 				round_one: @round_scores.present? ? @round_scores[:round_one_score] : 0,
 				round_two: @round_scores.present? ? @round_scores[:round_two_score] : 0,
@@ -108,7 +109,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				round_four: @round_scores.present? ? @round_scores[:round_four_score] : 0,
 				round_five: @round_scores.present? ? @round_scores[:round_five_score] : 0,
 				remaining_time: remaining_time.present? ? remaining_time : 0,
-				rank: rank.present? ? rank : 0,
+				rank: rank.present? && rank != 1 ? rank : 0,
 				is_over: @is_over.present? ? @is_over.over : false,
 				reward_collected: @reward.present? ? @reward.is_collected : true,
 				tournament_type: @tournament.present? ? @tournament.tournament_type : nil,

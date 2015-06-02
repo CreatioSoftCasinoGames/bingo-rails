@@ -27,7 +27,12 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 	end
 
 	def my_rank(user_id)
-		self.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(user_id).to_f + 1
+		p self.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(user_id).to_f
+		if self.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(user_id).to_f == 0
+			0
+		else
+			self.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(user_id).to_f + 1
+		end
 	end
 
 	def leader_board

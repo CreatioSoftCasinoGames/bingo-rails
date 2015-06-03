@@ -30,11 +30,11 @@ class Round < ActiveRecord::Base
       if self.resource_type == "Tournament"
         tournament_type = Tournament.find(self.resource_id).tournament_type
         point = 2*node_obj['daubs'].to_f + 10*node_obj['bingo'].to_f
-        if tournament_type == "Daily_Free"
-           round_number = (node_obj['round'] <= 3) ? node_obj['round'] : 1
+        if tournament_type == "Monthly"
+          round_number = (node_obj['round'] <= 5) ? node_obj['round'] : 1
           tournament_id = self.resource_id
         else
-          round_number = (node_obj['round'] <= 5) ? node_obj['round'] : 1
+          round_number = (node_obj['round'] <= 3) ? node_obj['round'] : 1
           tournament_id = self.resource_id
         end
       end
@@ -59,10 +59,10 @@ class Round < ActiveRecord::Base
         total_score = RoundUser.where(room_config_id: node_obj['room_config_id'], round_number: round_number, user_id: user.id, tournament_id: self.resource_id).pluck(:score).max().to_f
         score_get = (point > total_score) ? point : total_score
         score = tournament_user.try(:score).to_f + score_get.to_f
-        if tournament_type == "Daily_Free"
-          over = (node_obj['round'] >= 3)
-        else
+        if tournament_type == "Monthly"
           over = (node_obj['round'] >= 5)
+        else
+          over = (node_obj['round'] >= 3)
         end
         tournament_users_attributes.push({
           id: tournament_user.try(:id),

@@ -123,7 +123,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def my_rank_and_rewards
 		if @user.rewards.present?
-			render json: @user.rewards.where(is_collected: false).as_json({
+			render json: @user.rewards.where(is_collected: false, tournament_id: RoomConfig.find(params[:room_config_id]).tournaments.where(active: false).first.id).as_json({
 				only: [:id, :coins, :tickets, :rank],
 				methods: [:tournament_type]
 			})

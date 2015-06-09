@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
-	before_action :find_user, only: [:update, :show, :get_round_and_attempt, :my_rank, :game_data, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends, :sent_gift, :received_gift, :ask_for_gift_to, :ask_for_gift_by, :player_rank]
+	before_action :find_user, only: [:update, :show, :my_rank_and_rewards, :get_round_and_attempt, :my_rank, :game_data, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends, :sent_gift, :received_gift, :ask_for_gift_to, :ask_for_gift_by, :player_rank]
 
 	def create
 		@user = User.new(user_params)
@@ -121,14 +121,21 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		end
 	end
 
-	# def get_online_players
-	# 	room_map = {}
-	# 	rooms = RoomConfig.where(room_type: params[:room_type]).first.rooms
-	# 	rooms.each do |room|
-	# 		room_map[room.room_config_id] = User.where(id: room.round_users.collect(&:user_id), online: true).count
-	# 	end
-	# 	render json: room_map
-	# end
+	def my_rank_and_rewards
+		if @user.rewards.present?
+			render json: @user.rewards.where(is_collected: false).as_json({
+				only: [:id, :coins, :tickets, :rank],
+				methods: [:tournament_type]
+			})
+		else
+			render json: {
+				id: nil,
+				coins: 0,
+				tickets: 0,
+				rank: 0
+			}
+		end
+	end
 
 	def player_rank
 		if params[:room_type].capitalize == "Tournament"

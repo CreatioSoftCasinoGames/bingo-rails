@@ -3,7 +3,7 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 	before_action :find_room_config, only: [:leader_board]
 	
 	def index
-			@room_configs = RoomConfig.where(true)
+		@room_configs = RoomConfig.where(true)
 		(@room_configs = @room_configs.where(room_type: params[:room_type])) if params[:room_type]
 		render json: @room_configs
 	end

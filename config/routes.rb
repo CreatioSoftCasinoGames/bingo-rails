@@ -97,6 +97,7 @@ Rails.application.routes.draw do
           get :get_online_players
           get :player_rank
           get :game_data
+          get :my_rank_and_rewards
         end
       end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150525062613) do
+ActiveRecord::Schema.define(version: 20150609104510) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -129,7 +129,9 @@ ActiveRecord::Schema.define(version: 20150525062613) do
     t.integer "tournament_id"
     t.integer "user_id"
     t.integer "rank"
-    t.boolean "is_collected",  default: false
+    t.boolean "is_collected",                           default: false
+    t.decimal "coins",         precision: 10, scale: 0, default: 100
+    t.decimal "tickets",       precision: 10, scale: 0, default: 5
   end
 
   create_table "room_configs", force: true do |t|

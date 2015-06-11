@@ -63,7 +63,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def received_gift
-		render json: @user.unconfirmed_gift_requests.where(is_asked: false)
+		render json: @user.unconfirmed_gift_request.where(is_asked: false)
 	end
 
 	def ask_for_gift_to
@@ -71,7 +71,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def ask_for_gift_by
-		render json: @user.unconfirmed_gift_requests.where(is_asked: true)
+		render json: @user.unconfirmed_gift_request.where(is_asked: true)
 	end
 
 	def get_round_and_attempt

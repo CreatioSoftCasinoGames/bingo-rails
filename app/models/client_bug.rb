@@ -4,7 +4,7 @@ class ClientBug < ActiveRecord::Base
 	private
 
 	def send_mail
-		NotifyAdminUser.send_error_mail(self).deliver
+		MailsWorker.perform_in(5.seconds, self.id)
 	end
 
 end

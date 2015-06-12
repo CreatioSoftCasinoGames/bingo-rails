@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150609104510) do
+ActiveRecord::Schema.define(version: 20150612122023) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -329,6 +329,7 @@ ActiveRecord::Schema.define(version: 20150609104510) do
     t.decimal  "special_reward_timer",         precision: 10, scale: 0, default: 0
     t.integer  "total_room_unlocked",                                   default: 0
     t.integer  "total_bingo",                                           default: 0
+    t.boolean  "is_daily_bonus_collected",                              default: true
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

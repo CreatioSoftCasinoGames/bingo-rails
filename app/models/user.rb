@@ -68,6 +68,10 @@ class User < ActiveRecord::Base
     (Date.today.at_midnight + 24.hours - Time.now).to_i
   end
 
+  def next_daily_bonus_time
+    (Date.tomorrow.at_midnight + 24.hours - Time.now).to_i
+  end
+
   def full_name
     if first_name
       [first_name, last_name].join(" ")

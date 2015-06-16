@@ -11,6 +11,7 @@ class RoomConfig < ActiveRecord::Base
 	def find_tournament(room_config_id, user_id)
 		tournament_user = TournamentUser.where(room_config_id: room_config_id, user_id: user_id).last
 		if tournament_user.present?
+			p tournament_user.tournament
 			if tournament_user.tournament.active
 				tournament_user.tournament
 			end

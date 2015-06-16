@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
-	before_action :find_user, only: [:update, :show, :my_rank_and_rewards, :get_round_and_attempt, :my_rank, :game_data, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends, :sent_gift, :received_gift, :ask_for_gift_to, :ask_for_gift_by, :player_rank]
+	before_action :find_user, only: [:update, :show, :tournament_fee_paid, :my_rank_and_rewards, :get_round_and_attempt, :my_rank, :game_data, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends, :sent_gift, :received_gift, :ask_for_gift_to, :ask_for_gift_by, :player_rank]
 
 	def create
 		@user = User.new(user_params)
@@ -52,10 +52,20 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def my_friends
-		render json: @user.friends.as_json({
-			only: [:login_token, :online],
-			methods: [:full_name, :image_url]
-		})
+		# is_ask_for_gift = 
+		# ask_for_gift_in = 
+		friends = @user.friends.collect do |friend|
+			{
+				login_token: friend.login_token,
+				online: friend.online,
+				current_level: friend.current_level,
+				full_name: friend.full_name,
+				image_url: friend.image_url,
+				can_send_gift: @user.is_ask_for_gift(friend.id),
+				time_remaining: @user.ask_for_gift_in(friend.id)
+			}
+		end
+		render json: friends
 	end
 
 	def sent_gift
@@ -89,6 +99,14 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		}
 	end
 
+	def tournament_fee_paid
+		render json: {
+			daily: @user.daily_tournament_fee_paid,
+			weekly: @user.weekly_tournament_fee_paid,
+			monthly: @user.monthly_tournament_fee_paid
+		}
+	end
+
 	def my_rank
 		if params[:resource_type] == "Tournament"
 			@room_config = RoomConfig.where(id: params[:room_config_id]).first
@@ -98,7 +116,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_i + 1
 				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
 				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).first
-				remaining_time = @tournament.created_at.midnight - Time.now.utc + @room_config.duration.day
+				remaining_time = @room_config.duration.day - (Time.now.utc - @tournament.created_at.midnight)
 			end
 			render json: {
 				round_one: @round_scores.present? ? @round_scores[:round_one_score] : 0,
@@ -143,7 +161,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			room_configs.each do |room_config|
 				@tournament = room_config.find_tournament(room_config.id, @user.id)
 				if @tournament.present?
-					rank_map[room_config.id] = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_f + 1
+					rank_map[room_config.id] = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_i + 1
 				else
 					rank_map[room_config.id] = 0
 				end

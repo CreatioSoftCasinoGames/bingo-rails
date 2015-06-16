@@ -29,6 +29,7 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 			@user = User.where(device_id: params[:device_id], is_guest: true).first_or_initialize
 			if @user.new_record?
 				if @user.save
+					@user
 					@success = true
 				else
 					@success = false
@@ -48,6 +49,9 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 		if @user.present?
 			login_token = SecureRandom.hex(5)
 			# login_token = @user.id
+			if params[:first_name]
+				@user.update_attributes(first_name: params[:first_name], last_name: params[:last_name])
+			end
 			if @user.update_attributes(login_token: login_token, online: true, login_histories_attributes: {id: nil, active: true, login_token: login_token })
 				@user.previous_login_token = @user.login_histories.order("created_at desc").limit(2).last.try(:login_token)
 				render json: @user.as_json({

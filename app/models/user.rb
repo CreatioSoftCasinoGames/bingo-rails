@@ -33,6 +33,24 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  def is_ask_for_gift(friend_id)
+    gift_sent = gift_requests_sent.where(gift_requests: {send_to_id: friend_id}).last
+    if gift_sent.present?
+      gift_sent.created_at < Time.now - 24.hours
+    else
+      true
+    end
+  end
+
+  def ask_for_gift_in(friend_id)
+    gift_sent = gift_requests_sent.where(send_to_id: friend_id).last
+    if gift_sent.present?
+      gift_sent.created_at - Time.now + 24.hours
+    else
+      0
+    end
+  end
+
   def player_since
   	created_at.strftime("%B,%Y")
   end

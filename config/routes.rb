@@ -59,6 +59,13 @@ Rails.application.routes.draw do
           get :find_room_id
         end
       end
+
+      resources :schedule_maintenances do 
+        collection do
+          post :sm
+        end
+      end
+      
       resources :client_bugs
       resources :dynamic_iaps
       resources :friend_requests

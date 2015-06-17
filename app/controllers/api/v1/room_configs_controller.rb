@@ -35,69 +35,49 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 	end
 
 	def leader_board
-		if params[:login_token]
-			@user = User.fetch_by_login_token(params[:login_token])
-			if @room_config.find_tournament(@room_config.id, @user.id).present?
-				if params[:for] == "Friends"
-					tournament_type = @room_config.name
-					if tournament_type == "Daily_Free"
-						tournament_users = @room_config.active_tournament.tournament_users
-						friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.collect(&:id)).pluck(:friend_id)
-						users_score = tournament_users.where(user_id: friend_ids).order("score desc")
-					elsif tournament_type == "Weekly"
-						tournament_users = @room_config.find_tournament(@room_config.id, @user.id).tournament_users
-						friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.collect(&:id)).pluck(:friend_id)
-						users_score = tournament_users.where(user_id: friend_ids).order("score desc")
-					elsif tournament_type == "Monthly"
-						tournament_users = @room_config.find_tournament(@room_config.id, @user.id).tournament_users
-						friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.collect(&:id)).pluck(:friend_id)
-						users_score = tournament_users.where(user_id: friend_ids).order("score desc")
-					end
-					p users_score
-					leader_board = users_score.limit(20).as_json({
-						only: [:score],
-						methods: [:full_name, :image_url, :login_token]
-					}).each_with_index.map do |player_obj, i|
-						player_obj[:rank] = i + 1
-						player_obj
-					end
-					render json: {
-						leader_board: leader_board,
-						my_rank: @room_config.my_rank(@user.id).to_i
-					}
-				else
-					tournament_type = @room_config.name
-					if tournament_type == "Daily_Free"
-						users_score = @room_config.active_tournament.tournament_users.order("score desc")
-					elsif tournament_type == "Weekly"
-						users_score = @room_config.find_tournament(@room_config.id, @user.id).tournament_users.order("score desc")
-					elsif tournament_type == "Monthly"
-						users_score = @room_config.find_tournament(@room_config.id, @user.id).tournament_users.order("score desc")
-					end
-					leader_board = users_score.limit(20).as_json({
-						only: [:score],
-						methods: [:full_name, :image_url, :login_token]
-					}).each_with_index.map do |player_obj, i|
-						player_obj[:rank] = i + 1
-						player_obj
-					end
-					render json: {
-						leader_board: leader_board,
-						my_rank: @room_config.my_rank(@user.id).to_i
-					}
+		@user = User.fetch_by_login_token(params[:login_token])
+		if @room_config.find_tournament(@room_config.id, @user.id).present?
+			if params[:for] == "Friends"
+				tournament_type = @room_config.name
+				if tournament_type == "Daily_Free"
+					tournament_users = @room_config.active_tournament.tournament_users
+					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.collect(&:id)).pluck(:friend_id)
+					users_score = tournament_users.where(user_id: friend_ids).order("score desc")
+				elsif tournament_type == "Weekly"
+					tournament_users = @room_config.find_tournament(@room_config.id, @user.id).tournament_users
+					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.collect(&:id)).pluck(:friend_id)
+					users_score = tournament_users.where(user_id: friend_ids).order("score desc")
+				elsif tournament_type == "Monthly"
+					tournament_users = @room_config.find_tournament(@room_config.id, @user.id).tournament_users
+					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.collect(&:id)).pluck(:friend_id)
+					users_score = tournament_users.where(user_id: friend_ids).order("score desc")
 				end
 			else
-				render json: {
-					leader_board: [],
-					my_rank: nil,
-					message: "User not played in this tournament."
-				}
+				tournament_type = @room_config.name
+				if tournament_type == "Daily_Free"
+					users_score = @room_config.active_tournament.tournament_users.order("score desc")
+				elsif tournament_type == "Weekly"
+					users_score = @room_config.find_tournament(@room_config.id, @user.id).tournament_users.order("score desc")
+				elsif tournament_type == "Monthly"
+					users_score = @room_config.find_tournament(@room_config.id, @user.id).tournament_users.order("score desc")
+				end
 			end
+			leader_board = users_score.limit(20).as_json({
+				only: [:score],
+				methods: [:full_name, :image_url, :login_token]
+			}).each_with_index.map do |player_obj, i|
+				player_obj[:rank] = i + 1
+				player_obj
+			end
+			render json: {
+				leader_board: leader_board,
+				my_rank: @room_config.my_rank(@user.id).to_i
+			}
 		else
 			render json: {
 				leader_board: [],
 				my_rank: nil,
-				message: "login_token not passed"
+				message: "User not played in this tournament."
 			}
 		end
 	end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150505122140) do
+ActiveRecord::Schema.define(version: 20150612122023) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -51,6 +51,26 @@ ActiveRecord::Schema.define(version: 20150505122140) do
     t.integer  "ai_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "client_bugs", force: true do |t|
+    t.text     "exception"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "bug_type"
+  end
+
+  create_table "dynamic_iaps", force: true do |t|
+    t.decimal  "old_coins_value", precision: 10, scale: 0
+    t.decimal  "new_coins_value", precision: 10, scale: 0
+    t.decimal  "old_pricing",     precision: 10, scale: 0
+    t.decimal  "new_pricing",     precision: 10, scale: 0
+    t.boolean  "offer"
+    t.string   "currency"
+    t.string   "country"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "iap_id"
   end
 
   create_table "friend_requests", force: true do |t|
@@ -109,7 +129,9 @@ ActiveRecord::Schema.define(version: 20150505122140) do
     t.integer "tournament_id"
     t.integer "user_id"
     t.integer "rank"
-    t.boolean "is_collected",  default: false
+    t.boolean "is_collected",                           default: false
+    t.decimal "coins",         precision: 10, scale: 0, default: 100
+    t.decimal "tickets",       precision: 10, scale: 0, default: 5
   end
 
   create_table "room_configs", force: true do |t|
@@ -255,7 +277,7 @@ ActiveRecord::Schema.define(version: 20150505122140) do
     t.integer  "keys",                                                  default: 20
     t.integer  "bingo_win",                                             default: 0
     t.integer  "tickets_purchased",                                     default: 0
-    t.integer  "current_level",                                         default: 0
+    t.integer  "current_level",                                         default: 1
     t.integer  "xp_earned",                                             default: 0
     t.decimal  "achievements_won",             precision: 10, scale: 0, default: 0
     t.decimal  "jigsaw_pieces_collected",      precision: 10, scale: 0, default: 0
@@ -307,6 +329,7 @@ ActiveRecord::Schema.define(version: 20150505122140) do
     t.decimal  "special_reward_timer",         precision: 10, scale: 0, default: 0
     t.integer  "total_room_unlocked",                                   default: 0
     t.integer  "total_bingo",                                           default: 0
+    t.boolean  "is_daily_bonus_collected",                              default: true
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
 
-  before_validation  :set_fb_password, :set_login_details, :bot_login_details
+  before_validation  :set_fb_password, :set_login_details, :bot_login_details, :set_fb_friends
 
   has_many :friend_requests, :dependent => :destroy, foreign_key: "requested_to_id"
   has_many :friend_requests_sent, :dependent => :destroy, foreign_key: "user_id", class_name: "FriendRequest"
@@ -19,10 +19,10 @@ class User < ActiveRecord::Base
   has_many :round_users
   has_many :rewards
   has_many :login_histories, :dependent => :destroy
+  # has_many :unconfirmed_gift_requests, -> { where(confirmed: false) }, class_name: "GiftRequest", foreign_key: "send_to_id"
   has_many :room_users, :dependent => :destroy
   has_many :rooms, :through => :room_users
   validate :increase_ticket_and_coins
-  validate :set_fb_friends
   before_update :check_device_changed
 
   accepts_nested_attributes_for :in_app_purchases
@@ -33,17 +33,74 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  def is_ask_for_gift(friend_id)
+    gift_sent = gift_requests_sent.where(gift_requests: {send_to_id: friend_id}).last
+    if gift_sent.present?
+      gift_sent.created_at < Time.now - 24.hours
+    else
+      true
+    end
+  end
+
+  def ask_for_gift_in(friend_id)
+    gift_sent = gift_requests_sent.where(send_to_id: friend_id).last
+    if gift_sent.present?
+      gift_sent.created_at - Time.now + 24.hours
+    else
+      0
+    end
+  end
+
   def player_since
   	created_at.strftime("%B,%Y")
   end
 
+  def daily_tournament_fee_paid
+    tournament_user = TournamentUser.where(room_config_id: RoomConfig.where(name: "Daily_Free").first.id, user_id: self.id).last
+    if tournament_user.present?
+      tournament_user.tournament.active
+    else
+      false
+    end
+  end
+
+  def weekly_tournament_fee_paid
+    tournament_user = TournamentUser.where(room_config_id: RoomConfig.where(name: "Weekly").first.id, user_id: self.id).last
+    if tournament_user.present?
+      tournament_user.tournament.active
+    else
+      false
+    end
+  end
+
+  def monthly_tournament_fee_paid
+    tournament_user = TournamentUser.where(room_config_id: RoomConfig.where(name: "Monthly").first.id, user_id: self.id).last
+    if tournament_user.present?
+      tournament_user.tournament.active
+    else
+      false
+    end
+  end
+
+  def daily_bonus_time_remaining
+    (Date.today.at_midnight + 24.hours - Time.now).to_i
+  end
+
+  def next_daily_bonus_time
+    (Date.tomorrow.at_midnight + 24.hours - Time.now).to_i
+  end
+
   def full_name
-    [first_name, last_name].join(" ")
+    if first_name
+      [first_name, last_name].join(" ")
+    else
+      "Guest User"
+    end
   end
   
   def image_url 
     if fb_id
-      "http://graph.facebook.com/#{fb_id}/picture"
+      "http://graph.facebook.com/#{fb_id}/picture?height=32"
     end
   end
 
@@ -109,14 +166,17 @@ class User < ActiveRecord::Base
   end
 
   def set_fb_friends
-    if fb_friends_list
+    p fb_friends_list
+    unless fb_friends_list.blank?
       user_ids = User.where(fb_id: fb_friends_list).collect(&:id)
       friend_ids = self.friends.collect(&:id)
       new_friend_ids = user_ids - friend_ids
       deleted_friends_ids = friend_ids - user_ids
       new_friend_ids.each do |friend_id|
-        Friendship.create(user_id: self.id, friend_id: friend_id)
-        Friendship.create(user_id: friend_id, friend_id: self.id)
+        if Friendship.where(user_id: self.id, friend_id: friend_id).blank? && self.id != friend_id
+          Friendship.create(user_id: self.id, friend_id: friend_id)
+          Friendship.create(user_id: friend_id, friend_id: self.id)
+        end
       end
       deleted_friends_ids.each do |deleted_friend_id|
         Friendship.where(user_id: id, friend_id: deleted_friend_id).first.try(:delete)

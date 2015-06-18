@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  resources :client_bugs
+
+  resources :dynamic_iaps
+
   resources :scratch_card_rewards
 
   resources :bingo_points
@@ -43,6 +47,7 @@ Rails.application.routes.draw do
   resources :utility do
     collection do
       get :sync_data
+      get :flush_data
     end
   end
 
@@ -54,6 +59,15 @@ Rails.application.routes.draw do
           get :find_room_id
         end
       end
+
+      resources :schedule_maintenances do 
+        collection do
+          post :sm
+        end
+      end
+      
+      resources :client_bugs
+      resources :dynamic_iaps
       resources :friend_requests
       resources :gift_requests
       resources :table_configs
@@ -90,6 +104,8 @@ Rails.application.routes.draw do
           get :get_online_players
           get :player_rank
           get :game_data
+          get :my_rank_and_rewards
+          get :tournament_fee_paid
         end
       end
 

@@ -11,6 +11,7 @@ class RoomConfig < ActiveRecord::Base
 	def find_tournament(room_config_id, user_id)
 		tournament_user = TournamentUser.where(room_config_id: room_config_id, user_id: user_id).last
 		if tournament_user.present?
+			p tournament_user.tournament
 			if tournament_user.tournament.active
 				tournament_user.tournament
 			end
@@ -18,7 +19,13 @@ class RoomConfig < ActiveRecord::Base
 	end
 
 	def my_rank(user_id)
-		self.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(user_id).to_f + 1
+
+		my_rank = self.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(user_id).to_i
+		if my_rank > 0
+			self.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(user_id).to_f + 1
+		else 
+			0
+		end
 	end
 
 end

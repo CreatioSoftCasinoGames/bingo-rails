@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  old_coins_value: 9.99
+  new_coins_value: 9.99
+  old_pricing: 9.99
+  new_pricing: 9.99
+  offer: false
+  currency: MyString
+  country: MyString
+
+two:
+  old_coins_value: 9.99
+  new_coins_value: 9.99
+  old_pricing: 9.99
+  new_pricing: 9.99
+  offer: false
+  currency: MyString
+  country: MyString

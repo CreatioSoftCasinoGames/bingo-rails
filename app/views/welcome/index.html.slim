@@ -8,5 +8,11 @@
 		- if user_signed_in?
 	    -if can? :update, @utility
 	  	  button type="submit" Sync Database
+
+= form_tag '/api/v1/schedule_maintenances/sm?token=57c796a182484458cfa861f10c2da155', :method => 'post' do
+	.form-group
+		- if user_signed_in?
+	    -if can? :update, @utility
+	  	  button type="submit" Server Maintenance
 h1 Welcome#index
 p Find me in app/views/welcome/index.html.slim

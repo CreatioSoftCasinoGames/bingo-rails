@@ -67,7 +67,12 @@ Rails.application.routes.draw do
       end
       
       resources :client_bugs
-      resources :dynamic_iaps
+      resources :dynamic_iaps do
+        collection do
+          get :normal_iap_list
+          get :special_iap_list
+        end
+      end
       resources :friend_requests
       resources :gift_requests
       resources :table_configs

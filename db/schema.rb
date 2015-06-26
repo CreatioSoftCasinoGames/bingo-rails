@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150626055006) do
+ActiveRecord::Schema.define(version: 20150626104926) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -61,10 +61,10 @@ ActiveRecord::Schema.define(version: 20150626055006) do
   end
 
   create_table "dynamic_iaps", force: true do |t|
-    t.decimal  "old_coins_value", precision: 10, scale: 0
-    t.decimal  "new_coins_value", precision: 10, scale: 0
-    t.decimal  "old_pricing",     precision: 10, scale: 0
-    t.decimal  "new_pricing",     precision: 10, scale: 0
+    t.float    "old_coins_value", limit: 24
+    t.float    "new_coins_value", limit: 24
+    t.float    "old_pricing",     limit: 24
+    t.float    "new_pricing",     limit: 24
     t.boolean  "offer"
     t.string   "currency"
     t.string   "country"

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150627074530) do
+ActiveRecord::Schema.define(version: 20150627111026) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -61,10 +61,10 @@ ActiveRecord::Schema.define(version: 20150627074530) do
   end
 
   create_table "dynamic_iaps", force: true do |t|
-    t.decimal  "old_coins_value",            precision: 10, scale: 0
-    t.decimal  "new_coins_value",            precision: 10, scale: 0
-    t.float    "old_pricing",     limit: 24
-    t.float    "new_pricing",     limit: 24
+    t.decimal  "old_value",              precision: 10, scale: 0
+    t.decimal  "new_value",              precision: 10, scale: 0
+    t.float    "old_pricing", limit: 24
+    t.float    "new_pricing", limit: 24
     t.boolean  "offer"
     t.string   "currency"
     t.string   "country"
@@ -72,8 +72,9 @@ ActiveRecord::Schema.define(version: 20150627074530) do
     t.datetime "updated_at"
     t.string   "iap_id"
     t.string   "iap_type"
-    t.boolean  "is_active",                                           default: true
+    t.boolean  "is_active",                                       default: true
     t.string   "deal_value"
+    t.integer  "more"
   end
 
   create_table "friend_requests", force: true do |t|
@@ -335,6 +336,9 @@ ActiveRecord::Schema.define(version: 20150627074530) do
     t.boolean  "is_daily_bonus_collected",                              default: true
     t.string   "country",                                               default: ""
     t.boolean  "show_tutorial",                                         default: false
+    t.boolean  "daily_fee_paid",                                        default: false
+    t.boolean  "weekly_fee_paid",                                       default: false
+    t.boolean  "monthly_fee_paid",                                      default: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

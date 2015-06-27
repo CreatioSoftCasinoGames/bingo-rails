@@ -78,6 +78,6 @@ class DynamicIapsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def dynamic_iap_params
-      params.require(:dynamic_iap).permit(:old_coins_value, :new_coins_value, :old_pricing, :new_pricing, :offer, :currency, :country, :iap_id, :iap_type, :deal_value, :is_active)
+      params.require(:dynamic_iap).permit(:old_value, :new_value, :old_pricing, :new_pricing, :offer, :currency, :country, :iap_id, :iap_type, :deal_value, :is_active, :more)
     end
 end

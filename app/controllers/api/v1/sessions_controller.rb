@@ -6,7 +6,7 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 				@guest_user = User.where(device_id: params[:device_id], is_fb_connected: false).first
 				if @guest_user.present?
 					@user = @guest_user.dup
-					@user.attributes = {parent_id: @guest_user.id, device_id: params[:device_id], is_guest: false, fb_id: params[:fb_id], email: params[:fb_id]+"@facebook.com", fb_friends_list: params[:fb_friends_list], is_fb_connected: true}
+					@user.attributes = {parent_id: @guest_user.id, device_id: params[:device_id], is_guest: false, fb_id: params[:fb_id], email: params[:fb_id]+"@facebook.com", fb_friends_list: params[:fb_friends_list], is_fb_connected: true, country: params[:country]}
 					if @user.save
 						@guest_user.update_attributes(is_fb_connected: true)
 						@success = true
@@ -29,7 +29,7 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 			@user = User.where(device_id: params[:device_id], is_guest: true).first_or_initialize
 			if @user.new_record?
 				if @user.save
-					@user
+					@user.update_attributes(country: params[:country])
 					@success = true
 				else
 					@success = false
@@ -55,8 +55,8 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 			if @user.update_attributes(login_token: login_token, online: true, login_histories_attributes: {id: nil, active: true, login_token: login_token })
 				@user.previous_login_token = @user.login_histories.order("created_at desc").limit(2).last.try(:login_token)
 				render json: @user.as_json({
-					only: [:id, :device_id, :powerups_remaining, :login_token, :is_daily_bonus_collected, :bingo_played, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :special_reward_timer, :ticket_bought, :country, :show_tutorial],
-					methods: [:num_friend_request, :daily_bonus_time_remaining, :next_daily_bonus_time, :num_gift_request, :player_since, :image_url, :previous_login_token, :device_changed, :daily_tournament_fee_paid, :weekly_tournament_fee_paid, :monthly_tournament_fee_paid],
+					only: [:id, :device_id, :powerups_remaining, :login_token, :is_daily_bonus_collected, :bingo_played, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :special_reward_timer, :ticket_bought, :country, :show_tutorial, :daily_fee_paid, :weekly_fee_paid, :monthly_fee_paid],
+					methods: [:num_friend_request, :daily_bonus_time_remaining, :next_daily_bonus_time, :num_gift_request, :player_since, :image_url, :previous_login_token, :device_changed],
 					include: [:powerup, :in_app_purchases]
 				})
 			else
@@ -101,7 +101,7 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 
 	def facebook_sync(params)
 		@user = User.where(fb_id: params[:fb_id]).first_or_initialize
-		@user.attributes = {fb_friends_list: params[:fb_friends_list], device_id: params[:device_id]}
+		@user.attributes = {fb_friends_list: params[:fb_friends_list], device_id: params[:device_id], country: params[:country]}
 		if @user.new_record?
 			email = params[:email].present? ? params[:email] : params[:fb_id]+"@facebook.com"
 			@user.attributes = {email: email, first_name: params[:first_name], last_name: params[:last_name], fb_friends_list: params[:fb_friends_list], is_fb_connected: true}

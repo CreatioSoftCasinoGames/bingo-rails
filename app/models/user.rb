@@ -55,32 +55,32 @@ class User < ActiveRecord::Base
   	created_at.strftime("%B,%Y")
   end
 
-  def daily_tournament_fee_paid
-    tournament_user = TournamentUser.where(room_config_id: RoomConfig.where(name: "Daily_Free").first.id, user_id: self.id).last
-    if tournament_user.present?
-      tournament_user.tournament.active
-    else
-      false
-    end
-  end
+  # def daily_tournament_fee_paid
+  #   tournament_user = TournamentUser.where(room_config_id: RoomConfig.where(name: "Daily_Free").first.id, user_id: self.id).last
+  #   if tournament_user.present?
+  #     tournament_user.tournament.active
+  #   else
+  #     false
+  #   end
+  # end
 
-  def weekly_tournament_fee_paid
-    tournament_user = TournamentUser.where(room_config_id: RoomConfig.where(name: "Weekly").first.id, user_id: self.id).last
-    if tournament_user.present?
-      tournament_user.tournament.active
-    else
-      false
-    end
-  end
+  # def weekly_tournament_fee_paid
+  #   tournament_user = TournamentUser.where(room_config_id: RoomConfig.where(name: "Weekly").first.id, user_id: self.id).last
+  #   if tournament_user.present?
+  #     tournament_user.tournament.active
+  #   else
+  #     false
+  #   end
+  # end
 
-  def monthly_tournament_fee_paid
-    tournament_user = TournamentUser.where(room_config_id: RoomConfig.where(name: "Monthly").first.id, user_id: self.id).last
-    if tournament_user.present?
-      tournament_user.tournament.active
-    else
-      false
-    end
-  end
+  # def monthly_tournament_fee_paid
+  #   tournament_user = TournamentUser.where(room_config_id: RoomConfig.where(name: "Monthly").first.id, user_id: self.id).last
+  #   if tournament_user.present?
+  #     tournament_user.tournament.active
+  #   else
+  #     false
+  #   end
+  # end
 
   def daily_bonus_time_remaining
     (Date.today.at_midnight + 24.hours - Time.now).to_i

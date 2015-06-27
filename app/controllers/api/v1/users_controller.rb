@@ -52,8 +52,6 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def my_friends
-		# is_ask_for_gift = 
-		# ask_for_gift_in = 
 		friends = @user.friends.collect do |friend|
 			{
 				login_token: friend.login_token,
@@ -101,9 +99,9 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def tournament_fee_paid
 		render json: {
-			daily: @user.daily_tournament_fee_paid,
-			weekly: @user.weekly_tournament_fee_paid,
-			monthly: @user.monthly_tournament_fee_paid
+			daily: @user.daily_fee_paid,
+			weekly: @user.weekly_fee_paid,
+			monthly: @user.monthly_fee_paid
 		}
 	end
 
@@ -129,7 +127,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				is_over: @is_over.present? ? @is_over.over : false,
 				reward_collected: @reward.present? ? @reward.is_collected : true,
 				tournament_type: @tournament.present? ? @tournament.tournament_type : nil,
-				reward_id: @reward.present? ? @reward.id : nil
+				reward_id: @reward.present? ? @reward.id : 0
 			}
 		else
 			render json: {
@@ -207,7 +205,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			:daily_free_tickets_available, :is_invited_facebook_friend, :is_gifted_to_friend, :is_bingo_on_all_card, :fastest_bingo, 
 			:total_jigsaw_completed, :total_bingo, :total_daily_participitated, :is_daily_bonus_collected, 
 			:total_weekly_participated, :total_card_used, :total_monthly_participated,
-			:total_daily_won, :total_weekly_won, :jigsaw_data_string, :total_monthly_won, 
+			:total_daily_won, :daily_fee_paid, :weekly_fee_paid, :monthly_fee_paid, :total_weekly_won, :jigsaw_data_string, :total_monthly_won, 
 			:achievement_data_string, :best_daily_position, :best_monthly_position, :best_weekly_position,
 			:best_special_position, :total_free_spin_count, :total_scratch_count, :daily_bonus_time_remaining, 
 			:special_reward_timer, :total_room_unlocked,

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150626104926) do
+ActiveRecord::Schema.define(version: 20150627074530) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -61,8 +61,8 @@ ActiveRecord::Schema.define(version: 20150626104926) do
   end
 
   create_table "dynamic_iaps", force: true do |t|
-    t.float    "old_coins_value", limit: 24
-    t.float    "new_coins_value", limit: 24
+    t.decimal  "old_coins_value",            precision: 10, scale: 0
+    t.decimal  "new_coins_value",            precision: 10, scale: 0
     t.float    "old_pricing",     limit: 24
     t.float    "new_pricing",     limit: 24
     t.boolean  "offer"
@@ -71,6 +71,9 @@ ActiveRecord::Schema.define(version: 20150626104926) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "iap_id"
+    t.string   "iap_type"
+    t.boolean  "is_active",                                           default: true
+    t.string   "deal_value"
   end
 
   create_table "friend_requests", force: true do |t|
@@ -331,6 +334,7 @@ ActiveRecord::Schema.define(version: 20150626104926) do
     t.integer  "total_bingo",                                           default: 0
     t.boolean  "is_daily_bonus_collected",                              default: true
     t.string   "country",                                               default: ""
+    t.boolean  "show_tutorial",                                         default: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

@@ -5,6 +5,8 @@ table class="table table-striped"
   thead
     tr
       th= model_class.human_attribute_name(:id)
+      th= model_class.human_attribute_name(:iap_type)
+      th= model_class.human_attribute_name(:deal_value)
       th= model_class.human_attribute_name(:iap_id)
       th= model_class.human_attribute_name(:old_coins_value)
       th= model_class.human_attribute_name(:new_coins_value)
@@ -13,12 +15,14 @@ table class="table table-striped"
       th= model_class.human_attribute_name(:offer)
       th= model_class.human_attribute_name(:currency)
       th= model_class.human_attribute_name(:country)
-      th= model_class.human_attribute_name(:created_at)
+      th= model_class.human_attribute_name(:is_active)
       th=t '.actions', :default => t("helpers.actions")
   tbody
     - @dynamic_iaps.each do |dynamic_iap|
       tr
         td= link_to dynamic_iap.id, dynamic_iap_path(dynamic_iap)
+        td= dynamic_iap.iap_type
+        td= dynamic_iap.deal_value
         td= dynamic_iap.iap_id
         td= dynamic_iap.old_coins_value
         td= dynamic_iap.new_coins_value
@@ -27,7 +31,7 @@ table class="table table-striped"
         td= dynamic_iap.offer
         td= dynamic_iap.currency
         td= dynamic_iap.country
-        td=l dynamic_iap.created_at
+        td= dynamic_iap.is_active
         td
           = link_to t('.edit', :default => t("helpers.links.edit")), edit_dynamic_iap_path(dynamic_iap), :class => 'btn btn-default btn-xs'
           '

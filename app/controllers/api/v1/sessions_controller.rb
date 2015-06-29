@@ -1,6 +1,8 @@
 class Api::V1::SessionsController < Api::V1::ApplicationController
 
 	def create
+		game_version = GameVersion.where(device_type: params[:device], version: params[:game_version]).first
+		update_required = game_version.present? ? game_version.require_update : true
 		if params[:fb_id] && params[:device_id]
 			if User.where(fb_id: params[:fb_id]).first.blank?
 				@guest_user = User.where(device_id: params[:device_id], is_fb_connected: false).first
@@ -52,7 +54,7 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 			if params[:first_name]
 				@user.update_attributes(first_name: params[:first_name], last_name: params[:last_name])
 			end
-			if @user.update_attributes(login_token: login_token, online: true, login_histories_attributes: {id: nil, active: true, login_token: login_token })
+			if @user.update_attributes(login_token: login_token, online: true, game_version: params[:game_version], device: params[:device], update_required: update_required, login_histories_attributes: {id: nil, active: true, login_token: login_token })
 				@user.previous_login_token = @user.login_histories.order("created_at desc").limit(2).last.try(:login_token)
 				render json: @user.as_json({
 					only: [:id, :device_id, :powerups_remaining, :login_token, :is_daily_bonus_collected, :bingo_played, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :special_reward_timer, :ticket_bought, :country, :show_tutorial, :daily_fee_paid, :weekly_fee_paid, :monthly_fee_paid],

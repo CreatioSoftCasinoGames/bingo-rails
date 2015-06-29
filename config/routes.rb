@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :game_versions
+
   resources :client_bugs
 
   resources :dynamic_iaps

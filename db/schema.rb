@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150627111026) do
+ActiveRecord::Schema.define(version: 20150629102459) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -88,6 +88,14 @@ ActiveRecord::Schema.define(version: 20150627111026) do
   create_table "friendships", force: true do |t|
     t.integer  "user_id"
     t.integer  "friend_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "game_versions", force: true do |t|
+    t.string   "device_type"
+    t.string   "version"
+    t.boolean  "require_update"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -339,6 +347,9 @@ ActiveRecord::Schema.define(version: 20150627111026) do
     t.boolean  "daily_fee_paid",                                        default: false
     t.boolean  "weekly_fee_paid",                                       default: false
     t.boolean  "monthly_fee_paid",                                      default: false
+    t.string   "device",                                                default: ""
+    t.string   "game_version"
+    t.boolean  "update_required",                                       default: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

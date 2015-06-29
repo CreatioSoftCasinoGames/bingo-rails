@@ -108,6 +108,7 @@ Rails.application.routes.draw do
           get :game_data
           get :my_rank_and_rewards
           get :tournament_fee_paid
+          get :tournaments_remaining_time
         end
       end
 

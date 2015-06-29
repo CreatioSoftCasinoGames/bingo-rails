@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
-	before_action :find_user, only: [:update, :show, :tournament_fee_paid, :my_rank_and_rewards, :get_round_and_attempt, :my_rank, :game_data, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends, :sent_gift, :received_gift, :ask_for_gift_to, :ask_for_gift_by, :player_rank]
+	before_action :find_user, only: [:update, :show, :tournament_fee_paid, :tournaments_remaining_time, :my_rank_and_rewards, :get_round_and_attempt, :my_rank, :game_data, :in_game_inapp, :friend_request_sent, :my_friend_requests, :my_friends, :sent_gift, :received_gift, :ask_for_gift_to, :ask_for_gift_by, :player_rank]
 
 	def create
 		@user = User.new(user_params)
@@ -170,6 +170,22 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				error: "This is not a Tournament!"
 			}
 		end
+	end
+
+	def tournaments_remaining_time
+		room_configs = RoomConfig.where(room_type: "Tournament")
+		time_remaining = {}
+		room_configs.each do |room_config|
+			@tournament = room_config.find_tournament(room_config.id, @user.id)
+			p "______________________________________________________________________"
+			p @tournament
+			if @tournament.present?
+				time_remaining[room_config.id] = room_config.duration.day - (Time.now.utc - @tournament.created_at.midnight)
+			else
+				time_remaining[room_config.id] = 0
+			end
+		end
+		render json: time_remaining
 	end
 
 	def game_data

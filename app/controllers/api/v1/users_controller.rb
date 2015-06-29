@@ -123,7 +123,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				round_four: @round_scores.present? ? @round_scores[:round_four_score] : 0,
 				round_five: @round_scores.present? ? @round_scores[:round_five_score] : 0,
 				remaining_time: remaining_time.present? ? remaining_time : @room_config.tournaments.last.created_at.midnight - Time.now.utc + @room_config.duration.day,
-				rank: rank.present? && rank != 1 ? rank : 0,
+				rank: rank.present? && rank != 0 ? rank : 0,
 				is_over: @is_over.present? ? @is_over.over : false,
 				reward_collected: @reward.present? ? @reward.is_collected : true,
 				tournament_type: @tournament.present? ? @tournament.tournament_type : nil,

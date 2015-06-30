@@ -24,6 +24,7 @@ class User < ActiveRecord::Base
   has_many :rooms, :through => :room_users
   validate :increase_ticket_and_coins
   before_update :check_device_changed
+  before_create :add_unique_id
 
   accepts_nested_attributes_for :in_app_purchases
   accepts_nested_attributes_for :powerup
@@ -53,6 +54,15 @@ class User < ActiveRecord::Base
 
   def player_since
   	created_at.strftime("%B,%Y")
+  end
+
+  def is_special_deal
+    DynamicIap.where(iap_type: "Special", is_active: true).count == 3
+  end
+
+  def deal_end_time
+    deal = DynamicIap.where(iap_type: "Special", is_active: true).first
+    deal.updated_at + deal.end_time.hours - Time.now
   end
 
   # def daily_tournament_fee_paid
@@ -183,6 +193,11 @@ class User < ActiveRecord::Base
         Friendship.where(user_id: deleted_friend_id, friend_id: id).first.try(:delete)
       end
     end
+  end
+
+  def add_unique_id
+    unique_value = SecureRandom.hex(4)
+    self.unique_id = unique_value
   end
 
   def check_device_changed

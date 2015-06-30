@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150629102459) do
+ActiveRecord::Schema.define(version: 20150630113319) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(version: 20150629102459) do
     t.boolean  "is_active",                                       default: true
     t.string   "deal_value"
     t.integer  "more"
+    t.integer  "end_time"
   end
 
   create_table "friend_requests", force: true do |t|
@@ -266,12 +267,12 @@ ActiveRecord::Schema.define(version: 20150629102459) do
   end
 
   create_table "users", force: true do |t|
-    t.string   "email",                                                 default: "",       null: false
-    t.string   "encrypted_password",                                    default: "",       null: false
+    t.string   "email",                                                            default: "",       null: false
+    t.string   "encrypted_password",                                               default: "",       null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                                         default: 0,        null: false
+    t.integer  "sign_in_count",                                                    default: 0,        null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
@@ -281,75 +282,77 @@ ActiveRecord::Schema.define(version: 20150629102459) do
     t.string   "fb_id"
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "role",                                                  default: "PLAYER"
+    t.string   "role",                                                             default: "PLAYER"
     t.boolean  "is_guest"
-    t.decimal  "tokens",                       precision: 10, scale: 0, default: 0
-    t.decimal  "coins",                        precision: 10, scale: 0, default: 100
-    t.integer  "powerups_remaining",                                    default: 5
-    t.integer  "keys",                                                  default: 20
-    t.integer  "bingo_win",                                             default: 0
-    t.integer  "tickets_purchased",                                     default: 0
-    t.integer  "current_level",                                         default: 1
-    t.integer  "xp_earned",                                             default: 0
-    t.decimal  "achievements_won",             precision: 10, scale: 0, default: 0
-    t.decimal  "jigsaw_pieces_collected",      precision: 10, scale: 0, default: 0
-    t.integer  "total_daubs",                                           default: 0
-    t.integer  "powerups_used",                                         default: 0
-    t.integer  "bingo_played",                                          default: 0
-    t.integer  "ticket_bought",                                         default: 10
-    t.integer  "tournaments_participated",                              default: 0
-    t.integer  "tournaments_won",                                       default: 0
-    t.integer  "best_tournament_position",                              default: 0
-    t.integer  "best_bingo_position",                                   default: 0
-    t.integer  "daily_free_tickets_available",                          default: 0
-    t.integer  "bounus_coins_and_tickets",                              default: 0
-    t.integer  "mystery_chests_opened",                                 default: 0
-    t.integer  "free_daubs_collected",                                  default: 0
-    t.integer  "keys_collected_in_game",                                default: 0
-    t.integer  "bingo_by_vertical_pattern",                             default: 0
-    t.integer  "bingo_by_horizontal_pattern",                           default: 0
-    t.integer  "bingo_by_diagonal_pattern",                             default: 0
-    t.integer  "coins_collected_in_game",                               default: 0
-    t.boolean  "is_invited_facebook_friend",                            default: false
-    t.boolean  "is_gifted_to_friend",                                   default: false
-    t.boolean  "is_bingo_on_all_card",                                  default: false
-    t.decimal  "fastest_bingo",                precision: 10, scale: 0, default: 0
+    t.decimal  "tokens",                                  precision: 10, scale: 0, default: 0
+    t.decimal  "coins",                                   precision: 10, scale: 0, default: 100
+    t.integer  "powerups_remaining",                                               default: 5
+    t.integer  "keys",                                                             default: 20
+    t.integer  "bingo_win",                                                        default: 0
+    t.integer  "tickets_purchased",                                                default: 0
+    t.integer  "current_level",                                                    default: 1
+    t.integer  "xp_earned",                                                        default: 0
+    t.decimal  "achievements_won",                        precision: 10, scale: 0, default: 0
+    t.decimal  "jigsaw_pieces_collected",                 precision: 10, scale: 0, default: 0
+    t.integer  "total_daubs",                                                      default: 0
+    t.integer  "powerups_used",                                                    default: 0
+    t.integer  "bingo_played",                                                     default: 0
+    t.integer  "ticket_bought",                                                    default: 10
+    t.integer  "tournaments_participated",                                         default: 0
+    t.integer  "tournaments_won",                                                  default: 0
+    t.integer  "best_tournament_position",                                         default: 0
+    t.integer  "best_bingo_position",                                              default: 0
+    t.integer  "daily_free_tickets_available",                                     default: 0
+    t.integer  "bounus_coins_and_tickets",                                         default: 0
+    t.integer  "mystery_chests_opened",                                            default: 0
+    t.integer  "free_daubs_collected",                                             default: 0
+    t.integer  "keys_collected_in_game",                                           default: 0
+    t.integer  "bingo_by_vertical_pattern",                                        default: 0
+    t.integer  "bingo_by_horizontal_pattern",                                      default: 0
+    t.integer  "bingo_by_diagonal_pattern",                                        default: 0
+    t.integer  "coins_collected_in_game",                                          default: 0
+    t.boolean  "is_invited_facebook_friend",                                       default: false
+    t.boolean  "is_gifted_to_friend",                                              default: false
+    t.boolean  "is_bingo_on_all_card",                                             default: false
+    t.decimal  "fastest_bingo",                           precision: 10, scale: 0, default: 0
     t.string   "device_id"
-    t.integer  "bingo_by_corner_pattern",                               default: 0
+    t.integer  "bingo_by_corner_pattern",                                          default: 0
     t.string   "login_token"
-    t.boolean  "is_bot",                                                default: false
-    t.boolean  "online",                                                default: false
-    t.integer  "parent_id",                                             default: 0
-    t.boolean  "is_fb_connected",                                       default: false
-    t.integer  "total_jigsaw_completed",                                default: 0
-    t.integer  "total_daily_participitated",                            default: 0
-    t.integer  "total_weekly_participated",                             default: 0
-    t.integer  "total_card_used",                                       default: 0
-    t.integer  "total_monthly_participated",                            default: 0
-    t.integer  "total_daily_won",                                       default: 0
-    t.integer  "total_weekly_won",                                      default: 0
+    t.boolean  "is_bot",                                                           default: false
+    t.boolean  "online",                                                           default: false
+    t.integer  "parent_id",                                                        default: 0
+    t.boolean  "is_fb_connected",                                                  default: false
+    t.integer  "total_jigsaw_completed",                                           default: 0
+    t.integer  "total_daily_participitated",                                       default: 0
+    t.integer  "total_weekly_participated",                                        default: 0
+    t.integer  "total_card_used",                                                  default: 0
+    t.integer  "total_monthly_participated",                                       default: 0
+    t.integer  "total_daily_won",                                                  default: 0
+    t.integer  "total_weekly_won",                                                 default: 0
     t.text     "jigsaw_data_string"
-    t.integer  "total_monthly_won",                                     default: 0
+    t.integer  "total_monthly_won",                                                default: 0
     t.text     "achievement_data_string"
-    t.integer  "best_daily_position",                                   default: 0
-    t.integer  "best_monthly_position",                                 default: 0
-    t.integer  "best_weekly_position",                                  default: 0
-    t.integer  "best_special_position",                                 default: 0
-    t.integer  "total_free_spin_count",                                 default: 0
-    t.integer  "total_scratch_count",                                   default: 0
-    t.decimal  "daily_bonus_time_remaining",   precision: 10, scale: 0, default: 0
-    t.decimal  "special_reward_timer",         precision: 10, scale: 0, default: 0
-    t.integer  "total_room_unlocked",                                   default: 0
-    t.integer  "total_bingo",                                           default: 0
-    t.boolean  "is_daily_bonus_collected",                              default: true
-    t.string   "country",                                               default: ""
-    t.boolean  "show_tutorial",                                         default: false
-    t.boolean  "daily_fee_paid",                                        default: false
-    t.boolean  "weekly_fee_paid",                                       default: false
-    t.boolean  "monthly_fee_paid",                                      default: false
-    t.string   "device",                                                default: ""
+    t.integer  "best_daily_position",                                              default: 0
+    t.integer  "best_monthly_position",                                            default: 0
+    t.integer  "best_weekly_position",                                             default: 0
+    t.integer  "best_special_position",                                            default: 0
+    t.integer  "total_free_spin_count",                                            default: 0
+    t.integer  "total_scratch_count",                                              default: 0
+    t.decimal  "daily_bonus_time_remaining",              precision: 10, scale: 0, default: 0
+    t.decimal  "special_reward_timer",                    precision: 10, scale: 0, default: 0
+    t.integer  "total_room_unlocked",                                              default: 0
+    t.integer  "total_bingo",                                                      default: 0
+    t.boolean  "is_daily_bonus_collected",                                         default: true
+    t.string   "country",                                                          default: ""
+    t.boolean  "show_tutorial",                                                    default: false
+    t.boolean  "daily_fee_paid",                                                   default: false
+    t.boolean  "weekly_fee_paid",                                                  default: false
+    t.boolean  "monthly_fee_paid",                                                 default: false
+    t.string   "device",                                                           default: ""
     t.string   "game_version"
-    t.boolean  "update_required",                                       default: false
+    t.boolean  "update_required",                                                  default: false
+    t.string   "unique_id",                                                        default: ""
+    t.float    "total_iap_made",               limit: 24,                          default: 0.0
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

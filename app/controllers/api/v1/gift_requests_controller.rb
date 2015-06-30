@@ -3,8 +3,16 @@ class Api::V1::GiftRequestsController < Api::V1::ApplicationController
 	before_action :get_gift_request, only: [:update, :destroy, :show]
 
 	def create
+		if params[:gift_type] == "coins"
+			gift_value = 1000
+		elsif params[:gift_type] == "tickets"
+			gift_value = 5
+		else
+			gift_value: 2
+		end
+		
 		is_asked = params[:is_asked].present? ? params[:is_asked] : false
-		@gift_request = current_user.gift_requests_sent.build(send_token: params[:send_to_token], gift_type: params[:gift_type], is_asked: is_asked)
+		@gift_request = current_user.gift_requests_sent.build(send_token: params[:send_to_token], gift_type: params[:gift_type], is_asked: is_asked, gift_value: gift_value)
 		if @gift_request.save
 			render json: @gift_request
 		else

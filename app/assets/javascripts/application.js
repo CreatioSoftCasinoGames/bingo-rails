@@ -53,6 +53,27 @@ $(function() {
 
 })
 
+$(function() {
+	$('.set-time').click(function (e){
+		var timeRemainig = $('.time-remaining').val();
+		$.ajax({
+			url: "/dynamic_iaps/special_deal_end_time",
+			method: "put",
+			data: {end_time: timeRemainig},
+			success: function(data, status){
+				if (data.success) {
+					window.location = data.redirect_to
+					alert(data.message);
+				} else{
+					window.location = data.redirect_to
+					alert(data.message);
+				}
+			}
+		});
+	});
+	return false;
+});
+
 
 
 

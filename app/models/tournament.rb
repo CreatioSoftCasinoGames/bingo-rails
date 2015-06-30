@@ -27,8 +27,6 @@ class Tournament < ActiveRecord::Base
     current_tournament = tournaments.select {|tournament| tournament.created_at.to_date == (Time.now - num_days.days).to_date}.first
     if current_tournament.present?
       current_tournament.tournament_users.order("score DESC").each_with_index do |tournament_user, i|
-        p "___________________________________________________________________________"
-        p i
         if i == 0
           Reward.create(tournament_id: tournament_user.tournament_id, user_id: tournament_user.user_id, rank: i+1, coins: 75000, tickets: 50)
         elsif i == 1
@@ -36,7 +34,7 @@ class Tournament < ActiveRecord::Base
         elsif i == 2
           Reward.create(tournament_id: tournament_user.tournament_id, user_id: tournament_user.user_id, rank: i+1, coins: 25000, tickets: 20)
         else
-          Reward.create(tournament_id: tournament_user.tournament_id, user_id: tournament_user.user_id, rank: i+1)
+          Reward.create(tournament_id: tournament_user.tournament_id, user_id: tournament_user.user_id, rank: i+1, coins: 1000, tickets: 0)
         end
             
       end

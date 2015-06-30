@@ -70,6 +70,27 @@ class DynamicIapsController < ApplicationController
     end
   end
 
+  def set_time
+    
+  end
+
+  def special_deal_end_time
+    @special_deal = DynamicIap.where(iap_type: "Special", is_active: true)
+    if @special_deal.update_all(end_time: params[:end_time])
+      render json: {
+        redirect_to: dynamic_iaps_url,
+        message: "Time successfully added.",
+        success: true
+      }
+    else
+      render json: {
+        redirect_to: set_time_dynamic_iaps_url,
+        message: @special_deal.errors.full_messages.join(", "),
+        success: false
+      }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_dynamic_iap

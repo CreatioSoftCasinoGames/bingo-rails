@@ -4,7 +4,12 @@ Rails.application.routes.draw do
 
   resources :client_bugs
 
-  resources :dynamic_iaps
+  resources :dynamic_iaps do
+    collection do 
+      get :set_time
+      put :special_deal_end_time
+    end
+  end
 
   resources :scratch_card_rewards
 

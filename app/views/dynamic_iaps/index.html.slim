@@ -17,6 +17,7 @@ table class="table table-striped"
       th= model_class.human_attribute_name(:currency)
       th= model_class.human_attribute_name(:country)
       th= model_class.human_attribute_name(:is_active)
+      th= model_class.human_attribute_name(:end_time)
       th=t '.actions', :default => t("helpers.actions")
   tbody
     - @dynamic_iaps.each do |dynamic_iap|
@@ -34,10 +35,13 @@ table class="table table-striped"
         td= dynamic_iap.currency
         td= dynamic_iap.country
         td= dynamic_iap.is_active
+        td= dynamic_iap.end_time
         td
           = link_to t('.edit', :default => t("helpers.links.edit")), edit_dynamic_iap_path(dynamic_iap), :class => 'btn btn-default btn-xs'
           '
           = link_to t('.destroy', :default => t("helpers.links.destroy")), dynamic_iap_path(dynamic_iap), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
 
 = link_to t('.new', :default => t("helpers.links.new")), new_dynamic_iap_path, :class => 'btn btn-primary'
+|    
+= link_to "Update Special Deal End Time", set_time_dynamic_iaps_path, class: "btn btn-warning"
 

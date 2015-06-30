@@ -71,7 +71,7 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 			end
 			render json: {
 				leader_board: leader_board,
-				my_rank: @room_config.my_rank(@user.id).to_i
+				my_rank: @room_config.my_rank(@user.id).to_i + 1
 			}
 		else
 			render json: {

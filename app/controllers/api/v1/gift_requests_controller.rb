@@ -8,7 +8,7 @@ class Api::V1::GiftRequestsController < Api::V1::ApplicationController
 		elsif params[:gift_type] == "tickets"
 			gift_value = 5
 		else
-			gift_value: 2
+			gift_value = 2
 		end
 		
 		is_asked = params[:is_asked].present? ? params[:is_asked] : false
@@ -34,7 +34,8 @@ class Api::V1::GiftRequestsController < Api::V1::ApplicationController
 	def destroy
 		@gift_request.destroy
 		render json: {
-			success: true
+			success: true,
+			id: params[:id]
 		}
 	end
 

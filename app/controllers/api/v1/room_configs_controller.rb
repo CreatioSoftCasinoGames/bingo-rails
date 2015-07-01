@@ -76,7 +76,7 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 		else
 			render json: {
 				leader_board: [],
-				my_rank: nil,
+				my_rank: 0,
 				message: "User not played in this tournament."
 			}
 		end

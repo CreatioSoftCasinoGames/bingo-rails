@@ -18,7 +18,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def show
 		render json: @user.as_json({
-			only: [:id, :login_token, :previous_login_token, :first_name, :last_name, :powerups_remaining, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :daily_bonus_time_remaining, :special_reward_timer, :ticket_bought],
+			only: [:id, :login_token, :previous_login_token, :first_name, :last_name, :powerups_remaining, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :daily_bonus_time_remaining, :special_reward_timer, :ticket_bought, :is_daily_bonus_collected],
 			methods: [:num_friend_request, :num_gift_request, :player_since, :image_url],
 			include: [:powerup, :in_app_purchases]
 		})
@@ -138,17 +138,19 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
 	def my_rank_and_rewards
 		if @user.rewards.present?
-			render json: @user.rewards.where(is_collected: false, tournament_id: RoomConfig.find(params[:room_config_id]).tournaments.where(active: false).last.id).as_json({
+			@val = @user.rewards.where(is_collected: false, tournament_id: RoomConfig.find(params[:room_config_id]).tournaments.where(active: false).last.id).as_json({
 				only: [:id, :coins, :rank],
 				methods: [:tournament_type]
 			})
+			render json: @val[0]
 		else
-			render json: {
-				id: nil,
+			@val = [{
+				id: 0,
 				coins: 0,
 				tickets: 0,
 				rank: 0
-			}
+			}]
+			render json: @val[0]
 		end
 	end
 
@@ -177,8 +179,6 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		time_remaining = {}
 		room_configs.each do |room_config|
 			@tournament = room_config.find_tournament(room_config.id, @user.id)
-			p "______________________________________________________________________"
-			p @tournament
 			if @tournament.present?
 				time_remaining[room_config.id] = room_config.duration.day - (Time.now.utc - @tournament.created_at.midnight)
 			else

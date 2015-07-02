@@ -74,12 +74,26 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 				my_rank: @room_config.my_rank(@user.id).to_i + 1
 			}
 		else
+			tournament_type = @room_config.name
+			users_score = @room_config.active_tournament.tournament_users.order("score desc")
+			leader_board = users_score.limit(20).as_json({
+				only: [:score],
+				methods: [:full_name, :image_url, :login_token]
+			}).each_with_index.map do |player_obj, i|
+				player_obj[:rank] = i + 1
+				player_obj
+			end
 			render json: {
-				leader_board: [],
+				leader_board: leader_board,
 				my_rank: 0,
 				message: "User not played in this tournament."
 			}
 		end
+	end
+
+	def current_tournament(room_config)
+		@room_config = room_config
+		@room_config.tournaments.select {|tournament| tournament.created_at.to_date == (Time.now).to_date}.first
 	end
 
 	def find_room_id

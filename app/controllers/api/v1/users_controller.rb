@@ -137,20 +137,38 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def my_rank_and_rewards
-		if @user.rewards.present?
-			@val = @user.rewards.where(is_collected: false, tournament_id: RoomConfig.find(params[:room_config_id]).tournaments.where(active: false).last.id).as_json({
-				only: [:id, :coins, :rank],
-				methods: [:tournament_type]
-			})
-			render json: @val[0]
+		if @user.present?
+			if @user.rewards.present?
+				@val = @user.rewards.where(is_collected: false, tournament_id: RoomConfig.find(params[:room_config_id]).tournaments.where(active: false).last.id).as_json({
+					only: [:id, :coins, :rank],
+					methods: [:tournament_type]
+				})
+				if @val.present?
+					render json: @val[0]
+				else
+					render json: {
+						id: 0,
+						coins: 0,
+						tickets: 0,
+						rank: 0
+					}
+				end
+			else
+				render json: {
+					id: 0,
+					coins: 0,
+					tickets: 0,
+					rank: 0
+				}
+			end
 		else
-			@val = [{
+			render json: {
 				id: 0,
 				coins: 0,
 				tickets: 0,
-				rank: 0
-			}]
-			render json: @val[0]
+				rank: 0,
+				message: "User not found! My be login missing login token"
+			}
 		end
 	end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150630135921) do
+ActiveRecord::Schema.define(version: 20150702095117) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -337,8 +337,8 @@ ActiveRecord::Schema.define(version: 20150630135921) do
     t.integer  "best_monthly_position",                                            default: 0
     t.integer  "best_weekly_position",                                             default: 0
     t.integer  "best_special_position",                                            default: 0
-    t.integer  "total_free_spin_count",                                            default: 0
-    t.integer  "total_scratch_count",                                              default: 0
+    t.decimal  "total_free_spin_count",                   precision: 10, scale: 0, default: 5
+    t.decimal  "total_scratch_count",                     precision: 10, scale: 0, default: 5
     t.decimal  "daily_bonus_time_remaining",              precision: 10, scale: 0, default: 0
     t.decimal  "special_reward_timer",                    precision: 10, scale: 0, default: 0
     t.integer  "total_room_unlocked",                                              default: 0

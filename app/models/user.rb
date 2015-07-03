@@ -176,7 +176,6 @@ class User < ActiveRecord::Base
   end
 
   def set_fb_friends
-    p fb_friends_list
     unless fb_friends_list.blank?
       user_ids = User.where(fb_id: fb_friends_list).collect(&:id)
       friend_ids = self.friends.collect(&:id)

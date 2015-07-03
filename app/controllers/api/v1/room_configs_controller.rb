@@ -74,7 +74,6 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 				my_rank: @room_config.my_rank(@user.id).to_i + 1
 			}
 		else
-			tournament_type = @room_config.name
 			users_score = @room_config.active_tournament.tournament_users.order("score desc")
 			leader_board = users_score.limit(20).as_json({
 				only: [:score],

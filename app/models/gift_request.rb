@@ -5,7 +5,7 @@ class GiftRequest < ActiveRecord::Base
 	validate :valid_request, on: :create
 	validate :send_once, on: :create
 	validate :max_send, on: :create
-	validate :credit_gift
+	before_update :credit_gift
 
 	belongs_to :reciever, class_name: "User", foreign_key: "send_to_id"
 

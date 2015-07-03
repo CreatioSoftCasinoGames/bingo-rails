@@ -37,7 +37,7 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 	def leader_board
 		@user = User.fetch_by_login_token(params[:login_token])
 		if @room_config.find_tournament(@room_config.id, @user.id).present?
-			if params[:for] == "Friends"
+			if params[:for].upcase == "FRIENDS"
 				tournament_type = @room_config.name
 				if tournament_type == "Daily_Free"
 					tournament_users = @room_config.active_tournament.tournament_users

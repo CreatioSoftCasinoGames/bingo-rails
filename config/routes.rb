@@ -85,6 +85,7 @@ Rails.application.routes.draw do
       resources :tournaments
       resources :sessions, only: [:create, :destroy]
       resources :table_config_users, only: [:create]
+      get "fetch_country" => "users#fetch_country"
       resources :users do
         member do
           get :friend_request_sent

@@ -9,5 +9,4 @@ class MailsWorker
 			NotifyAdminUser.send_error_mail(data).deliver
 		end
 	end
-
 end

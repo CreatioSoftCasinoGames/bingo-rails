@@ -16,9 +16,14 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		end
 	end
 
+	def fetch_country
+		data = GeoIP.new('GeoIP.dat').country(request.ip)
+		render json: data
+	end
+
 	def show
 		render json: @user.as_json({
-			only: [:id, :login_token, :previous_login_token, :first_name, :last_name, :powerups_remaining, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :daily_bonus_time_remaining, :special_reward_timer, :ticket_bought],
+			only: [:id, :login_token, :previous_login_token, :first_name, :last_name, :powerups_remaining, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :daily_bonus_time_remaining, :special_reward_timer, :ticket_bought, :is_daily_bonus_collected],
 			methods: [:num_friend_request, :num_gift_request, :player_since, :image_url],
 			include: [:powerup, :in_app_purchases]
 		})
@@ -71,7 +76,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def received_gift
-		render json: @user.unconfirmed_gift_request.where(is_asked: false)
+		render json: @user.gift_requests_sent.where(confirmed: true)
 	end
 
 	def ask_for_gift_to
@@ -137,17 +142,37 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def my_rank_and_rewards
-		if @user.rewards.present?
-			render json: @user.rewards.where(is_collected: false, tournament_id: RoomConfig.find(params[:room_config_id]).tournaments.where(active: false).last.id).as_json({
-				only: [:id, :coins, :rank],
-				methods: [:tournament_type]
-			})
+		if @user.present?
+			if @user.rewards.present?
+				@val = @user.rewards.where(is_collected: false, tournament_id: RoomConfig.find(params[:room_config_id]).tournaments.where(active: false).last.id).as_json({
+					only: [:id, :coins, :rank],
+					methods: [:tournament_type]
+				})
+				if @val.present?
+					render json: @val[0]
+				else
+					render json: {
+						id: 0,
+						coins: 0,
+						tickets: 0,
+						rank: 0
+					}
+				end
+			else
+				render json: {
+					id: 0,
+					coins: 0,
+					tickets: 0,
+					rank: 0
+				}
+			end
 		else
 			render json: {
-				id: nil,
+				id: 0,
 				coins: 0,
 				tickets: 0,
-				rank: 0
+				rank: 0,
+				message: "User not found! My be login missing login token"
 			}
 		end
 	end
@@ -177,8 +202,6 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		time_remaining = {}
 		room_configs.each do |room_config|
 			@tournament = room_config.find_tournament(room_config.id, @user.id)
-			p "______________________________________________________________________"
-			p @tournament
 			if @tournament.present?
 				time_remaining[room_config.id] = room_config.duration.day - (Time.now.utc - @tournament.created_at.midnight)
 			else

@@ -41,15 +41,15 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 				tournament_type = @room_config.name
 				if tournament_type == "Daily_Free"
 					tournament_users = @room_config.active_tournament.tournament_users
-					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.collect(&:id)).pluck(:friend_id)
+					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.pluck(&:user_id)).pluck(:friend_id) + [@user.id]
 					users_score = tournament_users.where(user_id: friend_ids).order("score desc")
 				elsif tournament_type == "Weekly"
 					tournament_users = @room_config.find_tournament(@room_config.id, @user.id).tournament_users
-					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.collect(&:id)).pluck(:friend_id)
+					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.pluck(&:user_id)).pluck(:friend_id) + [@user.id]
 					users_score = tournament_users.where(user_id: friend_ids).order("score desc")
 				elsif tournament_type == "Monthly"
 					tournament_users = @room_config.find_tournament(@room_config.id, @user.id).tournament_users
-					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.collect(&:id)).pluck(:friend_id)
+					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.pluck(&:user_id)).pluck(:friend_id) + [@user.id]
 					users_score = tournament_users.where(user_id: friend_ids).order("score desc")
 				end
 			else
@@ -74,12 +74,25 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 				my_rank: @room_config.my_rank(@user.id).to_i + 1
 			}
 		else
+			users_score = @room_config.active_tournament.tournament_users.order("score desc")
+			leader_board = users_score.limit(20).as_json({
+				only: [:score],
+				methods: [:full_name, :image_url, :login_token]
+			}).each_with_index.map do |player_obj, i|
+				player_obj[:rank] = i + 1
+				player_obj
+			end
 			render json: {
-				leader_board: [],
-				my_rank: nil,
+				leader_board: leader_board,
+				my_rank: 0,
 				message: "User not played in this tournament."
 			}
 		end
+	end
+
+	def current_tournament(room_config)
+		@room_config = room_config
+		@room_config.tournaments.select {|tournament| tournament.created_at.to_date == (Time.now).to_date}.first
 	end
 
 	def find_room_id

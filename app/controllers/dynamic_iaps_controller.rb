@@ -4,7 +4,11 @@ class DynamicIapsController < ApplicationController
   # GET /dynamic_iaps
   # GET /dynamic_iaps.json
   def index
-    @dynamic_iaps = DynamicIap.all
+    if params[:currency].present?
+      @dynamic_iaps = DynamicIap.where(currency: params[:currency])
+    else
+      @dynamic_iaps = DynamicIap.all
+    end
 
     respond_to do |format|
       format.html # index.html.erb

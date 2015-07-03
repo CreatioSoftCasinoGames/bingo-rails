@@ -14,8 +14,6 @@ class TournamentUser < ActiveRecord::Base
 	def image_url
 		if user.present?
 			user.image_url
-		else
-			" "
 		end
 	end
 

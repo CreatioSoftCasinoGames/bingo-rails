@@ -115,11 +115,15 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			@room_config = RoomConfig.where(id: params[:room_config_id]).first
 			@tournament = @room_config.find_tournament(@room_config.id, @user.id)
 			if @tournament.present?
+				p "================================================================"
+				p @tournament.id
 				@round_scores = @user.round_scores(@room_config.id, @tournament.id)
 				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_i + 1
 				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
 				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).first
 				remaining_time = @room_config.duration.day - (Time.now.utc - @tournament.created_at.midnight)
+				p "-----------------------------------------------------------------------------"
+				p remaining_time
 			end
 			render json: {
 				round_one: @round_scores.present? ? @round_scores[:round_one_score] : 0,

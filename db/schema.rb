@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150630135921) do
+ActiveRecord::Schema.define(version: 20150703073742) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -354,6 +354,7 @@ ActiveRecord::Schema.define(version: 20150630135921) do
     t.boolean  "update_required",                                                  default: false
     t.string   "unique_id",                                                        default: ""
     t.float    "total_iap_made",               limit: 24,                          default: 0.0
+    t.string   "currency",                                                         default: "USD"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

@@ -7,6 +7,7 @@ class MailsWorker
 		data = ClientBug.find(bug_id)
 		if !data.test_mode
 			NotifyAdminUser.send_error_mail(data).deliver
+		end
 	end
 
 end

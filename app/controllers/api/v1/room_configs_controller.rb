@@ -41,15 +41,15 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 				tournament_type = @room_config.name
 				if tournament_type == "Daily_Free"
 					tournament_users = @room_config.active_tournament.tournament_users
-					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.collect(&:id)).pluck(:friend_id)
+					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.pluck(&:user_id)).pluck(:friend_id) + [@user.id]
 					users_score = tournament_users.where(user_id: friend_ids).order("score desc")
 				elsif tournament_type == "Weekly"
 					tournament_users = @room_config.find_tournament(@room_config.id, @user.id).tournament_users
-					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.collect(&:id)).pluck(:friend_id)
+					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.pluck(&:user_id)).pluck(:friend_id) + [@user.id]
 					users_score = tournament_users.where(user_id: friend_ids).order("score desc")
 				elsif tournament_type == "Monthly"
 					tournament_users = @room_config.find_tournament(@room_config.id, @user.id).tournament_users
-					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.collect(&:id)).pluck(:friend_id)
+					friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.pluck(&:user_id)).pluck(:friend_id) + [@user.id]
 					users_score = tournament_users.where(user_id: friend_ids).order("score desc")
 				end
 			else

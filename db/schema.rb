@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150703073742) do
+ActiveRecord::Schema.define(version: 20150703101308) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -286,7 +286,7 @@ ActiveRecord::Schema.define(version: 20150703073742) do
     t.string   "role",                                                             default: "PLAYER"
     t.boolean  "is_guest"
     t.decimal  "tokens",                                  precision: 10, scale: 0, default: 0
-    t.decimal  "coins",                                   precision: 10, scale: 0, default: 100
+    t.decimal  "coins",                                   precision: 10, scale: 0, default: 200
     t.integer  "powerups_remaining",                                               default: 5
     t.integer  "keys",                                                             default: 20
     t.integer  "bingo_win",                                                        default: 0
@@ -298,7 +298,7 @@ ActiveRecord::Schema.define(version: 20150703073742) do
     t.integer  "total_daubs",                                                      default: 0
     t.integer  "powerups_used",                                                    default: 0
     t.integer  "bingo_played",                                                     default: 0
-    t.integer  "ticket_bought",                                                    default: 10
+    t.integer  "ticket_bought",                                                    default: 25
     t.integer  "tournaments_participated",                                         default: 0
     t.integer  "tournaments_won",                                                  default: 0
     t.integer  "best_tournament_position",                                         default: 0

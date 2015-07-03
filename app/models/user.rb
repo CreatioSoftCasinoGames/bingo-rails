@@ -83,7 +83,7 @@ class User < ActiveRecord::Base
   
   def image_url 
     if fb_id
-      "http://graph.facebook.com/#{fb_id}/picture?height=32"
+      "http://graph.facebook.com/#{fb_id}/picture?height=64"
     end
   end
 

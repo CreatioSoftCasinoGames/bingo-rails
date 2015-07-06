@@ -13,10 +13,10 @@ class RoundsWorker
 					if tournament.active
 						round_data["resource_id"] = tournament.id
 					else
-						round_data["resource_id"] = Tournament.where(room_config_id: round_data["room_config_id"]).last.id
+						round_data["resource_id"] = Tournament.where(room_config_id: round_data["room_config_id"], active: true).last.try(:id)
 					end
 				else
-					round_data["resource_id"] = Tournament.where(room_config_id: round_data["room_config_id"]).last.id
+					round_data["resource_id"] = Tournament.where(room_config_id: round_data["room_config_id"], active: true).last.try(:id)
 				end
 			end
 		else

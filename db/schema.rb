@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150703101308) do
+ActiveRecord::Schema.define(version: 20150703193844) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -345,7 +345,7 @@ ActiveRecord::Schema.define(version: 20150703101308) do
     t.integer  "total_bingo",                                                      default: 0
     t.boolean  "is_daily_bonus_collected",                                         default: true
     t.string   "country",                                                          default: ""
-    t.boolean  "show_tutorial",                                                    default: false
+    t.boolean  "show_tutorial",                                                    default: true
     t.boolean  "daily_fee_paid",                                                   default: false
     t.boolean  "weekly_fee_paid",                                                  default: false
     t.boolean  "monthly_fee_paid",                                                 default: false

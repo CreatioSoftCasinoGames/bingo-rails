@@ -80,6 +80,10 @@ class User < ActiveRecord::Base
       "Guest User"
     end
   end
+
+  def self.reset_daily_bonus
+    User.update_all(is_daily_bonus_collected: false)
+  end
   
   def image_url 
     if fb_id

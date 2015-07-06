@@ -121,7 +121,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_i + 1
 				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
 				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).first
-				remaining_time = @room_config.duration.day - (Time.now.utc - @tournament.created_at.midnight)
+				remaining_time = @room_config.duration.day - (Time.zone.now - @tournament.created_at)
 				p "-----------------------------------------------------------------------------"
 				p remaining_time
 			end

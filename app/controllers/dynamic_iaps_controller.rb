@@ -80,7 +80,8 @@ class DynamicIapsController < ApplicationController
 
   def special_deal_end_time
     @special_deal = DynamicIap.where(iap_type: "Special", is_active: true)
-    if @special_deal.update_all(end_time: params[:end_time])
+    results = @special_deal.collect {|sd| [sd.update_attributes(end_time: params[:end_time]), sd.id] }
+    if results.collect(&:first).all? {|a| a}
       render json: {
         redirect_to: dynamic_iaps_url,
         message: "Time successfully added.",
@@ -89,7 +90,7 @@ class DynamicIapsController < ApplicationController
     else
       render json: {
         redirect_to: set_time_dynamic_iaps_url,
-        message: @special_deal.errors.full_messages.join(", "),
+        message: results,
         success: false
       }
     end

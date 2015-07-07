@@ -62,7 +62,9 @@ class User < ActiveRecord::Base
 
   def deal_end_time
     deal = DynamicIap.where(iap_type: "Special", is_active: true).first
-    (deal.updated_at + deal.end_time.hours - Time.zone.now)
+    if deal.present?
+      (deal.updated_at + deal.end_time.hours - Time.zone.now)
+    end
   end
 
   def daily_bonus_time_remaining

@@ -148,12 +148,22 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	def my_rank_and_rewards
 		if @user.present?
 			if @user.rewards.present?
-				@val = @user.rewards.where(is_collected: false, tournament_id: RoomConfig.find(params[:room_config_id]).tournaments.where(active: false).last.id).as_json({
-					only: [:id, :coins, :rank],
-					methods: [:tournament_type]
-				})
-				if @val.present?
-					render json: @val[0]
+				@tournament  = RoomConfig.find(params[:room_config_id]).tournaments.where(active: false).last
+				if @tournament.present?
+					@val = @user.rewards.where(is_collected: false, tournament_id: .id).as_json({
+						only: [:id, :coins, :rank],
+						methods: [:tournament_type]
+					})
+					if @val.present?
+						render json: @val[0]
+					else
+						render json: {
+							id: 0,
+							coins: 0,
+							tickets: 0,
+							rank: 0
+						}
+					end
 				else
 					render json: {
 						id: 0,

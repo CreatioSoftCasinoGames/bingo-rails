@@ -4,7 +4,9 @@ class DynamicIap < ActiveRecord::Base
 	private
 
 	def set_deal_as_false
-		UpdateIapsWorker.perform_at(self.end_time.hour, "Special")
+		if self.changes.include?(:end_time)
+			UpdateIapsWorker.perform_at(self.end_time.hour, "Special")
+		end
 	end
 
 end

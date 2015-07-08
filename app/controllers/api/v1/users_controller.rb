@@ -115,15 +115,11 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			@room_config = RoomConfig.where(id: params[:room_config_id]).first
 			@tournament = @room_config.find_tournament(@room_config.id, @user.id)
 			if @tournament.present?
-				p "================================================================"
-				p @tournament.id
 				@round_scores = @user.round_scores(@room_config.id, @tournament.id)
 				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_i + 1
 				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
 				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).first
 				remaining_time = @room_config.duration.day - (Time.zone.now - @tournament.created_at)
-				p "-----------------------------------------------------------------------------"
-				p remaining_time
 			end
 			render json: {
 				round_one: @round_scores.present? ? @round_scores[:round_one_score] : 0,
@@ -255,7 +251,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			:powerups_used, :bingo_played, :tournaments_participated, :tournaments_won, :best_tournament_position, 
 			:best_bingo_position, :ticket_bought, :total_daubs, :keys_collected_in_game, :free_daubs_collected, :mystery_chests_opened, :bounus_coins_and_tickets, 
 			:coins_collected_in_game, :bingo_by_corner_pattern, :bingo_by_horizontal_pattern, :bingo_by_vertical_pattern, :bingo_by_diagonal_pattern, 
-			:daily_free_tickets_available, :is_invited_facebook_friend, :is_gifted_to_friend, :is_bingo_on_all_card, :fastest_bingo, 
+			:daily_free_tickets_available, :is_invited_facebook_friend, :show_tutorial, :is_gifted_to_friend, :is_bingo_on_all_card, :fastest_bingo, 
 			:total_jigsaw_completed, :total_bingo, :total_daily_participitated, :is_daily_bonus_collected, 
 			:total_weekly_participated, :total_card_used, :total_monthly_participated,
 			:total_daily_won, :daily_fee_paid, :weekly_fee_paid, :monthly_fee_paid, :total_weekly_won, :jigsaw_data_string, :total_monthly_won, 

@@ -246,7 +246,9 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	private
 
 	def user_params
-		(params[:user][:is_daily_bonus_collected] = (params[:user][:is_daily_bonus_collected] == 'True') ? true : false) rescue nil
+		if params[:user][:is_daily_bonus_collected].present?
+			(params[:user][:is_daily_bonus_collected] = (params[:user][:is_daily_bonus_collected] == 'True') ? true : false) rescue nil
+		end
 		params.require(:user).permit(:email, :password, :password_confirmation, :first_name, :last_name, :fb_id, :is_guest, :tokens, :coins, 
 			:powerups_remaining, :keys, :bingo_win, :tickets_purchased, :current_level, :xp_earned, :achievements_won, :jigsaw_pieces_collected, 
 			:powerups_used, :bingo_played, :tournaments_participated, :tournaments_won, :best_tournament_position, 

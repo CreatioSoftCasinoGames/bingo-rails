@@ -1,17 +1,16 @@
 class Api::V1::DynamicIapsController < Api::V1::ApplicationController
 
 	def index
-		render json: DynamicIap.where(iap_type: params[:iap_type], country: params[:country], is_active: true)
+		if params[:iap_type].downcase == "special"
+			@dynamic_iap = DynamicIap.where(iap_type: params[:iap_type].capitalize, currency: params[:currency].upcase)
+		else
+			@dynamic_iap = DynamicIap.where(iap_type: params[:iap_type].capitalize, currency: params[:currency].upcase, is_active: true)
+		end
+		if @dynamic_iap.present?
+			render json: @dynamic_iap
+		else
+			render json: DynamicIap.where(iap_type: params[:iap_type].capitalize, currency: "USD", is_active: true)
+		end
 	end
-
-	# def normal_iap_list
-	# 	render json: DynamicIap.where(iap_type: "Normal", country: params[:country]).as_json({
-	# 		only: [:iap_type, :iap_id, :new_coins_value, :new_pricing, :offer, :currency, :country, :deal_value]
-	# 	})
-	# end
-
-	# def special_iap_list
-	# 	render json: DynamicIap.where(iap_type: "Special", is_active: true).as_json
-	# end
 
 end

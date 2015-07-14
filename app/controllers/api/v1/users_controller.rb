@@ -76,7 +76,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def received_gift
-		render json: @user.unconfirmed_gift_request.where(is_asked: false)
+		render json: @user.gift_requests_sent.where(confirmed: true)
 	end
 
 	def ask_for_gift_to
@@ -119,7 +119,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_i + 1
 				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
 				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).first
-				remaining_time = @room_config.duration.day - (Time.now.utc - @tournament.created_at.midnight)
+				remaining_time = @room_config.duration.day - (Time.zone.now - @tournament.created_at)
 			end
 			render json: {
 				round_one: @round_scores.present? ? @round_scores[:round_one_score] : 0,
@@ -127,7 +127,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				round_three: @round_scores.present? ? @round_scores[:round_three_score] : 0,
 				round_four: @round_scores.present? ? @round_scores[:round_four_score] : 0,
 				round_five: @round_scores.present? ? @round_scores[:round_five_score] : 0,
-				remaining_time: remaining_time.present? ? remaining_time : @room_config.tournaments.last.created_at.midnight - Time.now.utc + @room_config.duration.day,
+				remaining_time: remaining_time.present? ? remaining_time : @room_config.tournaments.where(active: true).last.created_at - Time.zone.now + @room_config.duration.day,
 				rank: rank.present? && rank != 0 ? rank : 0,
 				is_over: @is_over.present? ? @is_over.over : false,
 				reward_collected: @reward.present? ? @reward.is_collected : true,
@@ -142,20 +142,48 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def my_rank_and_rewards
-		if @user.rewards.present?
-			@val = @user.rewards.where(is_collected: false, tournament_id: RoomConfig.find(params[:room_config_id]).tournaments.where(active: false).last.id).as_json({
-				only: [:id, :coins, :rank],
-				methods: [:tournament_type]
-			})
-			render json: @val[0]
+		if @user.present?
+			if @user.rewards.present?
+				@tournament  = RoomConfig.find(params[:room_config_id]).tournaments.where(active: false).last
+				if @tournament.present?
+					@val = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).as_json({
+						only: [:id, :coins, :rank],
+						methods: [:tournament_type]
+					})
+					if @val.present?
+						render json: @val[0]
+					else
+						render json: {
+							id: 0,
+							coins: 0,
+							tickets: 0,
+							rank: 0
+						}
+					end
+				else
+					render json: {
+						id: 0,
+						coins: 0,
+						tickets: 0,
+						rank: 0
+					}
+				end
+			else
+				render json: {
+					id: 0,
+					coins: 0,
+					tickets: 0,
+					rank: 0
+				}
+			end
 		else
-			@val = [{
+			render json: {
 				id: 0,
 				coins: 0,
 				tickets: 0,
-				rank: 0
-			}]
-			render json: @val[0]
+				rank: 0,
+				message: "User not found! My be login missing login token"
+			}
 		end
 	end
 
@@ -218,12 +246,15 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	private
 
 	def user_params
+		if params[:user][:is_daily_bonus_collected].present?
+			(params[:user][:is_daily_bonus_collected] = (params[:user][:is_daily_bonus_collected] == 'True') ? true : false) rescue nil
+		end
 		params.require(:user).permit(:email, :password, :password_confirmation, :first_name, :last_name, :fb_id, :is_guest, :tokens, :coins, 
 			:powerups_remaining, :keys, :bingo_win, :tickets_purchased, :current_level, :xp_earned, :achievements_won, :jigsaw_pieces_collected, 
 			:powerups_used, :bingo_played, :tournaments_participated, :tournaments_won, :best_tournament_position, 
 			:best_bingo_position, :ticket_bought, :total_daubs, :keys_collected_in_game, :free_daubs_collected, :mystery_chests_opened, :bounus_coins_and_tickets, 
 			:coins_collected_in_game, :bingo_by_corner_pattern, :bingo_by_horizontal_pattern, :bingo_by_vertical_pattern, :bingo_by_diagonal_pattern, 
-			:daily_free_tickets_available, :is_invited_facebook_friend, :is_gifted_to_friend, :is_bingo_on_all_card, :fastest_bingo, 
+			:daily_free_tickets_available, :is_invited_facebook_friend, :show_tutorial, :is_gifted_to_friend, :is_bingo_on_all_card, :fastest_bingo, 
 			:total_jigsaw_completed, :total_bingo, :total_daily_participitated, :is_daily_bonus_collected, 
 			:total_weekly_participated, :total_card_used, :total_monthly_participated,
 			:total_daily_won, :daily_fee_paid, :weekly_fee_paid, :monthly_fee_paid, :total_weekly_won, :jigsaw_data_string, :total_monthly_won, 

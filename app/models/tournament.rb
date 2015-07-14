@@ -20,11 +20,11 @@ class Tournament < ActiveRecord::Base
     if tournaments.present?
       genrate_rewards(tournaments, num_days)
     end
-    Tournament.create(room_config_id: RoomConfig.where(name: room_config_name).first.id, active: true, tournament_type: room_config_name)
+    Tournament.create(room_config_id: room_config.id, active: true, tournament_type: room_config_name)
   end
 
   def self.genrate_rewards(tournaments, num_days)
-    current_tournament = tournaments.select {|tournament| tournament.created_at.to_date == (Time.now - num_days.days).to_date}.first
+    current_tournament = tournaments.select {|tournament| tournament.created_at.to_date == (Time.zone.now - num_days.days).to_date}.first
     if current_tournament.present?
       current_tournament.tournament_users.order("score DESC").each_with_index do |tournament_user, i|
         if i == 0

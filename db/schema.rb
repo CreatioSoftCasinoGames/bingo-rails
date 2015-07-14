@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150630135921) do
+ActiveRecord::Schema.define(version: 20150707152111) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -286,9 +286,9 @@ ActiveRecord::Schema.define(version: 20150630135921) do
     t.string   "role",                                                             default: "PLAYER"
     t.boolean  "is_guest"
     t.decimal  "tokens",                                  precision: 10, scale: 0, default: 0
-    t.decimal  "coins",                                   precision: 10, scale: 0, default: 100
-    t.integer  "powerups_remaining",                                               default: 5
-    t.integer  "keys",                                                             default: 20
+    t.decimal  "coins",                                   precision: 10, scale: 0, default: 500
+    t.decimal  "powerups_remaining",                      precision: 10, scale: 0, default: 10
+    t.integer  "keys",                                                             default: 10
     t.integer  "bingo_win",                                                        default: 0
     t.integer  "tickets_purchased",                                                default: 0
     t.integer  "current_level",                                                    default: 1
@@ -337,15 +337,15 @@ ActiveRecord::Schema.define(version: 20150630135921) do
     t.integer  "best_monthly_position",                                            default: 0
     t.integer  "best_weekly_position",                                             default: 0
     t.integer  "best_special_position",                                            default: 0
-    t.integer  "total_free_spin_count",                                            default: 0
-    t.integer  "total_scratch_count",                                              default: 0
+    t.decimal  "total_free_spin_count",                   precision: 10, scale: 0, default: 5
+    t.decimal  "total_scratch_count",                     precision: 10, scale: 0, default: 5
     t.decimal  "daily_bonus_time_remaining",              precision: 10, scale: 0, default: 0
     t.decimal  "special_reward_timer",                    precision: 10, scale: 0, default: 0
     t.integer  "total_room_unlocked",                                              default: 0
     t.integer  "total_bingo",                                                      default: 0
     t.boolean  "is_daily_bonus_collected",                                         default: true
     t.string   "country",                                                          default: ""
-    t.boolean  "show_tutorial",                                                    default: false
+    t.boolean  "show_tutorial",                                                    default: true
     t.boolean  "daily_fee_paid",                                                   default: false
     t.boolean  "weekly_fee_paid",                                                  default: false
     t.boolean  "monthly_fee_paid",                                                 default: false
@@ -354,6 +354,7 @@ ActiveRecord::Schema.define(version: 20150630135921) do
     t.boolean  "update_required",                                                  default: false
     t.string   "unique_id",                                                        default: ""
     t.float    "total_iap_made",               limit: 24,                          default: 0.0
+    t.string   "currency",                                                         default: "USD"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

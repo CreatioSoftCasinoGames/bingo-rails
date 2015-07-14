@@ -1,6 +1,11 @@
 - model_class = DynamicIap
 div class="page-header"
   h1=t '.title', :default => model_class.model_name.human.pluralize.titleize
+.col-md-6
+  .col-md-2= link_to "INR", dynamic_iaps_path(currency: "INR"), class: "btn btn-warning"
+  .col-md-2= link_to "USD", dynamic_iaps_path(currency: "USD"), class: "btn btn-warning"
+  .col-md-2= link_to "EUR", dynamic_iaps_path(currency: "EUR"), class: "btn btn-warning"
+  / # .col-md-1= link_to "INR", "", class: "btn btn-warning"
 table class="table table-striped"
   thead
     tr

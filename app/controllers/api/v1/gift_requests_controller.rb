@@ -4,7 +4,7 @@ class Api::V1::GiftRequestsController < Api::V1::ApplicationController
 
 	def create
 		if params[:gift_type] == "coins"
-			gift_value = 1000
+			gift_value = 200
 		elsif params[:gift_type] == "tickets"
 			gift_value = 5
 		else

@@ -62,42 +62,17 @@ class User < ActiveRecord::Base
 
   def deal_end_time
     deal = DynamicIap.where(iap_type: "Special", is_active: true).first
-    deal.updated_at + deal.end_time.hours - Time.now
+    if deal.present?
+      (deal.updated_at + deal.end_time.hours - Time.zone.now)
+    end
   end
 
-  # def daily_tournament_fee_paid
-  #   tournament_user = TournamentUser.where(room_config_id: RoomConfig.where(name: "Daily_Free").first.id, user_id: self.id).last
-  #   if tournament_user.present?
-  #     tournament_user.tournament.active
-  #   else
-  #     false
-  #   end
-  # end
-
-  # def weekly_tournament_fee_paid
-  #   tournament_user = TournamentUser.where(room_config_id: RoomConfig.where(name: "Weekly").first.id, user_id: self.id).last
-  #   if tournament_user.present?
-  #     tournament_user.tournament.active
-  #   else
-  #     false
-  #   end
-  # end
-
-  # def monthly_tournament_fee_paid
-  #   tournament_user = TournamentUser.where(room_config_id: RoomConfig.where(name: "Monthly").first.id, user_id: self.id).last
-  #   if tournament_user.present?
-  #     tournament_user.tournament.active
-  #   else
-  #     false
-  #   end
-  # end
-
   def daily_bonus_time_remaining
-    (Date.today.at_midnight + 24.hours - Time.now).to_i
+    (Date.today.at_midnight + 24.hours - Time.zone.now).to_i
   end
 
   def next_daily_bonus_time
-    (Date.tomorrow.at_midnight + 24.hours - Time.now).to_i
+    (Date.tomorrow.at_midnight + 24.hours - Time.zone.now).to_i
   end
 
   def full_name
@@ -107,10 +82,14 @@ class User < ActiveRecord::Base
       "Guest User"
     end
   end
+
+  def self.reset_daily_bonus
+    User.update_all(is_daily_bonus_collected: false)
+  end
   
   def image_url 
     if fb_id
-      "http://graph.facebook.com/#{fb_id}/picture?height=32"
+      "http://graph.facebook.com/#{fb_id}/picture?height=64"
     end
   end
 
@@ -176,7 +155,6 @@ class User < ActiveRecord::Base
   end
 
   def set_fb_friends
-    p fb_friends_list
     unless fb_friends_list.blank?
       user_ids = User.where(fb_id: fb_friends_list).collect(&:id)
       friend_ids = self.friends.collect(&:id)

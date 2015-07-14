@@ -1,7 +1,8 @@
+require 'sidekiq/web'
 Rails.application.routes.draw do
 
   resources :game_versions
-
+  mount Sidekiq::Web => '/sidekiq'
   resources :client_bugs
 
   resources :dynamic_iaps do
@@ -72,6 +73,8 @@ Rails.application.routes.draw do
           post :sm
         end
       end
+
+      get "utility/status"
       
       resources :client_bugs
       resources :dynamic_iaps

@@ -1,8 +1,16 @@
+require 'sidekiq/web'
 Rails.application.routes.draw do
 
+  resources :game_versions
+  mount Sidekiq::Web => '/sidekiq'
   resources :client_bugs
 
-  resources :dynamic_iaps
+  resources :dynamic_iaps do
+    collection do 
+      get :set_time
+      put :special_deal_end_time
+    end
+  end
 
   resources :scratch_card_rewards
 
@@ -59,6 +67,13 @@ Rails.application.routes.draw do
           get :find_room_id
         end
       end
+
+      resources :schedule_maintenances do 
+        collection do
+          post :sm
+        end
+      end
+      
       resources :client_bugs
       resources :dynamic_iaps
       resources :friend_requests
@@ -71,6 +86,7 @@ Rails.application.routes.draw do
       resources :tournaments
       resources :sessions, only: [:create, :destroy]
       resources :table_config_users, only: [:create]
+      get "fetch_country" => "users#fetch_country"
       resources :users do
         member do
           get :friend_request_sent
@@ -97,6 +113,9 @@ Rails.application.routes.draw do
           get :get_online_players
           get :player_rank
           get :game_data
+          get :my_rank_and_rewards
+          get :tournament_fee_paid
+          get :tournaments_remaining_time
         end
       end
 

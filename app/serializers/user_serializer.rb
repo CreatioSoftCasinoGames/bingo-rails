@@ -63,7 +63,9 @@ class UserSerializer < ActiveModel::Serializer
 					 	 :total_scratch_count,
 					 	 :daily_bonus_time_remaining, 
 						 :special_reward_timer, 
-						 :total_room_unlocked 
+						 :total_room_unlocked,
+						 :is_daily_bonus_collected,
+						 :unique_id
 
 			has_one :powerup
 			has_many :in_app_purchases

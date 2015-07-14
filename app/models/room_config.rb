@@ -18,7 +18,13 @@ class RoomConfig < ActiveRecord::Base
 	end
 
 	def my_rank(user_id)
-		self.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(user_id).to_f + 1
+
+		my_rank = self.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(user_id).to_i
+		if my_rank > 0
+			self.active_tournament.tournament_users.order('score DESC').map(&:user_id).index(user_id).to_f + 1
+		else 
+			0
+		end
 	end
 
 end

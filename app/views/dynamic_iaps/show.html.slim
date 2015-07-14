@@ -3,17 +3,31 @@ div class="page-header"
   h1=t '.title', :default => model_class.model_name.human.titleize
 
 p
+  strong= model_class.human_attribute_name(:iap_type) + ':'
+  br
+  = @dynamic_iap.iap_type
+p
+  strong= model_class.human_attribute_name(:deal_value) + ':'
+  br
+  = @dynamic_iap.deal_value
+p
   strong= model_class.human_attribute_name(:iap_id) + ':'
   br
   = @dynamic_iap.iap_id
 p
-  strong= model_class.human_attribute_name(:old_coins_value) + ':'
+  strong= model_class.human_attribute_name(:old_value) + ':'
   br
-  = @dynamic_iap.old_coins_value
+  = @dynamic_iap.old_value
 p
-  strong= model_class.human_attribute_name(:new_coins_value) + ':'
+  strong= model_class.human_attribute_name(:new_value) + ':'
   br
-  = @dynamic_iap.new_coins_value
+  = @dynamic_iap.new_value
+
+p
+  strong= model_class.human_attribute_name(:more) + ':'
+  br
+  = @dynamic_iap.more
+
 p
   strong= model_class.human_attribute_name(:old_pricing) + ':'
   br
@@ -34,6 +48,10 @@ p
   strong= model_class.human_attribute_name(:country) + ':'
   br
   = @dynamic_iap.country
+p
+  strong= model_class.human_attribute_name(:is_active) + ':'
+  br
+  = @dynamic_iap.is_active
 
 
 = link_to t('.back', :default => t("helpers.links.back")), dynamic_iaps_path, :class => 'btn btn-default'

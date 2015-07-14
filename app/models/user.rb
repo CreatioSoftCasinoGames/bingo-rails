@@ -19,11 +19,12 @@ class User < ActiveRecord::Base
   has_many :round_users
   has_many :rewards
   has_many :login_histories, :dependent => :destroy
-  has_many :unconfirmed_gift_requests, -> { where(confirmed: false) }, class_name: "GiftRequest", foreign_key: "send_to_id"
+  # has_many :unconfirmed_gift_requests, -> { where(confirmed: false) }, class_name: "GiftRequest", foreign_key: "send_to_id"
   has_many :room_users, :dependent => :destroy
   has_many :rooms, :through => :room_users
   validate :increase_ticket_and_coins
   before_update :check_device_changed
+  before_create :add_unique_id
 
   accepts_nested_attributes_for :in_app_purchases
   accepts_nested_attributes_for :powerup
@@ -33,8 +34,45 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  def is_ask_for_gift(friend_id)
+    gift_sent = gift_requests_sent.where(gift_requests: {send_to_id: friend_id}).last
+    if gift_sent.present?
+      gift_sent.created_at < Time.now - 24.hours
+    else
+      true
+    end
+  end
+
+  def ask_for_gift_in(friend_id)
+    gift_sent = gift_requests_sent.where(send_to_id: friend_id).last
+    if gift_sent.present?
+      gift_sent.created_at - Time.now + 24.hours
+    else
+      0
+    end
+  end
+
   def player_since
   	created_at.strftime("%B,%Y")
+  end
+
+  def is_special_deal
+    DynamicIap.where(iap_type: "Special", is_active: true).count == 3
+  end
+
+  def deal_end_time
+    deal = DynamicIap.where(iap_type: "Special", is_active: true).first
+    if deal.present?
+      (deal.updated_at + deal.end_time.hours - Time.zone.now)
+    end
+  end
+
+  def daily_bonus_time_remaining
+    (Date.today.at_midnight + 24.hours - Time.zone.now).to_i
+  end
+
+  def next_daily_bonus_time
+    (Date.tomorrow.at_midnight + 24.hours - Time.zone.now).to_i
   end
 
   def full_name
@@ -44,10 +82,14 @@ class User < ActiveRecord::Base
       "Guest User"
     end
   end
+
+  def self.reset_daily_bonus
+    User.update_all(is_daily_bonus_collected: false)
+  end
   
   def image_url 
     if fb_id
-      "http://graph.facebook.com/#{fb_id}/picture?height=32"
+      "http://graph.facebook.com/#{fb_id}/picture?height=64"
     end
   end
 
@@ -113,14 +155,13 @@ class User < ActiveRecord::Base
   end
 
   def set_fb_friends
-    p fb_friends_list
     unless fb_friends_list.blank?
       user_ids = User.where(fb_id: fb_friends_list).collect(&:id)
       friend_ids = self.friends.collect(&:id)
       new_friend_ids = user_ids - friend_ids
       deleted_friends_ids = friend_ids - user_ids
       new_friend_ids.each do |friend_id|
-        if Friendship.where(user_id: self.id, friend_id: friend_id).blank?
+        if Friendship.where(user_id: self.id, friend_id: friend_id).blank? && self.id != friend_id
           Friendship.create(user_id: self.id, friend_id: friend_id)
           Friendship.create(user_id: friend_id, friend_id: self.id)
         end
@@ -130,6 +171,11 @@ class User < ActiveRecord::Base
         Friendship.where(user_id: deleted_friend_id, friend_id: id).first.try(:delete)
       end
     end
+  end
+
+  def add_unique_id
+    unique_value = SecureRandom.hex(4)
+    self.unique_id = unique_value
   end
 
   def check_device_changed

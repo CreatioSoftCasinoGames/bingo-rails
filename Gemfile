@@ -3,6 +3,7 @@ ruby '2.1.0'
 
 gem "rails-erd"
 gem 'active_model_serializers' 
+gem 'geoip'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.4'
@@ -24,6 +25,7 @@ gem 'jquery-rails'
 # gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
+gem 'sinatra', require: false
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
 

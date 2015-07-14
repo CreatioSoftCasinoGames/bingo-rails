@@ -127,7 +127,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				round_three: @round_scores.present? ? @round_scores[:round_three_score] : 0,
 				round_four: @round_scores.present? ? @round_scores[:round_four_score] : 0,
 				round_five: @round_scores.present? ? @round_scores[:round_five_score] : 0,
-				remaining_time: remaining_time.present? ? remaining_time : @room_config.duration.days - (Time.zone.now - @room_config.tournaments.where(active: true).last.created_at)
+				remaining_time: remaining_time.present? ? remaining_time : @room_config.duration.days - (Time.zone.now - @room_config.tournaments.where(active: true).last.created_at),
 				rank: rank.present? && rank != 0 ? rank : 0,
 				is_over: @is_over.present? ? @is_over.over : false,
 				reward_collected: @reward.present? ? @reward.is_collected : true,

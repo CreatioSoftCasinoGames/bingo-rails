@@ -1,7 +1,7 @@
 class Api::V1::UtilityController < Api::V1::ApplicationController
 
 	def status
-		ram = %x(free).split("  ")
+		ram = %x(free).split(" ")
 		hdd = %x(df).split(" ")
 		render json: {
 			total_ram: ram[9],

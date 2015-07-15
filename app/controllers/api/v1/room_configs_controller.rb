@@ -69,12 +69,22 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 				player_obj[:rank] = i + 1
 				player_obj
 			end
+			p leader_board
 			render json: {
 				leader_board: leader_board,
-				my_rank: @room_config.my_rank(@user.id).to_i + 1
+				my_rank: @room_config.my_rank(@user.id).to_i
 			}
 		else
-			users_score = @room_config.active_tournament.tournament_users.order("score desc")
+			# users_score = ""
+			if params[:for].upcase == "FRIENDS"
+				tournament_users = @room_config.active_tournament.tournament_users
+				friend_ids = Friendship.where(user_id: @user.id, friend_id: tournament_users.pluck(:user_id)).pluck(:friend_id)
+				users_score = tournament_users.where(user_id: friend_ids).order("score desc")
+			else
+				users_score = @room_config.active_tournament.tournament_users.order("score desc")
+				p users_score
+			end
+			p users_score
 			leader_board = users_score.limit(20).as_json({
 				only: [:score],
 				methods: [:full_name, :image_url, :login_token]
@@ -82,6 +92,7 @@ class Api::V1::RoomConfigsController < Api::V1::ApplicationController
 				player_obj[:rank] = i + 1
 				player_obj
 			end
+			p leader_board
 			render json: {
 				leader_board: leader_board,
 				my_rank: 0,

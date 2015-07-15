@@ -118,7 +118,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				@round_scores = @user.round_scores(@room_config.id, @tournament.id)
 				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_i + 1
 				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
-				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).first
+				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).last
 				remaining_time = @room_config.duration.days - (Time.zone.now - @tournament.created_at)
 			end
 			render json: {

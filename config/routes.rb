@@ -73,6 +73,8 @@ Rails.application.routes.draw do
           post :sm
         end
       end
+
+      get "utility/status"
       
       resources :client_bugs
       resources :dynamic_iaps

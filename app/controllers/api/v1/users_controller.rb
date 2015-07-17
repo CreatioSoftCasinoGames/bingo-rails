@@ -118,8 +118,8 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				@round_scores = @user.round_scores(@room_config.id, @tournament.id)
 				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_i + 1
 				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
-				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).first
-				remaining_time = @room_config.duration.day - (Time.zone.now - @tournament.created_at)
+				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).last
+				remaining_time = @room_config.duration.days - (Time.zone.now - @tournament.created_at)
 			end
 			render json: {
 				round_one: @round_scores.present? ? @round_scores[:round_one_score] : 0,
@@ -127,7 +127,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				round_three: @round_scores.present? ? @round_scores[:round_three_score] : 0,
 				round_four: @round_scores.present? ? @round_scores[:round_four_score] : 0,
 				round_five: @round_scores.present? ? @round_scores[:round_five_score] : 0,
-				remaining_time: remaining_time.present? ? remaining_time : @room_config.tournaments.where(active: true).last.created_at - Time.zone.now + @room_config.duration.day,
+				remaining_time: remaining_time.present? ? remaining_time : @room_config.duration.days - (Time.zone.now - @room_config.tournaments.where(active: true).last.created_at),
 				rank: rank.present? && rank != 0 ? rank : 0,
 				is_over: @is_over.present? ? @is_over.over : false,
 				reward_collected: @reward.present? ? @reward.is_collected : true,
@@ -213,7 +213,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		room_configs.each do |room_config|
 			@tournament = room_config.find_tournament(room_config.id, @user.id)
 			if @tournament.present?
-				time_remaining[room_config.id] = room_config.duration.day - (Time.now.utc - @tournament.created_at.midnight)
+				time_remaining[room_config.id] = room_config.duration.day - (Time.zone.now - @tournament.created_at)
 			else
 				time_remaining[room_config.id] = 0
 			end

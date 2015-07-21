@@ -92,8 +92,10 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		tournament_user = @user.tournament_users.where(room_config_id: params[:room_config_id]).last
     if tournament_user.present? && tournament_user.tournament.tournament_type == "Weekly" && @round_user.updated_at.to_date < Time.now.to_date
       @round_user.update_attributes(round_number: 0)
+      tournament_user.update_attributes(over: false)
     elsif tournament_user.present? && tournament_user.tournament.tournament_type == "Monthly" && @round_user.updated_at.to_date < Time.now.to_date
     	@round_user.update_attributes(round_number: 0)
+    	tournament_user.update_attributes(over: false)
     end
 		render json: {
 			round_info: @round_user.as_json({
@@ -118,9 +120,16 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				@round_scores = @user.round_scores(@room_config.id, @tournament.id)
 				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_i + 1
 				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
+				p "----------------------------------------------"
+				p @is_over.over
 				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).last
 				remaining_time = @room_config.duration.days - (Time.zone.now - @tournament.created_at)
 			end
+			p "===================================="
+			p @is_over.present?
+			p "________________________________________"
+			p @reward
+			p @reward.present?
 			render json: {
 				round_one: @round_scores.present? ? @round_scores[:round_one_score] : 0,
 				round_two: @round_scores.present? ? @round_scores[:round_two_score] : 0,
@@ -147,7 +156,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				@tournament  = RoomConfig.find(params[:room_config_id]).tournaments.where(active: false).last
 				if @tournament.present?
 					@val = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).as_json({
-						only: [:id, :coins, :rank],
+						only: [:id, :coins, :rank, :tickets],
 						methods: [:tournament_type]
 					})
 					if @val.present?

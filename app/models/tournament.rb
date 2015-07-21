@@ -24,7 +24,7 @@ class Tournament < ActiveRecord::Base
   end
 
   def self.genrate_rewards(tournaments, num_days)
-    current_tournament = tournaments.select {|tournament| tournament.created_at.to_date == (Time.zone.now - num_days.days).to_date}.first
+    current_tournament = tournaments.select {|tournament| tournament.created_at.to_date <= (Time.zone.now - num_days.days).to_date}.first
     if current_tournament.present?
       current_tournament.tournament_users.order("score DESC").each_with_index do |tournament_user, i|
         if i == 0

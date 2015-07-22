@@ -112,7 +112,6 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				}
 			}
 	  end
-		
 	end
 
 	def tournament_fee_paid
@@ -139,7 +138,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 			if @reward_tournament.present?
 				@reward = @user.rewards.where(is_collected: false, tournament_id: @reward_tournament.id).last
 				if @reward.present?
-					@round_scores = @user.round_scores(@room_config.id, @reward_tournament.id)
+					total_score = @user.tournament_users.where(tournament_id: @reward_tournament.id).last.try(:score).to_i
 				end
 			end
 			render json: {

@@ -1,23 +1,25 @@
-h1 Listing ais
-
-table
+- model_class = Ai
+div class="page-header"
+  h1=t '.title', :default => model_class.model_name.human.pluralize.titleize
+table class="table table-striped"
   thead
     tr
-      th Name
-      th Active
-      th
-      th
-      th
-
+      th= model_class.human_attribute_name(:id)
+      th= model_class.human_attribute_name(:name)
+      th= model_class.human_attribute_name(:active)
+      th= model_class.human_attribute_name(:created_at)
+      th=t '.actions', :default => t("helpers.actions")
   tbody
     - @ais.each do |ai|
       tr
-        td = ai.name
-        td = ai.active
-        td = link_to 'Show', ai
-        td = link_to 'Edit', edit_ai_path(ai)
-        td = link_to 'Destroy', ai, data: {:confirm => 'Are you sure?'}, :method => :delete
+        td= link_to ai.id, ai_path(ai)
+        td= ai.name
+        td= ai.active
+        td=l ai.created_at
+        td
+          = link_to t('.edit', :default => t("helpers.links.edit")), edit_ai_path(ai), :class => 'btn btn-default btn-xs'
+          '
+          = link_to t('.destroy', :default => t("helpers.links.destroy")), ai_path(ai), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
 
-br
+= link_to t('.new', :default => t("helpers.links.new")), new_ai_path, :class => 'btn btn-primary'
 
-= link_to 'New Ai', new_ai_path

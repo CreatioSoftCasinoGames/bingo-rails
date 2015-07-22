@@ -90,16 +90,29 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	def get_round_and_attempt
 		@round_user = @user.round_users.where(room_config_id: params[:room_config_id]).last
 		tournament_user = @user.tournament_users.where(room_config_id: params[:room_config_id]).last
-    if tournament_user.present? && tournament_user.tournament.tournament_type == "Weekly" && @round_user.updated_at.to_date < Time.now.to_date
-      @round_user.update_attributes(round_number: 0)
-    elsif tournament_user.present? && tournament_user.tournament.tournament_type == "Monthly" && @round_user.updated_at.to_date < Time.now.to_date
-    	@round_user.update_attributes(round_number: 0)
-    end
-		render json: {
-			round_info: @round_user.as_json({
-				only: [:round_number, :attempt_number]
-			})
-		}
+		if @round_user.present? && tournament_user.present?
+	    if tournament_user.tournament.tournament_type == "Weekly" && @round_user.updated_at.to_date < Time.now.to_date
+	      @round_user.update_attributes(round_number: 0)
+	      tournament_user.update_attributes(over: false)
+	    elsif tournament_user.present? && tournament_user.tournament.tournament_type == "Monthly" && @round_user.updated_at.to_date < Time.now.to_date
+	    	@round_user.update_attributes(round_number: 0)
+	    	tournament_user.update_attributes(over: false)
+	    end
+	    render json: {
+				round_info: @round_user.as_json({
+					only: [:round_number, :attempt_number]
+				}),
+				user_name: @user.full_name
+			}
+		else
+			render json: {
+				round_info: {
+					round_number: 0,
+					attempt_number: 0
+				}
+			}
+	  end
+		
 	end
 
 	def tournament_fee_paid
@@ -118,8 +131,16 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				@round_scores = @user.round_scores(@room_config.id, @tournament.id)
 				rank = @tournament.tournament_users.order('score DESC').map(&:user_id).index(@user.id).to_i + 1
 				@is_over = @tournament.tournament_users.where(user_id: @user.id).last
-				@reward = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).last
 				remaining_time = @room_config.duration.days - (Time.zone.now - @tournament.created_at)
+				next_round_time = @tournament.try(:next_round_begins)
+				total_score = @user.tournament_users.where(tournament_id: @tournament.id).last.try(:score).to_i
+			end
+			@reward_tournament = @room_config.reward_tournament(@room_config.id, @user.id)
+			if @reward_tournament.present?
+				@reward = @user.rewards.where(is_collected: false, tournament_id: @reward_tournament.id).last
+				if @reward.present?
+					@round_scores = @user.round_scores(@room_config.id, @reward_tournament.id)
+				end
 			end
 			render json: {
 				round_one: @round_scores.present? ? @round_scores[:round_one_score] : 0,
@@ -127,12 +148,14 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				round_three: @round_scores.present? ? @round_scores[:round_three_score] : 0,
 				round_four: @round_scores.present? ? @round_scores[:round_four_score] : 0,
 				round_five: @round_scores.present? ? @round_scores[:round_five_score] : 0,
+				total_score: total_score.present? ? total_score : 0,
 				remaining_time: remaining_time.present? ? remaining_time : @room_config.duration.days - (Time.zone.now - @room_config.tournaments.where(active: true).last.created_at),
 				rank: rank.present? && rank != 0 ? rank : 0,
 				is_over: @is_over.present? ? @is_over.over : false,
 				reward_collected: @reward.present? ? @reward.is_collected : true,
 				tournament_type: @tournament.present? ? @tournament.tournament_type : nil,
-				reward_id: @reward.present? ? @reward.id : 0
+				reward_id: @reward.present? ? @reward.id : 0,
+				next_round_begins_in: next_round_time.present? ? next_round_time : @room_config.duration.days - (Time.zone.now - @room_config.tournaments.where(active: true).last.created_at)
 			}
 		else
 			render json: {
@@ -147,7 +170,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				@tournament  = RoomConfig.find(params[:room_config_id]).tournaments.where(active: false).last
 				if @tournament.present?
 					@val = @user.rewards.where(is_collected: false, tournament_id: @tournament.id).as_json({
-						only: [:id, :coins, :rank],
+						only: [:id, :coins, :rank, :tickets],
 						methods: [:tournament_type]
 					})
 					if @val.present?
@@ -265,7 +288,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def find_user
-		@user = User.where(login_token: params[:id]).first
+		@user = User.fetch_by_login_token(params[:id])
 		(render json: {message: "User not found", success: false} and return	) if @user.blank?
 	end
 

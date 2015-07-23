@@ -10,3 +10,7 @@ development:
 production:
     host: 'bingo-redis.bingoapi.com'
     port: '6379'
+
+beta:
+    host: 'localhost'
+    port: '6379'

@@ -19,8 +19,8 @@ default_run_options[:pty] = true
 ssh_options[:forward_agent] = true
 
 # Application stages configuration
-set :stages, %w(production)
-set :default_stage, 'production'
+set :stages, %w(production beta)
+set :default_stage, 'beta'
 
 # Unicorn environment configuration
 set(:unicorn_env) { rails_env }
@@ -73,7 +73,7 @@ namespace :deploy do
 
   desc "Restart the application"
   task :restart, :roles => :app, :except => { :no_release => true } do
-    run "cd #{current_path} && RAILS_ENV=#{stage} bundle exec pumactl -S #{current_path}/tmp/pids/puma-production.state restart"
+    run "cd #{current_path} && RAILS_ENV=#{stage} bundle exec pumactl -S #{current_path}/tmp/pids/puma-#{stage}.state restart"
   end
 
 

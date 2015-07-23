@@ -154,7 +154,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				reward_collected: @reward.present? ? @reward.is_collected : true,
 				tournament_type: @tournament.present? ? @tournament.tournament_type : nil,
 				reward_id: @reward.present? ? @reward.id : 0,
-				next_round_begins_in: next_round_time.present? ? next_round_time : @room_config.duration.days - (Time.zone.now - @room_config.tournaments.where(active: true).last.created_at)
+				next_round_begins_in: next_round_time.present? ? next_round_time : Tournament.last.created_at + 1.day - Time.zone.now
 			}
 		else
 			render json: {

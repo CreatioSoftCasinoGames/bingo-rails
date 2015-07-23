@@ -40,5 +40,8 @@ html lang="en"
           = bootstrap_flash
           = yield
 
-      footer
+      .footer
         p &copy; Company 2014
+        p Database: #{Rails.application.config.database_configuration[Rails.env]["database"]}
+        p Redis Host: #{REDIS_CLIENT.client.options["host"]}
+        p Redis Port: #{REDIS_CLIENT.client.options["port"]}

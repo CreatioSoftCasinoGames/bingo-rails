@@ -1,6 +1,8 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
 
+  resources :level_progrations
+
   resources :game_versions
   mount Sidekiq::Web => '/sidekiq'
   resources :client_bugs
@@ -13,6 +15,8 @@ Rails.application.routes.draw do
   end
 
   resources :scratch_card_rewards
+
+  resources :user_logs
 
   resources :bingo_points
 
@@ -61,6 +65,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :level_progrations
       resources :room_configs do
         member do
           get :leader_board

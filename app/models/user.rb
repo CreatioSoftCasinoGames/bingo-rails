@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   validate :increase_ticket_and_coins
   before_update :check_device_changed
   before_create :add_unique_id
+  has_paper_trail
 
   accepts_nested_attributes_for :in_app_purchases
   accepts_nested_attributes_for :powerup

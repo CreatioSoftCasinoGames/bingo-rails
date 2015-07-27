@@ -1,6 +1,7 @@
 - model_class = ClientBug
 div class="page-header"
   h1=t '.title', :default => model_class.model_name.human.pluralize.titleize
+  = will_paginate @client_bugs if @client_bugs.present?
 table class="table table-striped"
   thead
     tr

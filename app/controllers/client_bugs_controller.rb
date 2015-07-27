@@ -4,7 +4,7 @@ class ClientBugsController < ApplicationController
   # GET /client_bugs
   # GET /client_bugs.json
   def index
-    @client_bugs = ClientBug.all
+    @client_bugs = ClientBug.all.paginate(:page => params[:page], :per_page => 30).order('id DESC')
 
     respond_to do |format|
       format.html # index.html.erb

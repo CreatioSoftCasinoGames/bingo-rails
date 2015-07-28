@@ -138,6 +138,8 @@ class User < ActiveRecord::Base
   end
 
   def set_login_details
+    p "called"
+    p is_guest
     if is_guest
       generated_password = SecureRandom.hex(9)
       self.email = "guest_#{SecureRandom.hex(8)}@bingoapi.com"

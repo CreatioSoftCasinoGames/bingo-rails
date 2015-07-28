@@ -56,21 +56,21 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		render json: InGameGift.all
 	end
 
-	def proceed_with_facebook
-		render json: User.where(fb_id: params[:id]).first.as_json({
+	def proceed_session
+		render json: User.where("fb_id = ? OR device_id = ?", params[:id], params[:id]).first.as_json({
 			only: [:id, :device_id, :powerups_remaining, :login_token, :fb_id, :is_daily_bonus_collected, :bingo_played, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :special_reward_timer, :ticket_bought, :country, :show_tutorial, :daily_fee_paid, :weekly_fee_paid, :monthly_fee_paid, :is_fb_connected, :total_iap_made, :unique_id, :is_daily_bonus_collected, :currency],
 			methods: [:num_friend_request, :daily_bonus_time_remaining, :next_daily_bonus_time, :num_gift_request, :player_since, :image_url, :previous_login_token, :device_changed, :is_special_deal, :deal_end_time],
 			include: [:powerup, :in_app_purchases]
 		})
 	end
 
-	def proceed_with_device
-		render json: User.where(device_id: params[:id]).first.as_json({
-			only: [:id, :device_id, :powerups_remaining, :login_token, :fb_id, :is_daily_bonus_collected, :bingo_played, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :special_reward_timer, :ticket_bought, :country, :show_tutorial, :daily_fee_paid, :weekly_fee_paid, :monthly_fee_paid, :is_fb_connected, :total_iap_made, :unique_id, :is_daily_bonus_collected, :currency],
-			methods: [:num_friend_request, :daily_bonus_time_remaining, :next_daily_bonus_time, :num_gift_request, :player_since, :image_url, :previous_login_token, :device_changed, :is_special_deal, :deal_end_time],
-			include: [:powerup, :in_app_purchases]
-		})
-	end
+	# def proceed_with_device
+	# 	render json: User.where(device_id: params[:id]).first.as_json({
+	# 		only: [:id, :device_id, :powerups_remaining, :login_token, :fb_id, :is_daily_bonus_collected, :bingo_played, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :special_reward_timer, :ticket_bought, :country, :show_tutorial, :daily_fee_paid, :weekly_fee_paid, :monthly_fee_paid, :is_fb_connected, :total_iap_made, :unique_id, :is_daily_bonus_collected, :currency],
+	# 		methods: [:num_friend_request, :daily_bonus_time_remaining, :next_daily_bonus_time, :num_gift_request, :player_since, :image_url, :previous_login_token, :device_changed, :is_special_deal, :deal_end_time],
+	# 		include: [:powerup, :in_app_purchases]
+	# 	})
+	# end
 
 	def my_friends
 		friends = @user.friends.collect do |friend|

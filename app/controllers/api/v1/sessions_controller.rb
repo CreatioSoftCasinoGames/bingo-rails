@@ -8,7 +8,7 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 			elsif User.where(fb_id: params[:fb_id]).present?
 				@success = false
 				@message = "Allready existed user"
-				@new_user = false
+				@progress_existed = true
 			elsif User.where(device_id: params[:device_id]).first.fb_id.present?
 				device_id = SecureRandom.hex(12)
 				email = params[:fb_id]+"@facebook.com"
@@ -61,7 +61,7 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 			render json: {
 				errors: @message,
 				success: @success,
-				progress_existed: @new_user
+				progress_existed: @progress_existed
 			}
 		end
 	end
@@ -88,25 +88,6 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 				success: false,
 				message: "Session does not exists"
 			}
-		end
-	end
-
-	private 
-
-	def facebook_sync(params)
-		@user = User.where(fb_id: params[:fb_id]).first_or_initialize
-		@user.attributes = {fb_friends_list: params[:fb_friends_list], device_id: params[:device_id]}
-		if @user.new_record?
-			email = params[:email].present? ? params[:email] : params[:fb_id]+"@facebook.com"
-			@user.attributes = {email: email, first_name: params[:first_name], last_name: params[:last_name], fb_friends_list: params[:fb_friends_list], is_fb_connected: true}
-			if @user.save
-				@success = true
-			else
-				@success = false
-				@message = @user.errors.full_messages.join(" , ")
-			end
-		else
-			@user.update_attributes({first_name: params[:first_name], last_name: params[:last_name], fb_friends_list: params[:fb_friends_list]})
 		end
 	end
 

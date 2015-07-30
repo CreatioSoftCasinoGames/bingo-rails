@@ -56,22 +56,6 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		render json: InGameGift.all
 	end
 
-	def proceed_session
-		render json: User.where("fb_id = ? OR device_id = ?", params[:id], params[:id]).first.as_json({
-			only: [:id, :device_id, :powerups_remaining, :login_token, :fb_id, :is_daily_bonus_collected, :bingo_played, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :special_reward_timer, :ticket_bought, :country, :show_tutorial, :daily_fee_paid, :weekly_fee_paid, :monthly_fee_paid, :is_fb_connected, :total_iap_made, :unique_id, :is_daily_bonus_collected, :currency],
-			methods: [:num_friend_request, :daily_bonus_time_remaining, :next_daily_bonus_time, :num_gift_request, :player_since, :image_url, :previous_login_token, :device_changed, :is_special_deal, :deal_end_time],
-			include: [:powerup, :in_app_purchases]
-		})
-	end
-
-	# def proceed_with_device
-	# 	render json: User.where(device_id: params[:id]).first.as_json({
-	# 		only: [:id, :device_id, :powerups_remaining, :login_token, :fb_id, :is_daily_bonus_collected, :bingo_played, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :special_reward_timer, :ticket_bought, :country, :show_tutorial, :daily_fee_paid, :weekly_fee_paid, :monthly_fee_paid, :is_fb_connected, :total_iap_made, :unique_id, :is_daily_bonus_collected, :currency],
-	# 		methods: [:num_friend_request, :daily_bonus_time_remaining, :next_daily_bonus_time, :num_gift_request, :player_since, :image_url, :previous_login_token, :device_changed, :is_special_deal, :deal_end_time],
-	# 		include: [:powerup, :in_app_purchases]
-	# 	})
-	# end
-
 	def my_friends
 		friends = @user.friends.collect do |friend|
 			{
@@ -92,7 +76,21 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def received_gift
-		render json: @user.gift_requests_sent.where(confirmed: true)
+		gifts_received = @user.gift_requests_sent.where(confirmed: true).collect do |gift|
+			reciever = User.find(gift.send_to_id)
+			{
+				id: gift.id, 
+				user_login_token: @user.login_token, 
+				send_to_token: reciever.login_token, 
+				gift_type: gift.gift_type, 
+				gift_value: gift.gift_value, 
+				is_asked: gift.is_asked, 
+				confirmed: gift.confirmed, 
+				full_name: reciever.full_name, 
+				image_url: reciever.image_url
+			}
+		end
+		render json: gifts_received
 	end
 
 	def ask_for_gift_to
@@ -107,12 +105,12 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 		@round_user = @user.round_users.where(room_config_id: params[:room_config_id]).last
 		tournament_user = @user.tournament_users.where(room_config_id: params[:room_config_id]).last
 		if @round_user.present? && tournament_user.present?
-	    if @round_user.updated_at.to_date < Time.zone.now.to_date
+	    if tournament_user.tournament.tournament_type == "Weekly" && @round_user.updated_at.to_date < Time.now.to_date
 	      @round_user.update_attributes(round_number: 0)
 	      tournament_user.update_attributes(over: false)
-	    # elsif tournament_user.present? && tournament_user.tournament.tournament_type == "Monthly" && @round_user.updated_at.to_date < Time.zone.now.to_date
-	    # 	@round_user.update_attributes(round_number: 0)
-	    # 	tournament_user.update_attributes(over: false)
+	    elsif tournament_user.present? && tournament_user.tournament.tournament_type == "Monthly" && @round_user.updated_at.to_date < Time.now.to_date
+	    	@round_user.update_attributes(round_number: 0)
+	    	tournament_user.update_attributes(over: false)
 	    end
 	    render json: {
 				round_info: @round_user.as_json({

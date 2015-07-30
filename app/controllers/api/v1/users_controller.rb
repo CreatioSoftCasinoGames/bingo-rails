@@ -76,7 +76,21 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def received_gift
-		render json: @user.gift_requests_sent.where(confirmed: true)
+		gifts_received = @user.gift_requests_sent.where(confirmed: true).collect do |gift|
+			reciever = User.find(gift.send_to_id)
+			{
+				id: gift.id, 
+				user_login_token: @user.login_token, 
+				send_to_token: reciever.login_token, 
+				gift_type: gift.gift_type, 
+				gift_value: gift.gift_value, 
+				is_asked: gift.is_asked, 
+				confirmed: gift.confirmed, 
+				full_name: reciever.full_name, 
+				image_url: reciever.image_url
+			}
+		end
+		render json: gifts_received
 	end
 
 	def ask_for_gift_to

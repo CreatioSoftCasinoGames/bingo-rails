@@ -1,33 +1,34 @@
 class Api::V1::SessionsController < Api::V1::ApplicationController
 
 	def create
-		# game_version = GameVersion.where(device_type: params[:device], version: params[:game_version]).first
-		# update_required = game_version.present? ? game_version.require_update : true
 		if params[:fb_id] && params[:device_id]
-			if User.where(fb_id: params[:fb_id]).first.blank?
-				@guest_user = User.where(device_id: params[:device_id], is_fb_connected: false).first
-				if @guest_user.present?
-					@user = @guest_user.dup
-					@user.attributes = {parent_id: @guest_user.id, device_id: params[:device_id], is_guest: false, fb_id: params[:fb_id], email: params[:fb_id]+"@facebook.com", fb_friends_list: params[:fb_friends_list], is_fb_connected: true}
-					if @user.save
-						@guest_user.update_attributes(is_fb_connected: true)
-						@success = true
-						@new_user = true
-					else
-						@success = false
-						@messages = @user.errors.full_messages.join(", ")
-					end
+			if User.where(fb_id: params[:fb_id], device_id: params[:device_id]).present?
+				@success = true
+				@user = User.where(fb_id: params[:fb_id], device_id: params[:device_id]).first
+			elsif User.where(fb_id: params[:fb_id]).present?
+				@success = false
+				@message = "Allready existed user"
+				@progress_existed = true
+			elsif User.where(device_id: params[:device_id]).first.fb_id.present?
+				device_id = SecureRandom.hex(12)
+				email = params[:fb_id]+"@facebook.com"
+				@user = User.new(device_id: device_id, fb_id: params[:fb_id], email: email)
+				if @user.save
+					@success = true
 				else
-					facebook_sync(params)
+					@success = false
+					@message = @user.errors.full_messages.join(", ")
 				end
 			else
-				facebook_sync(params)
+				@user = User.where(device_id: params[:device_id]).first
+				if @user.update_attributes(fb_id: params[:fb_id])
+					@success = true
+				else
+					@success = false
+					@message = @user.errors.full_messages.join(", ")
+				end
 			end
-		elsif params[:email] && params[:password]
-			@user = User.where(email: params[:email]).first
-			(@user = nil) unless @user.valid_password?(params[:password])
-			@success = !@user.blank? 
-		elsif params[:is_guest] && params[:device_id]
+		else
 			@user = User.where(device_id: params[:device_id], is_guest: true).first_or_initialize
 			if @user.new_record?
 				if @user.save
@@ -36,28 +37,17 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 					@success = false
 					@message = @user.errors.full_messages.join(", ")
 				end
-			end
-		elsif params[:is_bot]
-			@user = User.create(first_name: params[:first_name], last_name: params[:last_name], is_bot: true)
-			if @user.save
-				@success = true
 			else
-				@success = false
-				@message = @user.errors.full_messages.join(", ")
+				@success = true
 			end
 		end
-
-		if @user.present?
+		if @success
 			login_token = SecureRandom.hex(5)
-			# login_token = @user.id
-			if params[:first_name]
-				@user.update_attributes(first_name: params[:first_name], last_name: params[:last_name])
-			end
-			if @user.update_attributes(login_token: login_token, online: true, game_version: params[:game_version], device: params[:device], country: params[:country], currency: params[:currency], login_histories_attributes: {id: nil, active: true, login_token: login_token })
+			if @user.update_attributes(login_token: login_token, first_name: params[:first_name], last_name: params[:last_name], online: true, game_version: params[:game_version], device: params[:device], country: params[:country], currency: params[:currency], login_histories_attributes: {id: nil, active: true, login_token: login_token })
 				REDIS_CLIENT.PUBLISH("friend_online", {publish_type: "friend_online", login_token: @user.login_token, online: true, friends_token: @user.friends.collect(&:login_token)}.to_json)
 				@user.previous_login_token = @user.login_histories.order("created_at desc").limit(2).last.try(:login_token)
 				render json: @user.as_json({
-					only: [:id, :device_id, :powerups_remaining, :login_token, :is_daily_bonus_collected, :bingo_played, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :special_reward_timer, :ticket_bought, :country, :show_tutorial, :daily_fee_paid, :weekly_fee_paid, :monthly_fee_paid, :is_fb_connected, :total_iap_made, :unique_id, :is_daily_bonus_collected, :currency],
+					only: [:id, :device_id, :powerups_remaining, :login_token, :fb_id, :is_daily_bonus_collected, :bingo_played, :first_name, :last_name, :email, :total_daubs, :tokens, :coins, :keys, :xp_earned, :current_level, :total_bingo, :total_card_used, :powerups_used, :total_jigsaw_completed, :jigsaw_data_string, :achievement_data_string, :total_free_spin_count, :total_scratch_count, :special_reward_timer, :ticket_bought, :country, :show_tutorial, :daily_fee_paid, :weekly_fee_paid, :monthly_fee_paid, :is_fb_connected, :total_iap_made, :unique_id, :is_daily_bonus_collected, :currency],
 					methods: [:num_friend_request, :daily_bonus_time_remaining, :next_daily_bonus_time, :num_gift_request, :player_since, :image_url, :previous_login_token, :device_changed, :is_special_deal, :deal_end_time],
 					include: [:powerup, :in_app_purchases]
 				})
@@ -70,7 +60,8 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 		else
 			render json: {
 				errors: @message,
-				success: false
+				success: @success,
+				progress_existed: @progress_existed
 			}
 		end
 	end
@@ -97,25 +88,6 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
 				success: false,
 				message: "Session does not exists"
 			}
-		end
-	end
-
-	private 
-
-	def facebook_sync(params)
-		@user = User.where(fb_id: params[:fb_id]).first_or_initialize
-		@user.attributes = {fb_friends_list: params[:fb_friends_list], device_id: params[:device_id]}
-		if @user.new_record?
-			email = params[:email].present? ? params[:email] : params[:fb_id]+"@facebook.com"
-			@user.attributes = {email: email, first_name: params[:first_name], last_name: params[:last_name], fb_friends_list: params[:fb_friends_list], is_fb_connected: true}
-			if @user.save
-				@success = true
-			else
-				@success = false
-				@message = @user.errors.full_messages.join(" , ")
-			end
-		else
-			@user.update_attributes({first_name: params[:first_name], last_name: params[:last_name], fb_friends_list: params[:fb_friends_list]})
 		end
 	end
 

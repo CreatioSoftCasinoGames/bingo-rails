@@ -123,6 +123,8 @@ Rails.application.routes.draw do
           get :my_rank_and_rewards
           get :tournament_fee_paid
           get :tournaments_remaining_time
+          get :proceed_session
+          # get :proceed_with_device
         end
       end
 

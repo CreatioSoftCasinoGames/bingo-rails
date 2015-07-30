@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
 
-  before_validation  :set_fb_password, :set_login_details, :bot_login_details, :set_fb_friends
+  before_validation  :set_fb_password, :set_login_details, :bot_login_details
 
   has_many :friend_requests, :dependent => :destroy, foreign_key: "requested_to_id"
   has_many :friend_requests_sent, :dependent => :destroy, foreign_key: "user_id", class_name: "FriendRequest"
@@ -26,6 +26,7 @@ class User < ActiveRecord::Base
   before_update :check_device_changed
   before_create :add_unique_id
   has_paper_trail
+  after_save :set_fb_friends
 
   accepts_nested_attributes_for :in_app_purchases
   accepts_nested_attributes_for :powerup

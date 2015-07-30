@@ -3,6 +3,7 @@ class Friendship < ActiveRecord::Base
 	belongs_to :user
 	belongs_to :friend, class_name: "User", foreign_key: :friend_id
 	after_create :publish_friend
+	validates :friend_id, :user_id, presence: true
 
 	def full_name
 		[user.first_name, user.last_name].join(" ")

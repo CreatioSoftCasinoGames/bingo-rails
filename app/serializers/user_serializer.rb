@@ -65,7 +65,8 @@ class UserSerializer < ActiveModel::Serializer
 						 :special_reward_timer, 
 						 :total_room_unlocked,
 						 :is_daily_bonus_collected,
-						 :unique_id
+						 :unique_id,
+						 :first_fb_sync
 
 			has_one :powerup
 			has_many :in_app_purchases

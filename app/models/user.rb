@@ -24,14 +24,16 @@ class User < ActiveRecord::Base
   has_many :rooms, :through => :room_users
   validate :increase_ticket_and_coins
   before_update :check_device_changed
+  before_create :update_first_fb_sync
   before_create :add_unique_id
   has_paper_trail
   after_save :set_fb_friends
 
+
   accepts_nested_attributes_for :in_app_purchases
   accepts_nested_attributes_for :powerup
   accepts_nested_attributes_for :login_histories
-  attr_accessor :reward_coins, :reward_tickets, :fb_friends_list, :previous_login_token, :device_changed
+  attr_accessor :reward_coins, :reward_tickets, :fb_friends_list, :previous_login_token, :device_changed, :first_fb_sync
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
@@ -185,6 +187,10 @@ class User < ActiveRecord::Base
   def check_device_changed
     self.device_changed = true if self.changes.include?(:device_id)
     true
+  end
+
+  def update_first_fb_sync
+    self.first_fb_sync = true if self.changes.include?(:fb_id)
   end
 
 end

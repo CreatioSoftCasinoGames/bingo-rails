@@ -20,10 +20,6 @@ class FriendRequest < ActiveRecord::Base
 		requested_to.login_token
 	end
 
-	# def device_avatar_id
-	# 	user.device_avatar_id
-	# end
-
 	def full_name
 		[user.first_name, user.last_name].join(" ")
 	end

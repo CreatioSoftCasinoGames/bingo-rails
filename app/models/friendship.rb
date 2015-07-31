@@ -2,7 +2,7 @@ class Friendship < ActiveRecord::Base
 	
 	belongs_to :user
 	belongs_to :friend, class_name: "User", foreign_key: :friend_id
-	after_create :publish_friend
+	# after_create :publish_friend
 	validates :friend_id, :user_id, presence: true
 
 	def full_name
@@ -29,7 +29,6 @@ class Friendship < ActiveRecord::Base
 			full_name: friend.full_name,
 			image_url: friend.image_url,
 			is_online: friend.online,
-			device_avatar_id: friend.device_avatar_id,
 			unique_id: unique_id
 		}.to_json)
 	end

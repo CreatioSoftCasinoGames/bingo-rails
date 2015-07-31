@@ -76,7 +76,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def received_gift
-		gifts_received = @user.gift_requests_sent.where(confirmed: true).collect do |gift|
+		gifts_received = @user.gift_requests_sent.where(confirmed: true, active: true).collect do |gift|
 			reciever = User.find(gift.send_to_id)
 			{
 				id: gift.id, 

@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  def ask_for_gift_in(friend_id)
+  def ask_for_gift_in(friend_id) 
     gift_sent = gift_requests_sent.where(send_to_id: friend_id).last
     if gift_sent.present?
       gift_sent.created_at - Time.now + 24.hours

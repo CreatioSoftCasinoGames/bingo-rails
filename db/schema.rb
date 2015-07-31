@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150727190250) do
+ActiveRecord::Schema.define(version: 20150731224827) do
 
   create_table "ais", force: true do |t|
     t.string   "name"
@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 20150727190250) do
     t.datetime "updated_at"
     t.string   "gift_type",                                           null: false
     t.decimal  "gift_value", precision: 10, scale: 0, default: 5
+    t.boolean  "active",                              default: true
   end
 
   create_table "in_app_purchases", force: true do |t|

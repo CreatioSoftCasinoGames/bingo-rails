@@ -2,7 +2,7 @@ class NotifyAdminUser < ActionMailer::Base
   default from: "bugs@creatiosoft.com"
 
   def send_error_mail(error)
-  	@productionRecievers = "amrendra@creatiosoft.com, neeraj@creatiosoft.com, rishabh@creatiosoft.com, narendra@creatiosoft.com, jagadheeswarreddy@creatiosoft.com, manishkumar@creatiosoft.com"
+  	@productionRecievers = "rishabh@creatiosoft.com, bugcreatiosoft@gmail.com"
   	@subject 	= "Error while - "+error.bug_type
   	@body 		=	"The following message will help you more to track the issue - \n\n"+error.exception
   	mail(to: @productionRecievers, subject: @subject, body: @body)

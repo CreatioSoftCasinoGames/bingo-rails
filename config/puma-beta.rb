@@ -1,7 +1,7 @@
 #!/usr/bin/env puma
 
 # start puma with:
-# RAILS_ENV=production bundle exec puma -C ./config/puma.rb
+# RAILS_ENV=beta bundle exec puma -C ./config/puma-beta.rb
 
 application_path = '/home/w3villa/bingo/current'
 railsenv = 'beta'

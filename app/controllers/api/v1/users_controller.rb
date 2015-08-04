@@ -76,7 +76,21 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 	end
 
 	def received_gift
-		render json: @user.gift_requests_sent.where(confirmed: true)
+		gifts_received = @user.gift_requests_sent.where(confirmed: true, active: true).collect do |gift|
+			reciever = User.find(gift.send_to_id)
+			{
+				id: gift.id, 
+				user_login_token: @user.login_token, 
+				send_to_token: reciever.login_token, 
+				gift_type: gift.gift_type, 
+				gift_value: gift.gift_value, 
+				is_asked: gift.is_asked, 
+				confirmed: gift.confirmed, 
+				full_name: reciever.full_name, 
+				image_url: reciever.image_url
+			}
+		end
+		render json: gifts_received
 	end
 
 	def ask_for_gift_to
@@ -154,7 +168,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 				reward_collected: @reward.present? ? @reward.is_collected : true,
 				tournament_type: @tournament.present? ? @tournament.tournament_type : nil,
 				reward_id: @reward.present? ? @reward.id : 0,
-				next_round_begins_in: next_round_time.present? ? next_round_time : @room_config.duration.days - (Time.zone.now - @room_config.tournaments.where(active: true).last.created_at)
+				next_round_begins_in: next_round_time.present? ? next_round_time : Tournament.last.created_at + 1.day - Time.zone.now
 			}
 		else
 			render json: {

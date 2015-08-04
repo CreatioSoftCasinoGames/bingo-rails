@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
 
-  before_validation  :set_fb_password, :set_login_details, :bot_login_details, :set_fb_friends
+  before_validation  :set_fb_password, :set_login_details, :bot_login_details
 
   has_many :friend_requests, :dependent => :destroy, foreign_key: "requested_to_id"
   has_many :friend_requests_sent, :dependent => :destroy, foreign_key: "user_id", class_name: "FriendRequest"
@@ -24,12 +24,16 @@ class User < ActiveRecord::Base
   has_many :rooms, :through => :room_users
   validate :increase_ticket_and_coins
   before_update :check_device_changed
+  before_create :update_first_fb_sync
   before_create :add_unique_id
+  has_paper_trail
+  after_save :set_fb_friends
+
 
   accepts_nested_attributes_for :in_app_purchases
   accepts_nested_attributes_for :powerup
   accepts_nested_attributes_for :login_histories
-  attr_accessor :reward_coins, :reward_tickets, :fb_friends_list, :previous_login_token, :device_changed
+  attr_accessor :reward_coins, :reward_tickets, :fb_friends_list, :previous_login_token, :device_changed, :first_fb_sync
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
@@ -43,7 +47,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  def ask_for_gift_in(friend_id)
+  def ask_for_gift_in(friend_id) 
     gift_sent = gift_requests_sent.where(send_to_id: friend_id).last
     if gift_sent.present?
       gift_sent.created_at - Time.now + 24.hours
@@ -137,6 +141,8 @@ class User < ActiveRecord::Base
   end
 
   def set_login_details
+    p "called"
+    p is_guest
     if is_guest
       generated_password = SecureRandom.hex(9)
       self.email = "guest_#{SecureRandom.hex(8)}@bingoapi.com"
@@ -181,6 +187,10 @@ class User < ActiveRecord::Base
   def check_device_changed
     self.device_changed = true if self.changes.include?(:device_id)
     true
+  end
+
+  def update_first_fb_sync
+    self.first_fb_sync = true if self.changes.include?(:fb_id)
   end
 
 end

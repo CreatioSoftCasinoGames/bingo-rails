@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  level: 1
+  xp: 9.99
+  xp_difference: 9.99
+  xp_per_daub: 1
+  coins_per_bingo: 9.99
+  tickets_per_bingo: 1
+  card_cost: 1
+
+two:
+  level: 1
+  xp: 9.99
+  xp_difference: 9.99
+  xp_per_daub: 1
+  coins_per_bingo: 9.99
+  tickets_per_bingo: 1
+  card_cost: 1

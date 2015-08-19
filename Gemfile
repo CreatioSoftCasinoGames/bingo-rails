@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.1.0'
+ruby '2.2.3'
 
 gem "rails-erd"
 gem 'active_model_serializers' 
@@ -45,7 +45,7 @@ gem "font-awesome-rails"
 
 gem 'paperclip'
 gem 'aws-sdk'
-gem 'sidekiq'
+gem 'sidekiq', '3.4.2'
 gem 'cancancan', '~> 1.10'
 gem 'byebug'
 # Use ActiveModel has_secure_password

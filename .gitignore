@@ -15,4 +15,3 @@
 /tmp
 /solr/development/data/*
 .DS_Store
-Gemfile.lock

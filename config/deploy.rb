@@ -12,7 +12,7 @@ set :whenever_environment, defer { 'production' }
 set :application, 'bingo'
 set :repository,  'git@github.com:creatiosoft/bingo-rails.git'
 set :scm, :git
-set :branch, 'master'
+set :branch, 'deployment'
 
 # Server-side system wide settings
 default_run_options[:pty] = true
@@ -22,32 +22,16 @@ ssh_options[:forward_agent] = true
 set :stages, %w(production beta)
 set :default_stage, 'beta'
 
-# Unicorn environment configuration
-set(:unicorn_env) { rails_env }
 
 # Deploy configuration (Unicorn, nginx)
 after 'deploy', 'deploy:cleanup'
 
 namespace :deploy do
 
-  task :setup_config, roles: :app do
-    run "mkdir -p #{shared_path}/config"
-    put File.read("config/database.example.yml"), "#{shared_path}/config/database.yml"
-    puts "Now edit the config files in #{shared_path}."
-  end
-
-  after "deploy:setup", "deploy:setup_config"
-
-  task :symlink_config, roles: :app do
-    run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
-  end
-
-  after "deploy:finalize_update", "deploy:symlink_config"
-
   desc "Make sure local git is in sync with remote."
     task :check_revision, roles: :web do
-      unless `git rev-parse HEAD` == `git rev-parse origin/master`
-      puts "WARNING: HEAD is not the same as origin/master"
+      unless `git rev-parse HEAD` == `git rev-parse origin/#{branch}`
+      puts "WARNING: HEAD is not the same as origin/#{branch}"
       puts "Run `git push` to sync changes."
       exit
     end
@@ -67,14 +51,13 @@ namespace :deploy do
     end
   end
 
-  after "deploy:started", "figaro:setup"
+  after  "deploy:started", "figaro:setup"
   after "deploy:symlink:release", "figaro:symlink"
   after "deploy", "deploy:migrate"
 
   desc "Restart the application"
   task :restart, :roles => :app, :except => { :no_release => true } do
-    run "cd #{current_path} && RAILS_ENV=#{stage} bundle exec pumactl -S #{current_path}/tmp/pids/puma-#{stage}.state restart"
+    run "cd #{current_path} ; RAILS_ENV=#{stage} bundle exec pumactl -F config/puma.rb stop ; sleep 5 ; RAILS_ENV=#{stage} bundle exec pumactl -F config/puma.rb start"
   end
-
 
 end

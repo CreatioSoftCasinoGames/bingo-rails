@@ -8,7 +8,7 @@ development:
 
 # production environment
 production:
-    host: 'bingo-redis.bingoapi.com'
+    host: 'redis.bingoapi.com'
     port: '6379'
 
 beta:

@@ -9,10 +9,10 @@ set :whenever_environment, defer { 'production' }
 
 
 # Application configuration
-set :application, 'bingo'
+set :application, 'bingo-api'
 set :repository,  'git@github.com:creatiosoft/bingo-rails.git'
 set :scm, :git
-set :branch, 'deployment'
+set :branch, 'bingo-api'
 
 # Server-side system wide settings
 default_run_options[:pty] = true

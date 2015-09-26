@@ -11,4 +11,4 @@ daemonize true
 pidfile "#{application_path}/tmp/pids/puma-#{railsenv}.pid"
 stdout_redirect "#{application_path}/log/puma-#{railsenv}.stdout.log", "#{application_path}/log/puma-#{railsenv}.stderr.log"
 threads 0, 16
-bind "unix:///tmp/slot_machine.sock"
+bind "unix:///tmp/bingo-dashboard.sock"

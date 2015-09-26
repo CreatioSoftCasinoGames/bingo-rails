@@ -3,7 +3,7 @@
 # start puma with:
 # RAILS_ENV=production bundle exec puma -C ./config/puma.rb
 
-application_path = '/apps/bingo/current'
+application_path = '/apps/bingo-dashboard/current'
 railsenv = 'production'
 directory application_path
 environment railsenv

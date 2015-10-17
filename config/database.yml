@@ -5,7 +5,7 @@ default: &default
   reaping_frequency: 3
   username: 'root'
   password: 'pass123654' 
-  host: 'bingo-v2.cggeyahil2p4.us-west-2.rds.amazonaws.com'
+  host: 'bingo-v1.cggeyahil2p4.us-west-2.rds.amazonaws.com'
   port: '3306'
 
 

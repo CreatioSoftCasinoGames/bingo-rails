@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
-ruby '2.2.2'
+# jruby '1.7.16.2'
+# ruby '2.2.2'
+# ruby '2.2.2', :engine => 'jruby', :engine_version => '9.0.3.0'
 
 gem "newrelic_rpm"
 gem "rails-erd"
@@ -9,7 +11,8 @@ gem 'geoip'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.4'
 # Use mysql as the database for Active Record
-gem 'mysql2', '~> 0.3.18'
+gem 'mysql2', '~> 0.3.20', platform: :ruby
+gem 'activerecord-jdbcmysql-adapter', platform: :jruby
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
@@ -32,6 +35,7 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 
 gem 'paper_trail', '~> 4.0.0.rc'
 gem 'will_paginate', '~> 3.0.6'
+gem 'therubyrhino'
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
@@ -39,7 +43,7 @@ gem 'rvm-capistrano'
 gem 'whenever'
 gem 'slim-rails'
 gem 'puma'
-gem 'therubyracer'
+# gem 'therubyracer'
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git', :branch => 'master'
 gem "font-awesome-rails"
@@ -48,7 +52,7 @@ gem 'paperclip'
 gem 'aws-sdk'
 gem 'sidekiq', '3.4.2'
 gem 'cancancan', '~> 1.10'
-gem 'byebug'
+# gem 'byebug'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

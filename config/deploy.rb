@@ -54,10 +54,16 @@ namespace :deploy do
   after  "deploy:started", "figaro:setup"
   after "deploy:symlink:release", "figaro:symlink"
   after "deploy", "deploy:migrate"
+  after "deploy", "deploy:setupcron"
 
   desc "Restart the application"
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "cd #{current_path} ; RAILS_ENV=#{stage} bundle exec pumactl -F config/puma.rb stop ; sleep 5 ; RAILS_ENV=#{stage} bundle exec pumactl -F config/puma.rb start"
+  end
+
+  desc "Setup cronjob"
+  task :setupcron, :roles => :app do
+    run "cd #{current_path} ; bundle exec whenever --update-crontab bingo_#{stage} -s 'environment=#{stage}'"
   end
 
 end

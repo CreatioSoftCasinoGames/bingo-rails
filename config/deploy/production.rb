@@ -1,7 +1,6 @@
 # Settings for production server
 set :user, 'application'
 server 'rails01.bingoapi.com', :app
-server 'rails02.bingoapi.com', :app
 set :rvm_type, :system
 set :use_sudo, false
 set :deploy_via, :remote_cache
